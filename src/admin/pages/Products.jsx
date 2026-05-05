@@ -1,0 +1,109 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "./Products.css";
+import Sidebar from "../components/Sidebar";
+
+function Products() {
+  const [products, setProducts] = useState([]);
+  const [activeCategory, setActiveCategory] = useState("All");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetch("http://localhost:5000/api/products")
+      .then((res) => res.json())
+      .then((data) => setProducts(data));
+  }, []);
+
+  // Get unique categories from products
+  const categories = [
+    "All",
+    ...new Set(products.map((p) => p.category).filter(Boolean)),
+  ];
+
+  // Filter products by selected category
+  const filteredProducts =
+    activeCategory === "All"
+      ? products
+      : products.filter((p) => p.category === activeCategory);
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure?")) return;
+    await fetch(`http://localhost:5000/api/products/${id}`, {
+      method: "DELETE",
+    });
+    setProducts(products.filter((p) => p._id !== id));
+  };
+
+  return (
+    <div className="all-pro-wrapper">
+      <div className="sidebar_hide"><Sidebar/></div>
+      <section className="All-pro-main">
+        <h2>All Products</h2>
+
+        {/* Category Tabs */}
+        <div
+          style={{
+            display: "flex",
+            gap: "10px",
+            flexWrap: "wrap",
+            margin: "20px 0",
+          }}
+        >
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              style={{
+                padding: "8px 16px",
+                borderRadius: "20px",
+                border: "none",
+                cursor: "pointer",
+                background: activeCategory === cat ? "#4CAF50" : "#eee",
+                color: activeCategory === cat ? "white" : "black",
+                fontWeight: activeCategory === cat ? "bold" : "normal",
+              }}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
+        {/* Products Grid */}
+        <div className="products-grid">
+          {filteredProducts.length === 0 ? (
+            <p>No products found</p>
+          ) : (
+            filteredProducts.map((product) => (
+              <div className="product-card" key={product._id}>
+                <span className="product-img"><img src={product.image} alt={product.name} /></span>
+                <div className="product-detail">
+                  <h3 className="product-name">{product.name}</h3>
+                  <p className="product-price">Price: {product.price}</p>
+                  <p className="product-stock">Stock: {product.stock}</p>
+                  <div>
+                    <button
+                      className="edit-btn"
+                      onClick={() =>
+                        navigate(`/admin/products/edit/${product._id}`)
+                      }
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="delete-btn"
+                      onClick={() => handleDelete(product._id)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </section>
+    </div>
+  );
+}
+
+export default Products;

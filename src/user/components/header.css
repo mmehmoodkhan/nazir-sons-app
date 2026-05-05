@@ -1,0 +1,126 @@
+.header_main_wrapper {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 999;
+}
+.app_logo img {
+  height: 100px;
+  object-fit: contain;
+}
+.user-navbar_wrapper {
+  padding: 10px 20px;
+  background-color: #f8f8f8;
+}
+.user-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 20px;
+  background-color: #f8f8f8;
+}
+.user-search-bar {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 55%;
+}
+.user-search-bar .nav_search_input {
+  width: 100%;
+  background-image: url("../images/search-icon.png");
+  background-repeat: no-repeat;
+  background-size: 15px 15px;
+  background-position: left 5px center;
+  padding: 5px 30px 5px 25px;
+  border: 1px solid #084d8c;
+  border-radius: 5px;
+  height: 35px;
+}
+.nav-location {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.cart_info {
+  position: absolute;
+  top: -7px;
+  right: 7px;
+  background-color: #fae80c;
+  color: #084d8c;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 14.23px;
+  text-align: center;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+}
+.nav_location_icon img {
+  height: 25px;
+  margin-right: 1rem;
+  object-fit: contain;
+}
+.nav_location_text {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 16px;
+}
+.loc_city {
+  font-size: 0.9rem;
+  color: #084d8c;
+  font-weight: 600;
+}
+.nav_cart {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.nav-location:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: -26px;
+  bottom: 0;
+  width: 2px;
+  height: 100%;
+  background-color: #e9e9e9;
+  color: #e9e9e9;
+}
+.select-wrapper {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+.select-wrapper::after {
+  content: "▼";
+  font-size: 12px;
+  color: #084d8c;
+  position: absolute;
+  right: -20px;
+  top: 0;
+  bottom: 0;
+}
+.nav_links {
+  display: flex;
+  list-style-type: none;
+  padding: 0;
+  gap: 10%;
+  width: calc(100% - 23%);
+}
+.nav_links a {
+  text-decoration: none;
+  color: #000;
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+.user_navbar2 {
+    display: flex;
+    gap: 10%;
+}

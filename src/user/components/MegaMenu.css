@@ -1,0 +1,21 @@
+.mega-menu {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  width: 100%;
+  background: white;
+  display: flex;
+  padding: 30px;
+}
+
+.column {
+  flex: 1;
+}
+
+.column h4 {
+  font-weight: bold;
+}
+
+.column p {
+  cursor: pointer;
+}
