@@ -1,13 +1,13 @@
-const addToCart = (product) => {
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
+function AddToCart(product, cart, setCart) {
   const existing = cart.find(item => item._id === product._id);
-
+  let next;
   if (existing) {
-    existing.quantity += 1;
+    next = cart.map(item =>
+      item._id === product._id ? { ...item, quantity: item.quantity + 1 } : item
+    );
   } else {
-    cart.push({ ...product, quantity: 1 });
+    next = [...cart, { ...product, quantity: 1 }];
   }
-
-  localStorage.setItem("cart", JSON.stringify(cart));
-};
+  setCart(next);
+  localStorage.setItem("cart", JSON.stringify(next));
+}

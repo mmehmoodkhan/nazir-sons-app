@@ -1,9 +1,10 @@
 import Header from "../components/header";
 import "./index.css";
 import { useState, useEffect } from "react";
-
+import { useCart } from "../../context/CartContext";
 export default function Home() {
   const [products, setProducts] = useState([]);
+  const { addToCart } = useCart();
   useEffect(() => {
     fetch("http://localhost:5000/api/products")
       .then((res) => res.json())
@@ -23,7 +24,11 @@ export default function Home() {
                 <h3 className="product-name">{product.name}</h3>
                 <p className="product-price">Price: {product.price} /-</p>
                 <p className="product-stock">Stock: {product.stock}</p>
-                <div className="add_to_card_wrapper"><button className="btn_add_to">Add to Cart </button></div>
+                <div className="add_to_card_wrapper">
+                  <button className="btn_add_to" onClick={() => addToCart(product)}>
+                    Add to Cart
+                  </button>
+                </div>
               </div>
             </div>
           ))}

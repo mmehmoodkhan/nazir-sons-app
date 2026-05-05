@@ -1,5 +1,10 @@
 import express from "express";
-import { addProduct, updateProduct, getProducts, deleteProduct } from "../controllers/productController.js";
+import {
+  addProduct,
+  updateProduct,
+  getProducts,
+  deleteProduct,
+} from "../controllers/productController.js";
 import Product from "../models/Product.js";
 const router = express.Router();
 // GET PRODUCTS
@@ -7,7 +12,7 @@ const router = express.Router();
 //   res.json({ message: "Products working" });
 // });
 
-// get all product 
+// get all product
 router.get("/", getProducts);
 
 router.get("/:id", async (req, res) => {
@@ -17,8 +22,8 @@ router.get("/:id", async (req, res) => {
 // add product
 router.post("/add", addProduct);
 
-// now edit product 
-router.put("/:id", updateProduct); 
+// now edit product
+router.put("/:id", updateProduct);
 
 // now delete a product
 router.delete("/:id", deleteProduct);
@@ -27,5 +32,22 @@ router.delete("/:id", deleteProduct);
 // router.get("/cart/:userId", getCartproducts);
 // // add product
 // router.post("/cart/:userId/add", addProductToCart);
+router.post("/checkout", async (req, res) => {
+  const { userId, items, totalPrice, address } = req.body;
+
+  const order = new Order({
+    userId,
+    items,
+    totalPrice,
+    address,
+  });
+
+  await order.save();
+
+  // clear cart
+  await Cart.findOneAndDelete({ userId });
+
+  res.json({ message: "Order placed successfully" });
+});
 
 export default router;
