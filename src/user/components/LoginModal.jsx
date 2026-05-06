@@ -30,7 +30,6 @@ export default function LoginModal({ onClose, onSuccess }) {
       });
 
       const data = await res.json();
-      
 
       if (!res.ok) {
         setError(data.message || "Something went wrong.");
@@ -45,7 +44,6 @@ export default function LoginModal({ onClose, onSuccess }) {
     } finally {
       setLoading(false);
     }
-    
   };
 
   return (
@@ -82,14 +80,14 @@ export default function LoginModal({ onClose, onSuccess }) {
           />
         )}
         <input
-        className="input-field"
+          className="input-field"
           type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
         <input
-        className="input-field"
+          className="input-field"
           type="password"
           placeholder="Password"
           value={password}
@@ -109,7 +107,6 @@ export default function LoginModal({ onClose, onSuccess }) {
 
         <button onClick={onClose}>Cancel</button>
       </div>
-      
     </div>
   );
 }
