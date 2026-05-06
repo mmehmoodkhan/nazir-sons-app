@@ -1,0 +1,132 @@
+.empty-cart {
+  text-align: center;
+  padding-top: 250px;
+}
+.cart-page-main {
+  padding: 250px 3.125rem 50px;
+}
+.cart_inner_main {
+  display: flex;
+  gap: 3rem;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.cart_sub_one {
+  width: calc(66% - 3rem);
+}
+.cart_sub_two {
+  width: calc(34%);
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px 20px 5px;
+  margin-bottom: 20px;
+  border: 1px solid var(--border-color);
+}
+.cart_subtotal {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  color: var(--text);
+  font-size: 1rem;
+}
+.cart_img {
+  text-align: center;
+  width: 120px;
+  height: 120px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.cart_img img {
+  max-height: 100%;
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  object-fit: cover;
+  cursor: pointer;
+}
+.cart_item_name {
+  color: var(--link);
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.cart_price {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px 20px 5px;
+  margin-bottom: 20px;
+  border: 1px solid var(--border-color);
+}
+.qty-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--link);
+  border-radius: 8px;
+  padding: 6px 15px;
+  width: fit-content;
+  min-width: 110px;
+  color: #fff;
+  transform: none;
+  margin: 15px 0;
+}
+.qty-btn {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cart_qty {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #fff;
+}
+
+
+.proceed-btn {
+  background: var(--link);
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-family: "DM Sans", sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  transition:background 0.2s,transform 0.1s;
+  width: 100%;
+  font-size: 14px;
+  border: 1px solid var(--link);
+  margin-top: 20px;
+}
+.proceed-btn:hover {
+  background: #fff;
+  transform: scale(0.99);
+  color: var(--link);
+}
+.proceed-btn:disabled {
+  background: var(--border);
+  color: var(--muted);
+  cursor: not-allowed;
+}

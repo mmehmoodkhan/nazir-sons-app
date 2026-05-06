@@ -3,13 +3,15 @@ import TopNavbar from "./topNavbar";
 import "./header.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
+import LoginModal from "./LoginModal";
 export default function Header() {
   const navigate = useNavigate();
+  const [showLogin, setShowLogin] = useState(false);
   const { cart } = useCart();
-    const [page, setPage] = useState("shop"); // "shop" | "cart" | "success"
+  const [page, setPage] = useState("shop"); // "shop" | "cart" | "success"
   const cartCount = cart.reduce((s, i) => s + i.quantity, 0);
-    const [user, setUser] = useState(null);
-  
+  const [user, setUser] = useState(null);
+
   return (
     <div className="header_main_wrapper">
       <TopNavbar />
@@ -39,16 +41,16 @@ export default function Header() {
           <div>
             <button
               className="btn-ghost"
-              onClick={() => navigate("/cart")}
+              onClick={() => {
+                navigate("/cart");
+              }}
               style={{ position: "relative" }}
             >
               Cart
               {cartCount > 0 && <span className="badge">{cartCount}</span>}
             </button>
             {user ? (
-              <span>
-                👤 {user.name}
-              </span>
+              <span>👤 {user.name}</span>
             ) : (
               <button
                 className="btn-ghost"
@@ -58,6 +60,7 @@ export default function Header() {
                 Sign In
               </button>
             )}
+            {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
           </div>
           {/* <div className="nav-location">
             <span className="nav_location_icon">
