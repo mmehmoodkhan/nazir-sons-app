@@ -50,26 +50,23 @@ export default function Header() {
               {cartCount > 0 && <span className="badge">{cartCount}</span>}
             </button>
             {user ? (
-        <div>
-          <span><strong>{user.name}</strong></span>
-          <button onClick={() => { logout(); navigate("/"); }}>
-            Logout
-          </button>
-        </div>
-      ) : (
-        <button onClick={() => setShowLogin(true)}>Login</button>
-      )}
-            {/* {user ? (
-              <span>👤 {user.name}</span>
+              <div>
+                <span>
+                  <strong>{user.name}</strong>
+                </span>
+                <button
+                  onClick={() => {
+                    logout();
+                    navigate("/");
+                  }}
+                >
+                  Logout
+                </button>
+              </div>
             ) : (
-              <button
-                className="btn-ghost"
-                style={{ padding: "6px 14px", fontSize: 13 }}
-                onClick={() => setShowLogin(true)}
-              >
-                Sign In
-              </button>
-            )} */}
+              <button onClick={() => setShowLogin(true)}>Login</button>
+            )}
+
             {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
           </div>
           {/* <div className="nav-location">
