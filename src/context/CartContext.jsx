@@ -8,6 +8,7 @@ export function CartProvider({ children }) {
     try { return JSON.parse(localStorage.getItem("cart")) || []; }
     catch { return []; }
   });
+  const [user, setUser] = useState(null);
   const login = (userData) => {
     setUser(userData);
     localStorage.setItem("user", JSON.stringify(userData));
@@ -40,12 +41,12 @@ export function CartProvider({ children }) {
   };
 
   return (
-    <CartContext.Provider value={{ cart, setCart, addToCart, removeFromCart, login, logout  }}>
+    <CartContext.Provider value={{ cart, setCart, addToCart, removeFromCart, login, logout,user  }}>
       {children}
     </CartContext.Provider>
   );
 }
-
+  
 export function useCart() {
   return useContext(CartContext);
 }

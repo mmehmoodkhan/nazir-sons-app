@@ -36,9 +36,9 @@ export default function LoginModal({ onClose, onSuccess }) {
         return;
       }
 
-      login(data.user); // ← save user in context
+      // login(data.user); // ← save user in context
       console.log("Logged in user:", data.user);
-      onSuccess(); // ← navigate to checkout
+      onSuccess(data.user); // ← navigate to checkout
     } catch (err) {
       setError("Server error. Try again.");
     } finally {

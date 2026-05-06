@@ -122,9 +122,11 @@ export default function CartPage({ onCheckout }) {
         {showLogin && (
           <LoginModal
             onClose={() => setShowLogin(false)}
-            onSuccess={() => {
+            onSuccess={(loggedInUser) => {
+              // ← receive user here
+              setUser(loggedInUser); // ← save user in state
               setShowLogin(false);
-              navigate("/checkout"); // ← after login, go checkout
+              navigate("/checkout"); // ← then navigate
             }}
           />
         )}
