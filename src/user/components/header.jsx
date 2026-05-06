@@ -10,8 +10,8 @@ export default function Header() {
   const { cart } = useCart();
   const [page, setPage] = useState("shop"); // "shop" | "cart" | "success"
   const cartCount = cart.reduce((s, i) => s + i.quantity, 0);
-  const [user, setUser] = useState(null);
-
+  // const [user, setUser] = useState(null);
+  const { user, logout } = useCart();
   return (
     <div className="header_main_wrapper">
       <TopNavbar />
@@ -50,6 +50,16 @@ export default function Header() {
               {cartCount > 0 && <span className="badge">{cartCount}</span>}
             </button>
             {user ? (
+        <div>
+          <span><strong>{user.name}</strong></span>
+          <button onClick={() => { logout(); navigate("/"); }}>
+            Logout
+          </button>
+        </div>
+      ) : (
+        <button onClick={() => setShowLogin(true)}>Login</button>
+      )}
+            {/* {user ? (
               <span>👤 {user.name}</span>
             ) : (
               <button
@@ -59,7 +69,7 @@ export default function Header() {
               >
                 Sign In
               </button>
-            )}
+            )} */}
             {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
           </div>
           {/* <div className="nav-location">

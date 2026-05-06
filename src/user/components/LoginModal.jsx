@@ -35,9 +35,10 @@ export default function LoginModal({ onClose, onSuccess }) {
         setError(data.message || "Something went wrong.");
         return;
       }
-
+      const { login } = useCart();
       // login(data.user); // ← save user in context
       console.log("Logged in user:", data.user);
+      login(data.user);
       onSuccess(data.user); // ← navigate to checkout
     } catch (err) {
       setError("Server error. Try again.");
