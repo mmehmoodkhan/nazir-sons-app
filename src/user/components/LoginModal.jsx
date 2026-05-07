@@ -1,10 +1,11 @@
 // src/components/LoginModal.jsx
 import { useState } from "react";
-// import { useAuth } from "../../context/CartContext";
+import { useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 export default function LoginModal({ onClose, onSuccess }) {
   const { login } = useCart();
-  const [mode, setMode] = useState("login"); // "login" | "signup"
+  const navigate = useNavigate();
+  const [mode, setMode] = useState("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -35,10 +36,11 @@ export default function LoginModal({ onClose, onSuccess }) {
         setError(data.message || "Something went wrong.");
         return;
       }
-      const { login } = useCart();
-      // login(data.user); // ← save user in context
+
       console.log("Logged in user:", data.user);
       login(data.user);
+      onClose();
+      navigate("/");
       onSuccess(data.user); // ← navigate to checkout
     } catch (err) {
       setError("Server error. Try again.");

@@ -13,10 +13,10 @@ import "./CartPage.css";
 import LoginModal from "../components/LoginModal";
 // import { useAuth } from "../../context/AuthContext";
 export default function CartPage({ onCheckout }) {
-  const { cart = [], setCart } = useCart();
+  const { cart = [], setCart, user } = useCart();
   const navigate = useNavigate();
   const [showLogin, setShowLogin] = useState(false);
-  const [user, setUser] = useState(null);
+  // const [user, setUser] = useState(null);
   const handleCheckout = () => {
     if (user) {
       navigate("/checkout"); // ← already logged in

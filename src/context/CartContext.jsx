@@ -12,11 +12,13 @@ export function CartProvider({ children }) {
     }
   });
   const [user, setUser] = useState(() => {
-    try {
-      return JSON.parse(localStorage.getItem("user")) || null;
-    } catch {
-      return null;
-    }
+    const stored = localStorage.getItem("user");
+    return stored ? JSON.parse(stored) : null;
+    // try {
+    //   return JSON.parse(localStorage.getItem("user")) || null;
+    // } catch {
+    //   return null;
+    // }
   });
   const login = (userData) => {
     setUser(userData);

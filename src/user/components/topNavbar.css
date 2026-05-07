@@ -1,8 +1,27 @@
 .top-navbar {
-    padding: .5rem 0;
-    background: #CCF0EF;
-    text-align: center;
-    font-size: 15px;
-    font-weight: 600;
-    color: #000000;
+  padding: 0.5rem 0;
+  background: #ccf0ef;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--link);
+  overflow: hidden;
+  white-space: nowrap;
+}
+.topnav-text {
+  display: inline-block;
+  animation: ticker 20s linear infinite;
+}
+
+.topnav-text:hover {
+  animation-play-state: paused;
+}
+
+@keyframes ticker {
+  0% {
+    transform: translateX(100vw);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
 }

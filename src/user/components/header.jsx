@@ -38,36 +38,55 @@ export default function Header() {
               </div>
             </div>
           </div>
-          <div>
-            <button
-              className="btn-ghost"
-              onClick={() => {
-                navigate("/cart");
-              }}
-              style={{ position: "relative" }}
-            >
-              Cart
-              {cartCount > 0 && <span className="badge">{cartCount}</span>}
-            </button>
+          <div className="nav-location">
             {user ? (
-              <div>
-                <span>
-                  <strong>{user.name}</strong>
+              <div className="nav-location">
+                <span className="nav_location_icon">
+                  <img src="../images/profile-icon.png" alt="profile" />
                 </span>
-                <button
-                  onClick={() => {
-                    logout();
-                    navigate("/");
-                  }}
-                >
-                  Logout
-                </button>
+                <div>
+                  <button
+                    className="nav_cart_btn"
+                    onClick={() => {
+                      logout();
+                      navigate("/");
+                    }}
+                  >
+                    Logout
+                  </button>
+                  <span>
+                    <p className="user_loged">{user.name}</p>
+                  </span>
+                </div>
               </div>
             ) : (
-              <button onClick={() => setShowLogin(true)}>Login</button>
+              <div className="nav_user_login">
+                <span className="nav_location_icon">
+                  <img src="../images/profile-icon.png" alt="profile" />
+                </span>
+                <button
+                  className="nav_cart_btn"
+                  onClick={() => setShowLogin(true)}
+                >
+                  Login
+                </button>
+              </div>
             )}
 
             {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
+          </div>
+          <div className="nav-location">
+            <button
+              className="nav_cart_btn"
+              onClick={() => {
+                navigate("/cart");
+              }}
+            >
+              <span className="nav_location_icon">
+                <img src="../images/cart-icon.png" alt="cart" />
+              </span>
+              {cartCount > 0 && <span className="cart_info">{cartCount}</span>}
+            </button>
           </div>
           {/* <div className="nav-location">
             <span className="nav_location_icon">
