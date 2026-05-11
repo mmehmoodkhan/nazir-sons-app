@@ -13,7 +13,7 @@ import "./CartPage.css";
 import LoginModal from "../components/LoginModal";
 // import { useAuth } from "../../context/AuthContext";
 export default function CartPage({ onCheckout }) {
-  const { cart = [], setCart, user } = useCart();
+  const { cart = [], setCart, user, removeFromCart  } = useCart();
   const navigate = useNavigate();
   const [showLogin, setShowLogin] = useState(false);
   // const [user, setUser] = useState(null);
@@ -24,6 +24,7 @@ export default function CartPage({ onCheckout }) {
       setShowLogin(true); // ← not logged in, show modal
     }
   };
+
   const handleLoginSuccess = async (loggedInUser) => {
     setUser(loggedInUser);
     setShowLogin(false);
@@ -97,23 +98,27 @@ export default function CartPage({ onCheckout }) {
                     Rs {(item.price * item.quantity).toFixed(2)}
                   </div>
                 </div>
+                <button className="delete-cart-item" onClick={()=> removeFromCart(item._id)}><img src="../images/delete-icon.jpg" alt="delete" /></button>
               </div>
             ))}
+            
           </div>
-
           <div className="cart_sub_two">
             <div className="cart_subtotal">
-              <span>Subtotal</span>
+              <p>Subtotal</p>
               <span>Rs {total.toFixed(2)}</span>
             </div>
             <div className="cart_subtotal">
-              <span>Shipping</span>
+              <p>Shipping</p>
               <span>Calculated at checkout</span>
             </div>
             <div className="cart_subtotal">
-              <span>Total</span>
+              <p>Total</p>
               <span>Rs {total.toFixed(2)}</span>
             </div>
+            <button className="proceed-btn continue-shop-btn" onClick={()=> {navigate("/")}}>
+              Continue Shopping 
+            </button>
             <button className="proceed-btn" onClick={handleCheckout}>
               Proceed to Checkout →
             </button>

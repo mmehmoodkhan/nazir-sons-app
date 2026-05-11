@@ -67,9 +67,10 @@
   gap: 3rem;
   background-color: white;
   border-radius: 8px;
-  padding: 20px 20px 5px;
+  padding: 20px;
   margin-bottom: 20px;
   border: 1px solid var(--border-color);
+  position: relative;
 }
 .qty-controls {
   display: flex;
@@ -105,7 +106,7 @@
 }
 
 
-.proceed-btn {
+.proceed-btn, .continue-shop-btn {
   background: var(--link);
   color: #fff;
   border: none;
@@ -114,11 +115,10 @@
   font-family: "DM Sans", sans-serif;
   font-weight: 500;
   cursor: pointer;
-  transition:background 0.2s,transform 0.1s;
-  width: 100%;
+  transition: 0.7s ease-in-out;
   font-size: 14px;
   border: 1px solid var(--link);
-  margin-top: 20px;
+  margin: 20px 5px;
 }
 .proceed-btn:hover {
   background: #fff;
@@ -129,4 +129,30 @@
   background: var(--border);
   color: var(--muted);
   cursor: not-allowed;
+}
+.continue-shop-btn {
+  background: #fff;
+  color: var(--link);
+}
+.continue-shop-btn:hover {
+  background: var(--link);
+  color: #fff;
+}
+.cart_sub_two p {
+  font-weight: 600;
+}
+.delete-cart-item {
+  width: 28px;
+  height: auto;
+  display: inline-block;
+  position: absolute;
+  right: 46px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+}
+.delete-cart-item img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
 }

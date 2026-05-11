@@ -1,4 +1,4 @@
-// src/components/LoginModal.jsx
+import "./LoginModal.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
@@ -58,14 +58,14 @@ export default function LoginModal({ onClose, onSuccess }) {
         {/* Tabs */}
         <div style={{ display: "flex", gap: 8, marginBottom: 24 }}>
           <button
-            className="btn-ghost"
+            className="loged_btn"
             onClick={() => setMode("login")}
             style={{ flex: 1, fontWeight: mode === "login" ? 700 : 400 }}
           >
             Login
           </button>
           <button
-            className="btn-ghost"
+            className="loged_btn"
             onClick={() => setMode("signup")}
             style={{ flex: 1, fontWeight: mode === "signup" ? 700 : 400 }}
           >
@@ -100,7 +100,7 @@ export default function LoginModal({ onClose, onSuccess }) {
 
         {error && <p style={{ color: "red" }}>{error}</p>}
 
-        <button onClick={handleSubmit} disabled={loading}>
+        <button onClick={handleSubmit} disabled={loading} className="loged_btn">
           {loading
             ? "Please wait..."
             : mode === "login"
@@ -108,7 +108,7 @@ export default function LoginModal({ onClose, onSuccess }) {
               : "Create Account"}
         </button>
 
-        <button onClick={onClose}>Cancel</button>
+        <button onClick={onClose} className="cancel_btn">Cancel</button>
       </div>
     </div>
   );
