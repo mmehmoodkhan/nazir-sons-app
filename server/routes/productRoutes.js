@@ -11,6 +11,25 @@ const router = express.Router();
 // router.get("/", (req, res) => {
 //   res.json({ message: "Products working" });
 // });
+// routes/products.js
+router.get("/products", async (req, res) => {
+  try {
+    const ids = req.query.ids?.split(",").filter(Boolean) || [];
+    if (ids.length === 0) return res.json([]);
+
+    const products = await Product.find(
+      { _id: { $in: ids } },
+      "name price image stock" // only send what cart needs
+    );
+
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch products" });
+  }
+});
+
+
+
 
 // get all product
 router.get("/", getProducts);

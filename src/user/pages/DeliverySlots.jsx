@@ -209,7 +209,6 @@ export default function DeliverySlots({ onConfirm }) {
             />
           ))}
         </div>
-
         <button
           className="confirm-btn"
           onClick={handleConfirm}

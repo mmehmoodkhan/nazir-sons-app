@@ -1,5 +1,5 @@
 // src/context/CartContext.jsx
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 const CartContext = createContext(null);
 
@@ -11,15 +11,50 @@ export function CartProvider({ children }) {
       return [];
     }
   });
+
   const [user, setUser] = useState(() => {
     const stored = localStorage.getItem("user");
     return stored ? JSON.parse(stored) : null;
-    // try {
-    //   return JSON.parse(localStorage.getItem("user")) || null;
-    // } catch {
-    //   return null;
-    // }
   });
+
+  // ✅ Validate cart against backend on every load
+  useEffect(() => {
+    const validateCart = async () => {
+      const stored = JSON.parse(localStorage.getItem("cart") || "[]");
+      if (stored.length === 0) return;
+
+      try {
+        const ids = stored.map((item) => item._id).join(",");
+        const res = await fetch(`/api/products?ids=${ids}`);
+        const freshProducts = await res.json();
+
+        const updated = stored
+          .map((cartItem) => {
+            const fresh = freshProducts.find((p) => p._id === cartItem._id);
+
+            if (!fresh) return null; // deleted from admin → remove silently
+
+            return {
+              ...cartItem,
+              price: fresh.price,
+              image: fresh.image,
+              stock: fresh.stock ?? cartItem.stock,
+              soldOut: fresh.stock === 0,
+            };
+          })
+          .filter(Boolean);
+
+        setCart(updated);
+        localStorage.setItem("cart", JSON.stringify(updated));
+      } catch (err) {
+        console.error("Cart validation failed:", err);
+        // Keep existing cart if fetch fails (no internet etc.)
+      }
+    };
+
+    validateCart();
+  }, []); // runs once on app load
+
   const login = (userData) => {
     setUser(userData);
     localStorage.setItem("user", JSON.stringify(userData));

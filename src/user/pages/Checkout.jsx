@@ -1,5 +1,6 @@
 import { useCart } from "../../context/CartContext";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Checkout.css";
 import DeliverySlots from "./DeliverySlots";
 const Checkout = () => {
@@ -8,6 +9,7 @@ const Checkout = () => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [address, setAddress] = useState();
+  const navigate = useNavigate();
   const shipCharges = 299;
   const subTotal = cart.reduce(
     (acc, item) => acc + item.price * item.quantity,
@@ -37,6 +39,16 @@ const Checkout = () => {
   };
   return (
     <div className="checkout_wrapper">
+      <div>
+        <span
+          onClick={() => {
+            navigate("/cart");
+          }}
+        >
+          {" "}
+          Back to Cart
+        </span>
+      </div>
       <h2>Checkout</h2>
       <div className="checkkout_mian">
         <div className="cart_contact_main">

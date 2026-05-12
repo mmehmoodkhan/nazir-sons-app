@@ -16,6 +16,7 @@ export default function CartPage({ onCheckout }) {
   const { cart = [], setCart, user, removeFromCart } = useCart();
   const navigate = useNavigate();
   const [showLogin, setShowLogin] = useState(false);
+  const hasSoldOut = cart.some((item) => item.stock === 0);
   // const [user, setUser] = useState(null);
   const handleCheckout = () => {
     if (user) {
@@ -71,41 +72,60 @@ export default function CartPage({ onCheckout }) {
         </h2>
         <div className="cart_inner_main">
           <div className="cart_sub_one">
-            {cart.map((item) => (
-              <div key={item._id} className="cart-item">
-                <div className="cart_img">
-                  <img src={item.image} alt={item.name} />
-                </div>
-                <div>
-                  <div className="cart_item_name">{item.name}</div>
-                  <div className="cart_price">Rs {item.price.toFixed(2)}</div>
-                  <div className="qty-controls">
-                    <button
-                      className="qty-btn"
-                      onClick={() => updateQty(item._id, -1)}
-                    >
-                      −
-                    </button>
-                    <span className="cart_qty">{item.quantity}</span>
-                    <button
-                      className="qty-btn"
-                      onClick={() => updateQty(item._id, +1)}
-                    >
-                      +
-                    </button>
+            {cart.map((item) => {
+              const isSoldOut = item.stock === 0; // or item.soldOut === true
+
+              return (
+                <div key={item._id} className="cart-item">
+                  <div className="cart_img">
+                    <img src={item.image} alt={item.name} />
                   </div>
-                  <div className="cart_price">
-                    Rs {(item.price * item.quantity).toFixed(2)}
+                  <div>
+                    <div className="cart_item_name">{item.name}</div>
+                    <div className="cart_price">Rs {item.price.toFixed(2)}</div>
+
+                    {/* ✅ Only show when sold out */}
+                    {isSoldOut && (
+                      <p className="pro_soldout">
+                        <span>Sold Out</span>
+                      </p>
+                    )}
+
+                    {/* ✅ Disable controls when sold out */}
+                    <div
+                      className={`qty-controls ${isSoldOut ? "disabled" : ""}`}
+                    >
+                      <button
+                        className="qty-btn"
+                        onClick={() => !isSoldOut && updateQty(item._id, -1)}
+                        disabled={isSoldOut}
+                      >
+                        −
+                      </button>
+                      <span className="cart_qty">{item.quantity}</span>
+                      <button
+                        className="qty-btn"
+                        onClick={() => !isSoldOut && updateQty(item._id, +1)}
+                        disabled={isSoldOut}
+                      >
+                        +
+                      </button>
+                    </div>
+
+                    <div className="cart_price">
+                      Rs {(item.price * item.quantity).toFixed(2)}
+                    </div>
                   </div>
+
+                  <button
+                    className="delete-cart-item"
+                    onClick={() => removeFromCart(item._id)}
+                  >
+                    <img src="../images/delete-icon.jpg" alt="delete" />
+                  </button>
                 </div>
-                <button
-                  className="delete-cart-item"
-                  onClick={() => removeFromCart(item._id)}
-                >
-                  <img src="../images/delete-icon.jpg" alt="delete" />
-                </button>
-              </div>
-            ))}
+              );
+            })}
           </div>
           <div className="cart_sub_two">
             <div className="cart_subtotal">
@@ -128,7 +148,12 @@ export default function CartPage({ onCheckout }) {
             >
               Continue Shopping
             </button>
-            <button className="proceed-btn" onClick={handleCheckout}>
+            <button
+              className="proceed-btn"
+              onClick={handleCheckout}
+              disabled={hasSoldOut}
+              title={hasSoldOut ? "Remove sold out items to continue" : ""}
+            >
               Proceed to Checkout →
             </button>
           </div>

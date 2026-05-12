@@ -105,8 +105,8 @@
   color: #fff;
 }
 
-
-.proceed-btn, .continue-shop-btn {
+.proceed-btn,
+.continue-shop-btn {
   background: var(--link);
   color: #fff;
   border: none;
@@ -155,4 +155,26 @@
   width: 100%;
   height: auto;
   object-fit: contain;
+}
+.pro_soldout span {
+  color: var(--danger);
+  background: #ffd8d7;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  text-transform: uppercase;
+  margin-top: 8px;
+  display: inline-block;
+}
+.qty-controls.disabled .qty-btn {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.proceed-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
