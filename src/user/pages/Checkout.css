@@ -89,3 +89,14 @@ label {
     background: transparent;
     color: var(--link);
 }
+.input-error {
+  border: 1.5px solid #e53e3e !important;
+  background-color: #fff5f5;
+}
+
+.field-error {
+  color: #e53e3e;
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+}

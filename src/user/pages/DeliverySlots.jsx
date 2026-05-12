@@ -144,11 +144,12 @@ export default function DeliverySlots({ onConfirm }) {
     else alert(`Delivery confirmed!\n${info.dateLabel} · ${info.time}`);
   }
 
-  const confirmLabel =
-    selectedSlot !== null
-      ? `Confirm — ${DAYS[d.getDay()]} ${MONTHS[d.getMonth()]} ${d.getDate()}, ${slots[selectedSlot].time}`
-      : "Choose a slot to continue";
-
+  // Change the confirm button label to make it clear
+const confirmLabel =
+  selectedSlot !== null
+    ? `✓ Confirm — ${DAYS[d.getDay()]} ${MONTHS[d.getMonth()]} ${d.getDate()}, ${slots[selectedSlot].time}`
+    : "Select a slot then click here to confirm";
+    
   const availableToday =
     selectedDate === 0
       ? slots.filter((s) => s.type !== "passed" && s.type !== "full").length
