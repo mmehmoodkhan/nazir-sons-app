@@ -1,19 +1,91 @@
 .checkkout_mian {
-    display: flex;
-    gap:20px;
-    justify-content: space-between;
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  margin-top:20px;
 }
 .checkout_wrapper {
-    width: 100%;
-    display: inline-block;
-    padding: 50px;
-    background: var(--bg);
-    
+  width: 100%;
+  display: inline-block;
+  padding: 50px;
+  background: var(--bg);
 }
 label {
-    margin-bottom: 0.5rem;
-    font-size: 0.9rem;
-    color: var(--text);
-    font-weight: 400;
-    display: inline-block;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text);
+  font-weight: 400;
+  display: inline-block;
+}
+.cart_contact_main {
+  width: 65%;
+}
+.cart_contact {
+  padding: 2rem;
+  background: #fff;
+  border-radius: 20px;
+  margin-bottom:2rem;
+}
+.place_order_area {
+  width: 35%;
+  padding: 2rem;
+  border-radius: 20px;
+  background: #fff;
+}
+.opt_wrapper_inner {
+  display: flex;
+  gap: 20px;
+  justify-content: flex-start;
+}
+.opt_wrapper_inner .input-field {
+  text-align: center;
+}
+.opt_wrapper p {
+  margin-bottom: 1rem;
+  position: relative;
+  top: -7px;
+}
+.cart_contacts_inner {
+  display: flex;
+  gap: 1%;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.form_group {
+  width: 49%;
+}
+.text-danger {
+    color: var(--danger);
+}
+.cart_contact textarea {
+    min-height: 100px;
+}
+.section-title {
+    margin-bottom: 2rem;
+    font-weight: 500;
+}
+.grand_total, .net_total {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+.net_total p {
+    margin: 1rem 0;
+    font-weight: 700;
+}
+.place_order_btn {
+    width: 100%;
+    padding: 1rem;
+    background: var(--link);
+    color: white;
+    border: 1px solid var(--link);
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.4s ease-in-out;
+}
+.place_order_btn:hover {
+    background: transparent;
+    color: var(--link);
 }
