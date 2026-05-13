@@ -1,24 +1,70 @@
 .main_page_wrapper {
-    margin-top: 200px;
+  margin-top: 200px;
 }
 .add_to_card_wrapper {
-    background-color: #084d8c;
-    border: 1px solid #084d8c;
-    color: #fff;
-    padding: 7px 25px ;
-    transition: all ease .3s;
-    border-radius: 4px ;
-    font-size: 13px ;
-    font-weight: 500 ;
-    width: 152px;
-    margin: 0 auto;
+  background-color: #084d8c;
+  border: 1px solid #084d8c;
+  color: #fff;
+  padding: 7px 25px;
+  transition: all 0.5s ease-in-out;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  width: 152px;
+  margin: 0.5rem auto 0;
+  min-height: 34px;
+  line-height: 18px;
 }
 .btn_add_to {
-    background-color: transparent;
-    color: #fff;
-    border:none;
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    cursor: pointer;
+  background-color: transparent;
+  color: #fff;
+  border: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.5s ease-in-out;
+}
+/* ── Quantity controls ───────────────────────────────── */
+.qty_controls {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  overflow: hidden;
+  width: 100%;
+}
+
+.qty_btn {
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  flex-shrink: 0;
+  color: #fff;
+  border: none;
+  font-size: 1rem;
+  font-weight: 600;
+  height: 18px;
+  width: 15px;
+}
+
+.qty_btn:hover:not(:disabled) {
+  background: none;
+}
+
+.qty_btn:disabled {
+  background: #c7d2fe;
+  cursor: not-allowed;
+}
+
+.qty_count {
+  flex: 1;
+  text-align: center;
+  color: var(--white);
+  color: #fff;
+  border: none;
+  font-size: 0.8rem;
+  font-weight: 600;
 }

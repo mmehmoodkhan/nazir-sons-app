@@ -1,6 +1,5 @@
 import express from "express";
-import Order from "./models/Order.js";  // ✅ .js extension required in ESM
-
+import Order from "../models/order.js";
 const router = express.Router();
 
 router.post("/checkout", async (req, res) => {

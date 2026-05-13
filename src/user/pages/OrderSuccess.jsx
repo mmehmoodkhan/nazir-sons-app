@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 const OrderSuccess = () => {
   const { state } = useLocation();
   const navigate  = useNavigate();
-  const [count, setCount] = useState(5);
+  const [count, setCount] = useState(20);
 
   // auto redirect to home after 5 seconds
   useEffect(() => {

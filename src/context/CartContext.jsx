@@ -17,7 +17,7 @@ export function CartProvider({ children }) {
     return stored ? JSON.parse(stored) : null;
   });
 
-  // ✅ Validate cart against backend on every load
+  //  Validate cart against backend on every load
   useEffect(() => {
     const validateCart = async () => {
       const stored = JSON.parse(localStorage.getItem("cart") || "[]");
@@ -62,7 +62,9 @@ export function CartProvider({ children }) {
 
   const logout = () => {
     setUser(null);
+    setCart([]);
     localStorage.removeItem("user");
+    localStorage.removeItem("cart");
   };
 
   const addToCart = (product) => {
@@ -80,17 +82,42 @@ export function CartProvider({ children }) {
     });
   };
 
-  const removeFromCart = (id) => {
-    setCart((prev) => {
-      const next = prev.filter((item) => item._id !== id);
-      localStorage.setItem("cart", JSON.stringify(next));
-      return next;
-    });
+  const removeFromCart = (productId) => {
+    setCart(
+      (prev) =>
+        prev
+          .map((item) =>
+            item._id === productId
+              ? { ...item, quantity: item.quantity - 1 }
+              : item,
+          )
+          .filter((item) => item.quantity > 0), // remove when qty hits 0
+    );
+  };
+
+  // const removeFromCart = (id) => {
+  //   setCart((prev) => {
+  //     const next = prev.filter((item) => item._id !== id);
+  //     localStorage.setItem("cart", JSON.stringify(next));
+  //     return next;
+  //   });
+  // };
+  const clearCart = () => {
+    setCart([]);
   };
 
   return (
     <CartContext.Provider
-      value={{ cart, setCart, addToCart, removeFromCart, login, logout, user }}
+      value={{
+        cart,
+        setCart,
+        clearCart,
+        addToCart,
+        removeFromCart,
+        login,
+        logout,
+        user,
+      }}
     >
       {children}
     </CartContext.Provider>

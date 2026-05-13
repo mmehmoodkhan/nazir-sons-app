@@ -141,7 +141,7 @@ export default function CartPage({ onCheckout }) {
               <span>Rs {total.toFixed(2)}</span>
             </div>
             <button
-              className="proceed-btn continue-shop-btn"
+              className="continue-shop-btn"
               onClick={() => {
                 navigate("/");
               }}
