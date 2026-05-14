@@ -1,0 +1,90 @@
+.cat_section {
+  padding: 40px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.cat_heading {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: #222;
+}
+
+/* ── Grid ── */
+.cat_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 16px;
+}
+
+/* ── Card ── */
+.cat_card {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  text-decoration: none;
+  aspect-ratio: 1 / 1;        /* square cards */
+  display: block;
+  cursor: pointer;
+}
+
+.cat_img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.cat_card:hover .cat_img {
+  transform: scale(1.07);
+}
+
+/* ── Overlay ── */
+.cat_overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%);
+  display: flex;
+  align-items: flex-end;
+  padding: 12px;
+}
+
+.cat_name {
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.cat_tabs {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 24px 0 20px;
+}
+
+.cat_tab {
+  padding: 8px 20px;
+  border-radius: 20px;
+  border: 2px solid #eee;
+  cursor: pointer;
+  background: #eee;
+  color: #333;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.cat_tab:hover {
+  border-color: #4CAF50;
+  color: #4CAF50;
+  background: #fff;
+}
+
+.cat_tab.active {
+  background: #4CAF50;
+  border-color: #4CAF50;
+  color: white;
+  font-weight: 700;
+}

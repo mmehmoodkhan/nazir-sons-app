@@ -34,3 +34,7 @@ p,h1,h2,h3,h4,h5,h6 {
     border-color 0.2s;
 }
 
+.mian_container {
+  max-width: 1200px;
+  margin: 0 auto;
+}

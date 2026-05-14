@@ -3,7 +3,7 @@
   padding-top: 250px;
 }
 .cart-page-main {
-  padding: 250px 3.125rem 50px;
+  margin-top: 220px;
 }
 .cart_inner_main {
   display: flex;
@@ -12,10 +12,10 @@
   justify-content: space-between;
 }
 .cart_sub_one {
-  width: calc(66% - 3rem);
+  width: calc(65% - 3rem);
 }
 .cart_sub_two {
-  width: calc(34%);
+  width: calc(35%);
   background-color: white;
   border-radius: 8px;
   padding: 20px 20px 5px;

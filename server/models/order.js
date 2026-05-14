@@ -27,6 +27,11 @@ const orderSchema = new mongoose.Schema({
   paymentStatus: { type: String, enum: ["pending", "paid"], default: "pending" },
   status:        { type: String, enum: ["pending", "confirmed", "delivered", "cancelled"], default: "pending" },
   createdAt:     { type: Date, default: Date.now },
+  deliverySlot: {
+    dateLabel: { type: String },
+    time:      { type: String },
+    type:      { type: String }, // "free" or "express"
+},
 });
 
-export default mongoose.model("Order", orderSchema);  // ✅ export not module.exports
+export default mongoose.model("Order", orderSchema); 

@@ -1,5 +1,11 @@
+
 .main_page_wrapper {
-  margin-top: 200px;
+  margin-top: 60px;
+}
+.main_page_wrapper .cat_section {
+  margin: 0;
+  padding: 0;
+  max-width: none;
 }
 .add_to_card_wrapper {
   background-color: #084d8c;

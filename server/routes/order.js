@@ -17,6 +17,7 @@ router.post("/checkout", async (req, res) => {
       customer,
       delivery,
       deliverySlot,
+      deliverySlot: req.body.deliverySlot,
       deliveryCode,
       orderNote,
       items,

@@ -51,10 +51,12 @@ export default function CartPage({ onCheckout }) {
     return (
       <>
         <Header />
-        <div className="empty-cart">
-          <div>🛒</div>
-          <h3>Your cart is empty</h3>
-          <p>Add some items from the shop to get started.</p>
+        <div className="mian_container">
+          <div className="empty-cart">
+            <div>🛒</div>
+            <h3>Your cart is empty</h3>
+            <p>Add some items from the shop to get started.</p>
+          </div>
         </div>
       </>
     );
@@ -64,111 +66,115 @@ export default function CartPage({ onCheckout }) {
     <div>
       <Header />
       <div className="cart-page-main">
-        <h2 className="heddings">
-          Your Cart{" "}
-          <span>
-            ({cart.length} item{cart.length !== 1 ? "s" : ""})
-          </span>
-        </h2>
-        <div className="cart_inner_main">
-          <div className="cart_sub_one">
-            {cart.map((item) => {
-              const isSoldOut = item.stock === 0; // or item.soldOut === true
+        <div className="mian_container">
+          <h2 className="heddings">
+            Your Cart{" "}
+            <span>
+              ({cart.length} item{cart.length !== 1 ? "s" : ""})
+            </span>
+          </h2>
+          <div className="cart_inner_main">
+            <div className="cart_sub_one">
+              {cart.map((item) => {
+                const isSoldOut = item.stock === 0; // or item.soldOut === true
 
-              return (
-                <div key={item._id} className="cart-item">
-                  <div className="cart_img">
-                    <img src={item.image} alt={item.name} />
-                  </div>
-                  <div>
-                    <div className="cart_item_name">{item.name}</div>
-                    <div className="cart_price">Rs {item.price.toFixed(2)}</div>
+                return (
+                  <div key={item._id} className="cart-item">
+                    <div className="cart_img">
+                      <img src={item.image} alt={item.name} />
+                    </div>
+                    <div>
+                      <div className="cart_item_name">{item.name}</div>
+                      <div className="cart_price">
+                        Rs {item.price.toFixed(2)}
+                      </div>
 
-                    {/* ✅ Only show when sold out */}
-                    {isSoldOut && (
-                      <p className="pro_soldout">
-                        <span>Sold Out</span>
-                      </p>
-                    )}
+                      {/*  Only show when sold out */}
+                      {isSoldOut && (
+                        <p className="pro_soldout">
+                          <span>Sold Out</span>
+                        </p>
+                      )}
 
-                    {/* ✅ Disable controls when sold out */}
-                    <div
-                      className={`qty-controls ${isSoldOut ? "disabled" : ""}`}
+                      {/*  Disable controls when sold out */}
+                      <div
+                        className={`qty-controls ${isSoldOut ? "disabled" : ""}`}
+                      >
+                        <button
+                          className="qty-btn"
+                          onClick={() => !isSoldOut && updateQty(item._id, -1)}
+                          disabled={isSoldOut}
+                        >
+                          −
+                        </button>
+                        <span className="cart_qty">{item.quantity}</span>
+                        <button
+                          className="qty-btn"
+                          onClick={() => !isSoldOut && updateQty(item._id, +1)}
+                          disabled={isSoldOut}
+                        >
+                          +
+                        </button>
+                      </div>
+
+                      <div className="cart_price">
+                        Rs {(item.price * item.quantity).toFixed(2)}
+                      </div>
+                    </div>
+
+                    <button
+                      className="delete-cart-item"
+                      onClick={() => removeFromCart(item._id)}
                     >
-                      <button
-                        className="qty-btn"
-                        onClick={() => !isSoldOut && updateQty(item._id, -1)}
-                        disabled={isSoldOut}
-                      >
-                        −
-                      </button>
-                      <span className="cart_qty">{item.quantity}</span>
-                      <button
-                        className="qty-btn"
-                        onClick={() => !isSoldOut && updateQty(item._id, +1)}
-                        disabled={isSoldOut}
-                      >
-                        +
-                      </button>
-                    </div>
-
-                    <div className="cart_price">
-                      Rs {(item.price * item.quantity).toFixed(2)}
-                    </div>
+                      <img src="../images/delete-icon.jpg" alt="delete" />
+                    </button>
                   </div>
-
-                  <button
-                    className="delete-cart-item"
-                    onClick={() => removeFromCart(item._id)}
-                  >
-                    <img src="../images/delete-icon.jpg" alt="delete" />
-                  </button>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
+            <div className="cart_sub_two">
+              <div className="cart_subtotal">
+                <p>Subtotal</p>
+                <span>Rs {total.toFixed(2)}</span>
+              </div>
+              <div className="cart_subtotal">
+                <p>Shipping</p>
+                <span>Calculated at checkout</span>
+              </div>
+              <div className="cart_subtotal">
+                <p>Total</p>
+                <span>Rs {total.toFixed(2)}</span>
+              </div>
+              <button
+                className="continue-shop-btn"
+                onClick={() => {
+                  navigate("/");
+                }}
+              >
+                Continue Shopping
+              </button>
+              <button
+                className="proceed-btn"
+                onClick={handleCheckout}
+                disabled={hasSoldOut}
+                title={hasSoldOut ? "Remove sold out items to continue" : ""}
+              >
+                Proceed to Checkout →
+              </button>
+            </div>
           </div>
-          <div className="cart_sub_two">
-            <div className="cart_subtotal">
-              <p>Subtotal</p>
-              <span>Rs {total.toFixed(2)}</span>
-            </div>
-            <div className="cart_subtotal">
-              <p>Shipping</p>
-              <span>Calculated at checkout</span>
-            </div>
-            <div className="cart_subtotal">
-              <p>Total</p>
-              <span>Rs {total.toFixed(2)}</span>
-            </div>
-            <button
-              className="continue-shop-btn"
-              onClick={() => {
-                navigate("/");
+          {showLogin && (
+            <LoginModal
+              onClose={() => setShowLogin(false)}
+              onSuccess={(loggedInUser) => {
+                // ← receive user here
+                setUser(loggedInUser); // ← save user in state
+                setShowLogin(false);
+                navigate("/checkout"); // ← then navigate
               }}
-            >
-              Continue Shopping
-            </button>
-            <button
-              className="proceed-btn"
-              onClick={handleCheckout}
-              disabled={hasSoldOut}
-              title={hasSoldOut ? "Remove sold out items to continue" : ""}
-            >
-              Proceed to Checkout →
-            </button>
-          </div>
+            />
+          )}
         </div>
-        {showLogin && (
-          <LoginModal
-            onClose={() => setShowLogin(false)}
-            onSuccess={(loggedInUser) => {
-              // ← receive user here
-              setUser(loggedInUser); // ← save user in state
-              setShowLogin(false);
-              navigate("/checkout"); // ← then navigate
-            }}
-          />
-        )}
       </div>
     </div>
   );

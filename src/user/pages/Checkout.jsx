@@ -155,7 +155,11 @@ const Checkout = () => {
       const res = await fetch("/api/order/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(orderData),
+        // body: JSON.stringify(orderData),
+        body: JSON.stringify({
+          ...orderData,
+          deliverySlot: selectedSlot, //  { dateLabel, time, type }
+        }),
       });
       const data = await res.json();
 
@@ -187,7 +191,11 @@ const Checkout = () => {
   return (
     <div className="checkout_wrapper">
       <div>
-        <button className="back_to" type="button" onClick={() => navigate("/cart")}>
+        <button
+          className="back_to"
+          type="button"
+          onClick={() => navigate("/cart")}
+        >
           ← Back to Cart
         </button>
       </div>

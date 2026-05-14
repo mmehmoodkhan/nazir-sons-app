@@ -15,10 +15,10 @@ export default function Header() {
   const cartCount = cart.reduce((s, i) => s + i.quantity, 0);
 
   const handleLogout = () => {
-    clearCart();                        // empty the cart
-    logout();                           // clear user from context
-    localStorage.removeItem("user");    // clear stored user
-    localStorage.removeItem("cart");    // clear stored cart
+    clearCart(); // empty the cart
+    logout(); // clear user from context
+    localStorage.removeItem("user"); // clear stored user
+    localStorage.removeItem("cart"); // clear stored cart
     navigate("/");
   };
 
@@ -43,7 +43,9 @@ export default function Header() {
             </span>
             <div>
               <p className="nav_location_text">Deliver to:</p>
-              <div className="loc_city"><p>Lahore</p></div>
+              <div className="loc_city">
+                <p>Lahore</p>
+              </div>
             </div>
           </div>
 
@@ -83,14 +85,11 @@ export default function Header() {
               <span className="nav_location_icon">
                 <img src="../images/cart-icon.png" alt="cart" />
               </span>
-              {cartCount > 0 && (
-                <span className="cart_info">{cartCount}</span>
-              )}
+              {cartCount > 0 && <span className="cart_info">{cartCount}</span>}
             </button>
           </div>
         </nav>
-
-        <nav className="user_navbar2">
+        {/* <nav className="user_navbar2">
           <div className="select-wrapper">Shop By Department</div>
           <ul className="nav_links">
             <li className="nav_item"><Link to="/departments">Grocery Foods</Link></li>
@@ -98,7 +97,7 @@ export default function Header() {
             <li className="nav_item"><Link to="/about">About Us</Link></li>
             <li className="nav_item"><Link to="/contact">Contact</Link></li>
           </ul>
-        </nav>
+        </nav> */}
       </section>
     </div>
   );
