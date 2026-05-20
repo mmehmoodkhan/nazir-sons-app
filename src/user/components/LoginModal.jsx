@@ -48,67 +48,77 @@ export default function LoginModal({ onClose, onSuccess }) {
       setLoading(false);
     }
   };
-
   return (
     <div
       className="modal-overlay"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="modal-box">
-        {/* Tabs */}
-        <div style={{ display: "flex", gap: 8, marginBottom: 24 }}>
-          <button
-            className="loged_btn"
-            onClick={() => setMode("login")}
-            style={{ flex: 1, fontWeight: mode === "login" ? 700 : 400 }}
-          >
-            Login
-          </button>
-          <button
-            className="loged_btn"
-            onClick={() => setMode("signup")}
-            style={{ flex: 1, fontWeight: mode === "signup" ? 700 : 400 }}
-          >
-            Sign Up
-          </button>
+      <div className="login_mode_main">
+        <div className="modal-box">
+          <div className="admin_login">
+            {/* Tabs */}
+            <div style={{ display: "flex", gap: 8, marginBottom: 24 }}>
+              <button
+                className="loged_btn"
+                onClick={() => setMode("login")}
+                style={{ flex: 1, fontWeight: mode === "login" ? 700 : 400 }}
+              >
+                Login
+              </button>
+              <button
+                className="loged_btn"
+                onClick={() => setMode("signup")}
+                style={{ flex: 1, fontWeight: mode === "signup" ? 700 : 400 }}
+              >
+                Sign Up
+              </button>
+            </div>
+
+            {/* Fields */}
+            {mode === "signup" && (
+              <input
+                className="input-field"
+                placeholder="Full Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            )}
+            <input
+              className="input-field"
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <input
+              className="input-field"
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+            />
+
+            {error && <p style={{ color: "red" }}>{error}</p>}
+
+            <button
+              onClick={handleSubmit}
+              disabled={loading}
+              className="loged_btn"
+            >
+              {loading
+                ? "Please wait..."
+                : mode === "login"
+                  ? "Login"
+                  : "Create Account"}
+            </button>
+
+            <button onClick={onClose} className="cancel_btn">
+              Cancel
+            </button>
+            
+          </div>
         </div>
-
-        {/* Fields */}
-        {mode === "signup" && (
-          <input
-            className="input-field"
-            placeholder="Full Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        )}
-        <input
-          className="input-field"
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          className="input-field"
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-        />
-
-        {error && <p style={{ color: "red" }}>{error}</p>}
-
-        <button onClick={handleSubmit} disabled={loading} className="loged_btn">
-          {loading
-            ? "Please wait..."
-            : mode === "login"
-              ? "Login"
-              : "Create Account"}
-        </button>
-
-        <button onClick={onClose} className="cancel_btn">Cancel</button>
       </div>
     </div>
   );

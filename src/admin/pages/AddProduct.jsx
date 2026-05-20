@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./AddProduct.css";
 import Sidebar from "../components/Sidebar";
+import Navbar from "../components/Navbar";
 
 function AddProduct() {
   const [categories, setCategories] = useState([]);
@@ -86,7 +87,7 @@ function AddProduct() {
     });
     setSubmitting(false);
 
-    alert("Product Added ✅");
+    alert("Product Added ");
     setErrors({});
     setIsNewCategory(false);
     setForm({
@@ -99,7 +100,7 @@ function AddProduct() {
     });
   };
 
-  // ✅ Reusable error message style
+  // Reusable error message style
   const errorStyle = {
     color: "red",
     fontSize: "12px",
@@ -112,122 +113,125 @@ function AddProduct() {
       <div className="sidebar_hide">
         <Sidebar />
       </div>
-      <form onSubmit={handleSubmit} className="product-form">
-        <h2>Add Product</h2>
-
-        <label className="pro-label">Product Name</label>
-        <input
-          type="text"
-          name="name"
-          placeholder="Product Name"
-          value={form.name}
-          onChange={handleChange}
-          className="add-pro-input"
-          style={{ borderColor: errors.name ? "red" : "" }}
-        />
-        {errors.name && <p style={errorStyle}>{errors.name}</p>}
-
-        <label className="pro-label">Price</label>
-        <input
-          type="number"
-          name="price"
-          placeholder="Price"
-          value={form.price}
-          onChange={handleChange}
-          className="add-pro-input"
-          style={{ borderColor: errors.price ? "red" : "" }}
-        />
-        {errors.price && <p style={errorStyle}>{errors.price}</p>}
-
-        <label className="pro-label">Category</label>
-        <select
-          name="category"
-          value={isNewCategory ? "__new__" : form.category}
-          onChange={handleCategoryChange}
-          className="add-pro-input"
-          style={{ borderColor: errors.category ? "red" : "" }}
-        >
-          <option value="">-- Select Category --</option>
-          {categories.map((cat) => (
-            <option key={cat} value={cat}>
-              {cat}
-            </option>
-          ))}
-          <option value="__new__">+ Add New Category</option>
-        </select>
-        {errors.category && <p style={errorStyle}>{errors.category}</p>}
-
-        {isNewCategory && (
-          <>
-            <label className="pro-label">New Category Name</label>
-            <input
-              type="text"
-              placeholder="Enter new category"
-              className="add-pro-input"
-              value={form.category}
-              onChange={(e) => {
-                setForm({ ...form, category: e.target.value });
-                setErrors({ ...errors, category: "" });
-              }}
-              style={{ borderColor: errors.category ? "red" : "" }}
-            />
-            {errors.category && <p style={errorStyle}>{errors.category}</p>}
-          </>
-        )}
-
-        <label className="pro-label">Stock</label>
-        <input
-          type="number"
-          name="stock"
-          placeholder="Stock"
-          value={form.stock}
-          onChange={handleChange}
-          className="add-pro-input"
-          style={{ borderColor: errors.stock ? "red" : "" }}
-        />
-        {errors.stock && <p style={errorStyle}>{errors.stock}</p>}
-
-        <label className="pro-label">Description</label>
-        <textarea
-          name="description"
-          placeholder="Description"
-          value={form.description}
-          onChange={handleChange}
-          className="add-pro-input"
-          style={{ borderColor: errors.description ? "red" : "" }}
-        />
-        {errors.description && <p style={errorStyle}>{errors.description}</p>}
-
-        <label className="pro-label">Product Image</label>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageUpload}
-          className="add-pro-input"
-          style={{ borderColor: errors.image ? "red" : "" }}
-        />
-        {errors.image && <p style={errorStyle}>{errors.image}</p>}
-        {form.image && (
-          <img
-            src={form.image}
-            alt="preview"
-            style={{
-              width: "100px",
-              height: "100px",
-              objectFit: "cover",
-              borderRadius: "8px",
-            }}
+      <div className="admin_outer">
+        <div className="db_topbar">
+          <Navbar title="Add Product" />
+        </div>
+        <form onSubmit={handleSubmit} className="product-form">
+          <label className="pro-label">Product Name</label>
+          <input
+            type="text"
+            name="name"
+            placeholder="Product Name"
+            value={form.name}
+            onChange={handleChange}
+            className="add-pro-input"
+            style={{ borderColor: errors.name ? "red" : "" }}
           />
-        )}
+          {errors.name && <p style={errorStyle}>{errors.name}</p>}
 
-        <button
-          className="pro-submit-button"
-          type="submit"
-          disabled={submitting}
-        >
-          {submitting ? "Adding..." : "Add Product"}
-        </button>
-      </form>
+          <label className="pro-label">Price</label>
+          <input
+            type="number"
+            name="price"
+            placeholder="Price"
+            value={form.price}
+            onChange={handleChange}
+            className="add-pro-input"
+            style={{ borderColor: errors.price ? "red" : "" }}
+          />
+          {errors.price && <p style={errorStyle}>{errors.price}</p>}
+
+          <label className="pro-label">Category</label>
+          <select
+            name="category"
+            value={isNewCategory ? "__new__" : form.category}
+            onChange={handleCategoryChange}
+            className="add-pro-input"
+            style={{ borderColor: errors.category ? "red" : "" }}
+          >
+            <option value="">-- Select Category --</option>
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+            <option value="__new__">+ Add New Category</option>
+          </select>
+          {errors.category && <p style={errorStyle}>{errors.category}</p>}
+
+          {isNewCategory && (
+            <>
+              <label className="pro-label">New Category Name</label>
+              <input
+                type="text"
+                placeholder="Enter new category"
+                className="add-pro-input"
+                value={form.category}
+                onChange={(e) => {
+                  setForm({ ...form, category: e.target.value });
+                  setErrors({ ...errors, category: "" });
+                }}
+                style={{ borderColor: errors.category ? "red" : "" }}
+              />
+              {errors.category && <p style={errorStyle}>{errors.category}</p>}
+            </>
+          )}
+
+          <label className="pro-label">Stock</label>
+          <input
+            type="number"
+            name="stock"
+            placeholder="Stock"
+            value={form.stock}
+            onChange={handleChange}
+            className="add-pro-input"
+            style={{ borderColor: errors.stock ? "red" : "" }}
+          />
+          {errors.stock && <p style={errorStyle}>{errors.stock}</p>}
+
+          <label className="pro-label">Description</label>
+          <textarea
+            name="description"
+            placeholder="Description"
+            value={form.description}
+            onChange={handleChange}
+            className="add-pro-input"
+            style={{ borderColor: errors.description ? "red" : "" }}
+          />
+          {errors.description && <p style={errorStyle}>{errors.description}</p>}
+
+          <label className="pro-label">Product Image</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            className="add-pro-input"
+            style={{ borderColor: errors.image ? "red" : "" }}
+          />
+          {errors.image && <p style={errorStyle}>{errors.image}</p>}
+          {form.image && (
+            <img
+              src={form.image}
+              alt="preview"
+              style={{
+                width: "100px",
+                height: "100px",
+                objectFit: "cover",
+                borderRadius: "8px",
+              }}
+            />
+          )}
+
+          <button
+            className="pro-submit-button"
+            type="submit"
+            disabled={submitting}
+          >
+            {submitting ? "Adding..." : "Add Product"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

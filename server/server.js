@@ -9,6 +9,7 @@ import productRoutes from "./routes/productRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import orderRoutes from "./routes/order.js";
 import paymentRoutes from "./routes/payment.js";
+import statsRoute from "./routes/statsRoute.js";
 
 const app = express();
 
@@ -29,10 +30,12 @@ app.get("/api/test", (req, res) => {
 // Use routes
 // server.js or app.js
 // const orderRoutes = require("./routes/order");
-app.use("/api/order", orderRoutes); // ✅ this + "/checkout" = /api/order/checkout
+app.use("/api/order", orderRoutes); //  this + "/checkout" = /api/order/checkout
 app.use("/api/products", productRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api", statsRoute);
 app.listen(5000, () => {
   console.log("Server running on port 5000");
 });
+

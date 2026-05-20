@@ -2,13 +2,12 @@
 .navbar {
   width: 100%;
   height: 60px;
-  background: #2f3542;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 20px;
   color: #fff;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); */
 }
 
 /* Left side */
@@ -75,6 +74,82 @@
 .profile-name {
   font-size: 14px;
 }
+.tb-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg);
+    border: 0.5px solid var(--border-color);
+    border-radius: 8px;
+    padding: 6px 10px;
+    width: 180px;
+}
+.tb-search .input-field{
+  margin-bottom: 0;
+}
+.tb-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 0.5px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: var(--bg);
+    position: relative;
+}
+
+
+/* ===========================*/
+
+.dashboard_wrapper {
+  display: flex;
+}
+.db_topbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    background: #2f3542;
+    border-left: 1px solid #fff;
+}
+.db_tb-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--white);
+    flex: 1;
+}
+.dashboar_inner {
+  width: 100%;
+}
+.tb-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg);
+    border: 0.5px solid var(--border-color);
+    border-radius: 8px;
+    padding: 6px 10px;
+    width: 180px;
+}
+.tb-search .input-field{
+  margin-bottom: 0;
+}
+.tb-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 0.5px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: var(--bg);
+    position: relative;
+}
+
+
 @media screen and (max-width: 575px) {
   .navbar {
     position: fixed;

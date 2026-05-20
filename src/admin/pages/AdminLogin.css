@@ -1,56 +1,89 @@
 /* login css start  */
 
-    .login-box {
-      background: #fff;
-      padding: 30px;
-      width: 320px;
-      border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-      text-align: center;
-    }
+.admin_login_wrapper {
+  background: #f3f4f6;
+  padding: 2rem 4rem;
+  /* box-shadow: 0 5px 15px rgba(0,0,0,0.2); */
+  text-align: center;
+  display: flex;
+  height: 100vh;
+}
+.admin_login_left {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 50%;
+  border-right: 2px solid;
+  text-transform: capitalize;
+}
+.admin_logo {
+  width: 140px;
+  height: 120px;
+  display: inline-block;
+}
+.admin_logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.admin_login_right {
+  padding-left: 8rem;
+  width: 60%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.admin_login_right form {
+  width: 100%;
+}
+.heading_admin {
+  margin-bottom: 20px;
+}
 
-    .login-box h2 {
-      margin-bottom: 20px;
-      color: #2f3542;
-    }
+.input-group {
+  margin-bottom: 15px;
+  text-align: left;
+}
 
-    .input-group {
-      margin-bottom: 15px;
-      text-align: left;
-    }
+.input-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #555;
+}
 
-    .input-group label {
-      display: block;
-      margin-bottom: 5px;
-      font-size: 14px;
-      color: #555;
-    }
+.input-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+  transition: 0.3s;
+}
 
-    .input-group input {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      outline: none;
-      transition: 0.3s;
-    }
+.input-group input:focus {
+  border-color: #1e90ff;
+}
 
-    .input-group input:focus {
-      border-color: #1e90ff;
-    }
+.admin_login_btn {
+  width: 100%;
+  padding: 10px;
+  background: var(--link);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition:all 0.3s;
+  margin-top: 1rem;
+  border: 1px solid var(--link);
+}
+.admin_login_btn:hover {
+  background: var(--white);
+  color: var(--link);
+}
 
-    .login-btn {
-      width: 100%;
-      padding: 10px;
-      background: #1e90ff;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .login-btn:hover {
-      background: #3742fa;
-    }
+.login-btn:hover {
+  background: #3742fa;
+}

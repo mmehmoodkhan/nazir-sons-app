@@ -1,7 +1,13 @@
 .ao-wrapper {
-  padding: 50px 0;
+    display: flex;
 }
-
+.ao_main_inner {
+    padding: 2rem;
+    width: calc(100% - 220px);
+}
+.ao-wrapper .sidebar {
+    min-height: 100vh;
+}
 /* ── Header */
 .ao-header {
   display: flex;

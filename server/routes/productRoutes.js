@@ -19,7 +19,7 @@ router.get("/products", async (req, res) => {
 
     const products = await Product.find(
       { _id: { $in: ids } },
-      "name price image stock" // only send what cart needs
+      "name price image stock", // only send what cart needs
     );
 
     res.json(products);
@@ -27,9 +27,6 @@ router.get("/products", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch products" });
   }
 });
-
-
-
 
 // get all product
 router.get("/", getProducts);
@@ -67,6 +64,21 @@ router.post("/checkout", async (req, res) => {
   await Cart.findOneAndDelete({ userId });
 
   res.json({ message: "Order placed successfully" });
+});
+
+router.get("/api/stats", async (req, res) => {
+  try {
+    const totalRevenue = await Order.sum("amount");
+    const totalOrders = await Order.count();
+    const totalUsers = await User.count();
+    const pendingPayments = await Order.sum("amount", {
+      where: { status: "pending" },
+    });
+
+    res.json({ totalRevenue, totalOrders, totalUsers, pendingPayments });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 export default router;

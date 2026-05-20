@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Products.css";
 import Sidebar from "../components/Sidebar";
+import Navbar from "../components/Navbar";
 
 function Products() {
   const [products, setProducts] = useState([]);
@@ -36,72 +37,81 @@ function Products() {
 
   return (
     <div className="all-pro-wrapper">
-      <div className="sidebar_hide"><Sidebar/></div>
-      <section className="All-pro-main">
-        <h2>All Products</h2>
-
-        {/* Category Tabs */}
-        <div
-          style={{
-            display: "flex",
-            gap: "10px",
-            flexWrap: "wrap",
-            margin: "20px 0",
-          }}
-        >
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              style={{
-                padding: "8px 16px",
-                borderRadius: "20px",
-                border: "none",
-                cursor: "pointer",
-                background: activeCategory === cat ? "#4CAF50" : "#eee",
-                color: activeCategory === cat ? "white" : "black",
-                fontWeight: activeCategory === cat ? "bold" : "normal",
-              }}
-            >
-              {cat}
-            </button>
-          ))}
+      <div className="sidebar_hide">
+        <Sidebar />
+      </div>
+      <div className="admin_outer">
+        <div className="db_topbar">
+          <Navbar title="All Products" />
         </div>
 
-        {/* Products Grid */}
-        <div className="products-grid">
-          {filteredProducts.length === 0 ? (
-            <p>No products found</p>
-          ) : (
-            filteredProducts.map((product) => (
-              <div className="product-card" key={product._id}>
-                <span className="product-img"><img src={product.image} alt={product.name} /></span>
-                <div className="product-detail">
-                  <h3 className="product-name">{product.name}</h3>
-                  <p className="product-price">Price: {product.price}</p>
-                  <p className="product-stock">Stock: {product.stock}</p>
-                  <div>
-                    <button
-                      className="edit-btn"
-                      onClick={() =>
-                        navigate(`/admin/products/edit/${product._id}`)
-                      }
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="delete-btn"
-                      onClick={() => handleDelete(product._id)}
-                    >
-                      Delete
-                    </button>
+        <section className="All-pro-main">
+
+          {/* Category Tabs */}
+          <div
+            style={{
+              display: "flex",
+              gap: "10px",
+              flexWrap: "wrap",
+              margin: "20px 0",
+            }}
+          >
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                style={{
+                  padding: "8px 16px",
+                  borderRadius: "20px",
+                  border: "none",
+                  cursor: "pointer",
+                  background: activeCategory === cat ? "#4CAF50" : "#eee",
+                  color: activeCategory === cat ? "white" : "black",
+                  fontWeight: activeCategory === cat ? "bold" : "normal",
+                }}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          {/* Products Grid */}
+          <div className="products-grid">
+            {filteredProducts.length === 0 ? (
+              <p>No products found</p>
+            ) : (
+              filteredProducts.map((product) => (
+                <div className="product-card" key={product._id}>
+                  <span className="product-img">
+                    <img src={product.image} alt={product.name} />
+                  </span>
+                  <div className="product-detail">
+                    <h3 className="product-name">{product.name}</h3>
+                    <p className="product-price">Price: {product.price}</p>
+                    <p className="product-stock">Stock: {product.stock}</p>
+                    <div>
+                      <button
+                        className="edit-btn"
+                        onClick={() =>
+                          navigate(`/admin/products/edit/${product._id}`)
+                        }
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="delete-btn"
+                        onClick={() => handleDelete(product._id)}
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
-          )}
-        </div>
-      </section>
+              ))
+            )}
+          </div>
+        </section>
+      </div>
     </div>
   );
 }

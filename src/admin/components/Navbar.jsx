@@ -1,7 +1,7 @@
 import "../components/Navbar.css";
 import { useState } from "react";
 import Sidebar from "./Sidebar";
-export default function Navbar() {
+export default function Navbar({title}) {
   const [sidebarOpen, setsidebarOpen] = useState(false);
 
   return (
@@ -15,17 +15,25 @@ export default function Navbar() {
           >
             {sidebarOpen ? "❌" : "☰"}
           </button>
-          <div className="logo">Admin Dashboard</div>
+          <h2>{title}</h2>
         </div>
 
         {/* <!-- Right --> */}
         <div className="nav-right">
-          <div className="nav-icon">
+          <div className="tb-search">
+            <i className="ti ti-search" aria-hidden="true"></i>
+            <input
+              className="input-field"
+              type="text"
+              placeholder="Search anything..."
+            />
+          </div>
+          <div className="nav-icon tb-icon">
             🔔
             <span>3</span>
           </div>
 
-          <div className="nav-icon">
+          <div className="nav-icon tb-icon">
             ✉️
             <span>5</span>
           </div>
