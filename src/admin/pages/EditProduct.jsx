@@ -12,6 +12,7 @@ export function EditProduct() {
   const [form, setForm] = useState({
     name: "",
     price: "",
+    originalPrice: "",
     category: "",
     stock: "",
     image: "",
@@ -25,6 +26,7 @@ export function EditProduct() {
         setForm({
           name: data.name || "",
           price: data.price || "",
+          originalPrice: data.originalPrice ?? "",
           category: data.category || "",
           stock: data.stock || "",
           image: data.image || "",
@@ -91,10 +93,14 @@ export function EditProduct() {
     }
 
     setSubmitting(true);
+    const payload = {
+      ...form,
+      originalPrice: form.originalPrice !== "" ? Number(form.originalPrice) : null,
+    };
     await fetch(`http://localhost:5000/api/products/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
+      body: JSON.stringify(payload),
     });
     setSubmitting(false);
     setErrors({});
@@ -134,6 +140,19 @@ export function EditProduct() {
           style={{ borderColor: errors.price ? "red" : "" }}
         />
         {errors.price && <p style={errorStyle}>{errors.price}</p>}
+
+        <label className="pro-label">
+          Original Price{" "}
+          <span style={{ fontSize: "11px", color: "#999" }}>(optional — shows crossed out)</span>
+        </label>
+        <input
+          type="number"
+          name="originalPrice"
+          placeholder="e.g. 1500"
+          value={form.originalPrice}
+          onChange={handleChange}
+          className="add-pro-input"
+        />
 
         <label className="pro-label">Category</label>
         <select

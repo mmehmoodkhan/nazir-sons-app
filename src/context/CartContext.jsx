@@ -16,6 +16,24 @@ export function CartProvider({ children }) {
     const stored = localStorage.getItem("user");
     return stored ? JSON.parse(stored) : null;
   });
+  const [products, setProducts] = useState([]);
+
+  //  NEW — fetch fresh products from backend
+  const refreshProducts = async () => {
+    
+    try {
+      const res = await fetch("/api/products");
+      const data = await res.json();
+      setProducts(data);
+    } catch (err) {
+      console.error("Failed to refresh products:", err);
+    }
+  };
+
+  //  Load products on app start
+  useEffect(() => {
+    refreshProducts();
+  }, []);
 
   //  Validate cart against backend on every load
   useEffect(() => {
@@ -117,6 +135,8 @@ export function CartProvider({ children }) {
         login,
         logout,
         user,
+        products,
+        refreshProducts,
       }}
     >
       {children}

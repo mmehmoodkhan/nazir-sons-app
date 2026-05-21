@@ -5,14 +5,14 @@ import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 
 function Products() {
-  const [products, setProducts] = useState([]);
+  const [products, refreshProducts ] = useState([]);
   const [activeCategory, setActiveCategory] = useState("All");
   const navigate = useNavigate();
 
   useEffect(() => {
     fetch("http://localhost:5000/api/products")
       .then((res) => res.json())
-      .then((data) => setProducts(data));
+      .then((data) => refreshProducts (data));
   }, []);
 
   // Get unique categories from products
@@ -32,7 +32,7 @@ function Products() {
     await fetch(`http://localhost:5000/api/products/${id}`, {
       method: "DELETE",
     });
-    setProducts(products.filter((p) => p._id !== id));
+    refreshProducts(products.filter((p) => p._id !== id));
   };
 
   return (
@@ -46,7 +46,6 @@ function Products() {
         </div>
 
         <section className="All-pro-main">
-
           {/* Category Tabs */}
           <div
             style={{
@@ -81,14 +80,38 @@ function Products() {
               <p>No products found</p>
             ) : (
               filteredProducts.map((product) => (
+                // Replace the product-card div with this:
                 <div className="product-card" key={product._id}>
                   <span className="product-img">
                     <img src={product.image} alt={product.name} />
+                    {/* ✅ Sold Out overlay on image */}
+                    {product.stock === 0 && (
+                      <span className="soldout-badge">Sold Out</span>
+                    )}
                   </span>
                   <div className="product-detail">
                     <h3 className="product-name">{product.name}</h3>
                     <p className="product-price">Price: {product.price}</p>
-                    <p className="product-stock">Stock: {product.stock}</p>
+
+                    {/* ✅ Stock shown in red/orange based on level */}
+                    <p
+                      className="product-stock"
+                      style={{
+                        color:
+                          product.stock === 0
+                            ? "red"
+                            : product.stock <= 5
+                              ? "orange"
+                              : "green",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {product.stock === 0
+                        ? "Sold Out"
+                        : `Stock: ${product.stock}`}
+                      {product.stock > 0 && product.stock <= 5 && " ⚠️ Low"}
+                    </p>
+
                     <div>
                       <button
                         className="edit-btn"
@@ -107,6 +130,32 @@ function Products() {
                     </div>
                   </div>
                 </div>
+                // <div className="product-card" key={product._id}>
+                //   <span className="product-img">
+                //     <img src={product.image} alt={product.name} />
+                //   </span>
+                //   <div className="product-detail">
+                //     <h3 className="product-name">{product.name}</h3>
+                //     <p className="product-price">Price: {product.price}</p>
+                //     <p className="product-stock">Stock: {product.stock}</p>
+                //     <div>
+                //       <button
+                //         className="edit-btn"
+                //         onClick={() =>
+                //           navigate(`/admin/products/edit/${product._id}`)
+                //         }
+                //       >
+                //         Edit
+                //       </button>
+                //       <button
+                //         className="delete-btn"
+                //         onClick={() => handleDelete(product._id)}
+                //       >
+                //         Delete
+                //       </button>
+                //     </div>
+                //   </div>
+                // </div>
               ))
             )}
           </div>

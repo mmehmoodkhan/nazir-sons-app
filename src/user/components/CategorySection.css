@@ -88,3 +88,33 @@
   color: white;
   font-weight: 700;
 }
+.btn_soldout {
+  background: none;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: not-allowed;
+  font-weight: bold;
+  width: 100%;
+}
+.product-price-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.product-original-price {
+  text-decoration: line-through;
+  color: #999;
+  font-size: 13px;
+}
+
+.product-price {
+  color: #222;
+  font-weight: bold;
+  font-size: 15px;
+  margin: 0;
+}

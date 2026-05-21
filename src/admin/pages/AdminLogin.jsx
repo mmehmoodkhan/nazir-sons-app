@@ -15,7 +15,7 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
+      const res = await fetch("http://localhost:5000/api/auth/admin-login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -33,8 +33,7 @@ export default function AdminLogin() {
       localStorage.setItem("adminToken", data.token);
       localStorage.setItem("adminRole", data.role);
 
-      navigate("/admin/dashboard");  //   redirect after login
-
+      navigate("/admin/dashboard"); //   redirect after login
     } catch (err) {
       setError("Server error. Try again.");
       setLoading(false);
@@ -51,10 +50,11 @@ export default function AdminLogin() {
         <p>Sign in to your admin dashboard</p>
       </div>
       <div className="admin_login_right">
-        <form onSubmit={handleSubmit}>   {/*   added onSubmit */}
-
-          {error && <p className="error-msg">{error}</p>}  {/*   error message */}
-
+        <form onSubmit={handleSubmit}>
+          {" "}
+          {/*   added onSubmit */}
+          {error && <p className="error-msg">{error}</p>}{" "}
+          {/*   error message */}
           <div className="input-group">
             <label>Email</label>
             <input
@@ -62,7 +62,7 @@ export default function AdminLogin() {
               type="email"
               placeholder="Enter email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}  //   controlled
+              onChange={(e) => setEmail(e.target.value)} //   controlled
               required
             />
           </div>
@@ -73,15 +73,14 @@ export default function AdminLogin() {
               type="password"
               placeholder="Enter password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}  //   controlled
+              onChange={(e) => setPassword(e.target.value)} //   controlled
               required
             />
           </div>
-
           <button className="admin_login_btn" disabled={loading}>
-            {loading ? "Signing in..." : "Sign in as Admin"}  {/*  loading state */}
+            {loading ? "Signing in..." : "Sign in as Admin"}{" "}
+            {/*  loading state */}
           </button>
-
         </form>
       </div>
     </div>

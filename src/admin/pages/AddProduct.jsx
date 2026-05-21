@@ -11,6 +11,7 @@ function AddProduct() {
   const [form, setForm] = useState({
     name: "",
     price: "",
+    originalPrice: "",
     category: "",
     stock: "",
     image: "",
@@ -72,7 +73,7 @@ function AddProduct() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // ✅ Run validation
+    //  Run validation
     const newErrors = validate();
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -80,12 +81,16 @@ function AddProduct() {
     }
 
     setSubmitting(true);
+    const payload = {
+      ...form,
+      originalPrice:
+        form.originalPrice !== "" ? Number(form.originalPrice) : null,
+    };
     await fetch("http://localhost:5000/api/products/add", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
+      body: JSON.stringify(payload), //  sends null or a number
     });
-    setSubmitting(false);
 
     alert("Product Added ");
     setErrors({});
@@ -93,6 +98,7 @@ function AddProduct() {
     setForm({
       name: "",
       price: "",
+      originalPrice: "",
       category: "",
       stock: "",
       image: "",
@@ -141,7 +147,20 @@ function AddProduct() {
             style={{ borderColor: errors.price ? "red" : "" }}
           />
           {errors.price && <p style={errorStyle}>{errors.price}</p>}
-
+          <label className="pro-label">
+            Original Price{" "}
+            <span style={{ fontSize: "11px", color: "#999" }}>
+              (optional — shows crossed out)
+            </span>
+          </label>
+          <input
+            type="number"
+            name="originalPrice"
+            placeholder="e.g. 1500"
+            value={form.originalPrice}
+            onChange={handleChange}
+            className="add-pro-input"
+          />
           <label className="pro-label">Category</label>
           <select
             name="category"

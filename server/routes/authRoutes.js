@@ -6,14 +6,15 @@ import User from "../models/User.js";
 
 const router = express.Router();
 
-
 // ── POST /api/auth/admin-login ────────────────────────
+
 router.post("/admin-login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: "Invalid email or password." });
+    if (!user)
+      return res.status(400).json({ message: "Invalid email or password." });
 
     // check role
     if (user.role !== "admin") {
@@ -21,17 +22,17 @@ router.post("/admin-login", async (req, res) => {
     }
 
     const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.status(400).json({ message: "Invalid email or password." });
+    if (!match)
+      return res.status(400).json({ message: "Invalid email or password." });
 
     // generate token
     const token = jwt.sign(
       { userId: user._id, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "7d" },
     );
 
     res.json({ token, role: user.role });
-
   } catch (err) {
     res.status(500).json({ message: "Server error." });
   }

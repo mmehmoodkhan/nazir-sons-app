@@ -28,7 +28,7 @@ export default function Header() {
       <section className="user-navbar_wrapper">
         <nav className="user-navbar">
           <div className="app_logo">
-            <img src="../images/logo_transparent.png" alt="Logo" />
+            <img src="../images/logo_transparent.png" alt="Logo" onClick={()=> navigate("/")} />
           </div>
           <div className="user-search-bar">
             <input

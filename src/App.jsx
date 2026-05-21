@@ -16,9 +16,9 @@ import AdminLogin from "./admin/pages/AdminLogin";
 import Dashboard from "./admin/pages/Dashboard";
 function App() {
   function ProtectedRoute({ children }) {
-  const token = localStorage.getItem("adminToken");
-  return token ? children : <Navigate to="/admin/login" />;
-}
+    const token = localStorage.getItem("adminToken");
+    return token ? children : <Navigate to="/admin/login" />;
+  }
   return (
     <>
       {/* <Navbar /> */}
@@ -36,7 +36,6 @@ function App() {
           <Route path="/admin/login" element={<AdminLogin />} />
           {/* <Route path="/admin/dashboard" element={<Dashboard/> } /> */}
           <Route path="*" element={<h1>404 Not Found</h1>}></Route>
-
           <Route
             path="/admin/dashboard"
             element={

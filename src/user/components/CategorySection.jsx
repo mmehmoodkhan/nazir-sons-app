@@ -4,7 +4,7 @@ import "./CategorySection.css";
 
 export const CategorySection = ({ products }) => {
   const [activeCategory, setActiveCategory] = useState("All");
-  const { cart, addToCart, removeFromCart } = useCart(); // ✅ same cart context
+  const { cart, addToCart, removeFromCart } = useCart(); //  same cart context
 
   const getQty = (productId) => {
     const item = cart.find((i) => i._id === productId);
@@ -52,10 +52,60 @@ export const CategorySection = ({ products }) => {
                 </span>
                 <div className="product-detail">
                   <h3 className="product-name">{product.name}</h3>
-                  <p className="product-price">Rs {product.price} /-</p>
-                  <p className="product-stock">Stock: {product.stock}</p>
-
+                  <div className="product-price-wrapper">
+                    <span className="product-price">Rs {product.price} /-</span>
+                    {product.originalPrice &&
+                      product.originalPrice > product.price && (
+                        <span className="product-original-price">
+                          Rs {product.originalPrice} /-
+                        </span>
+                      )}
+                    
+                  </div>
+                  <p
+                    className="product-stock"
+                    style={{
+                      color: product.stock === 0 ? "red" : "inherit",
+                      fontWeight: product.stock === 0 ? "bold" : "normal",
+                    }}
+                  >
+                    {product.stock === 0
+                      ? "Sold Out"
+                      : `Stock: ${product.stock}`}
+                  </p>
                   <div className="add_to_card_wrapper">
+                    {product.stock === 0 ? (
+                      // ✅ Show Sold Out when stock is 0
+                      <button className="btn_soldout" disabled>
+                        Sold Out
+                      </button>
+                    ) : qty === 0 ? (
+                      <button
+                        className="btn_add_to"
+                        onClick={() => addToCart(product)}
+                      >
+                        Add to Cart
+                      </button>
+                    ) : (
+                      <div className="qty_controls">
+                        <button
+                          className="qty_btn"
+                          onClick={() => removeFromCart(product._id)}
+                        >
+                          −
+                        </button>
+                        <span className="qty_count">{qty}</span>
+                        <button
+                          className="qty_btn"
+                          onClick={() => addToCart(product)}
+                          disabled={qty >= product.stock} // already stops at stock limit
+                        >
+                          +
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                  {/* <div className="add_to_card_wrapper">
                     {qty === 0 ? (
                       <button
                         className="btn_add_to"
@@ -81,7 +131,7 @@ export const CategorySection = ({ products }) => {
                         </button>
                       </div>
                     )}
-                  </div>
+                  </div> */}
                 </div>
               </div>
             );
