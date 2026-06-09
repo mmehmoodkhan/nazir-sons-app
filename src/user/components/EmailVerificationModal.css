@@ -1,0 +1,116 @@
+/* EmailVerificationModal.css
+   Extends LoginModal.css — import both in the component.
+   Scoped to .verification-* and .code-* classes.
+*/
+
+/* ── Header ─────────────────────────────────────────────── */
+.verification-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.verification-icon {
+  font-size: 2.2rem;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.verification-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 6px;
+  color: inherit;
+}
+
+.verification-subtitle {
+  font-size: 0.875rem;
+  color: #666;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── 6-digit code inputs ─────────────────────────────────── */
+.code-inputs {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.code-box {
+  width: 44px;
+  height: 52px;
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 600;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  background: #fafafa;
+  caret-color: transparent;
+}
+
+.code-box:focus {
+  border-color: #555;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
+  background: #fff;
+}
+
+.code-box--filled {
+  border-color: #333;
+  background: #fff;
+}
+
+.code-box--error {
+  border-color: #e53e3e !important;
+  background: #fff5f5;
+}
+
+/* ── Feedback text ──────────────────────────────────────── */
+.verification-error {
+  color: #e53e3e;
+  font-size: 0.85rem;
+  text-align: center;
+  margin: 0 0 12px;
+}
+
+.verification-success {
+  color: #2f855a;
+  font-size: 0.85rem;
+  text-align: center;
+  margin: 0 0 12px;
+}
+
+/* ── Resend row ─────────────────────────────────────────── */
+.resend-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 12px 0 8px;
+  flex-wrap: wrap;
+}
+
+.resend-label {
+  font-size: 0.82rem;
+  color: #888;
+}
+
+.resend-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.resend-btn--disabled {
+  color: #aaa;
+  cursor: default;
+  text-decoration: none;
+}

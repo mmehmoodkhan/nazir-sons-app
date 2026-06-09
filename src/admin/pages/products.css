@@ -2,6 +2,7 @@
 .All-pro-main {
     padding: 2.5rem 3.125rem;
     width: calc(100% - 220px);
+    margin: 0 auto;
 }
 .all-pro-wrapper {
     display: flex;
@@ -48,17 +49,17 @@
     font-size: 1rem;
     color:#6b6375;
 }
-.product-price {
+.All-pro-main .product-price {
     font-size: 0.75rem;
     font-weight: 700;
     color: #084d8c;
-    margin-top: 0.3rem;
+    margin-top: 0.5rem;
     line-height: 11.65px;
 }
 .product-stock {
     font-size: 0.75rem;
     color: #555;
-    margin-top: 0.5rem;
+    margin: 0.5rem 0;
 }
 .product-detail {
     padding-top: 1rem;

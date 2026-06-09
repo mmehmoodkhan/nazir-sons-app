@@ -2,6 +2,8 @@ import "./LoginModal.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
+import EmailVerificationModal from "../components/EmailVerificationModal";
+
 export default function LoginModal({ onClose, onSuccess }) {
   const { login } = useCart();
   const navigate = useNavigate();
@@ -11,6 +13,7 @@ export default function LoginModal({ onClose, onSuccess }) {
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showVerify, setShowVerify] = useState(false);
 
   const handleSubmit = async () => {
     if (!email || !password) {
@@ -37,17 +40,45 @@ export default function LoginModal({ onClose, onSuccess }) {
         return;
       }
 
-      console.log("Logged in user:", data.user);
+      if (mode === "signup") {
+        // Show verification modal instead of closing
+        setShowVerify(true);
+        return;
+      }
+
+      // Login flow
       login(data.user);
       onClose();
       navigate("/");
-      onSuccess(data.user); // ← navigate to checkout
+      if (typeof onSuccess === "function") {
+        onSuccess(data.user);
+      }
     } catch (err) {
+      console.error("Full error:", err);
       setError("Server error. Try again.");
     } finally {
       setLoading(false);
     }
   };
+
+  // Show verification modal after signup
+  if (showVerify) {
+    return (
+      <EmailVerificationModal
+        email={email}
+        onClose={onClose}
+        onVerified={(user) => {
+          login(user);
+          onClose();
+          navigate("/");
+          if (typeof onSuccess === "function") {
+            onSuccess(user);
+          }
+        }}
+      />
+    );
+  }
+
   return (
     <div
       className="modal-overlay"
@@ -109,14 +140,13 @@ export default function LoginModal({ onClose, onSuccess }) {
               {loading
                 ? "Please wait..."
                 : mode === "login"
-                  ? "Login"
-                  : "Create Account"}
+                ? "Login"
+                : "Create Account"}
             </button>
 
             <button onClick={onClose} className="cancel_btn">
               Cancel
             </button>
-            
           </div>
         </div>
       </div>
