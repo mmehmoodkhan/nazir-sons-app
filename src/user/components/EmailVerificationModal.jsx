@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import "./LoginModal.css"; // reuse existing modal styles
+import "./LoginModal.css";
 import "./EmailVerificationModal.css";
 
 export default function EmailVerificationModal({ email, onClose, onVerified }) {
@@ -8,10 +8,52 @@ export default function EmailVerificationModal({ email, onClose, onVerified }) {
   const [resending, setResending] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [countdown, setCountdown] = useState(60);
+  const [countdown, setCountdown] = useState(0); // ← start at 0
   const inputRefs = useRef([]);
 
-  // Countdown timer for resend
+  // ✅ STEP 1 — define sendOTP FIRST
+  const sendOTP = async () => {
+    setResending(true);
+    setError("");
+    setSuccess("");
+
+    try {
+      const res = await fetch("/api/auth/resend-verification", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      const text = await res.text();
+      let data = {};
+      try { data = JSON.parse(text); } catch {}
+
+      if (!res.ok) {
+        setError(data.message || "Could not send code.");
+        return;
+      }
+
+      setSuccess("Code sent! Check your email.");
+      setCountdown(60);
+      inputRefs.current[0]?.focus();
+
+    } catch {
+      setError("Server error. Try again.");
+    } finally {
+      setResending(false);
+    }
+  };
+
+ const hasSentRef = useRef(false);
+
+useEffect(() => {
+  if (!email) return;
+  if (hasSentRef.current) return;
+  hasSentRef.current = true;
+  sendOTP();
+}, []);
+
+  // Countdown timer
   useEffect(() => {
     if (countdown <= 0) return;
     const timer = setTimeout(() => setCountdown((c) => c - 1), 1000);
@@ -19,13 +61,11 @@ export default function EmailVerificationModal({ email, onClose, onVerified }) {
   }, [countdown]);
 
   const handleChange = (index, value) => {
-    if (!/^\d?$/.test(value)) return; // digits only
+    if (!/^\d?$/.test(value)) return;
     const updated = [...code];
     updated[index] = value;
     setCode(updated);
     setError("");
-
-    // Auto-advance
     if (value && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
@@ -42,9 +82,7 @@ export default function EmailVerificationModal({ email, onClose, onVerified }) {
     e.preventDefault();
     const pasted = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
     const updated = [...code];
-    pasted.split("").forEach((char, i) => {
-      updated[i] = char;
-    });
+    pasted.split("").forEach((char, i) => { updated[i] = char; });
     setCode(updated);
     inputRefs.current[Math.min(pasted.length, 5)]?.focus();
   };
@@ -65,7 +103,9 @@ export default function EmailVerificationModal({ email, onClose, onVerified }) {
         body: JSON.stringify({ email, code: fullCode }),
       });
 
-      const data = await res.json();
+      const text = await res.text();
+      let data = {};
+      try { data = JSON.parse(text); } catch {}
 
       if (!res.ok) {
         setError(data.message || "Invalid code. Try again.");
@@ -77,6 +117,7 @@ export default function EmailVerificationModal({ email, onClose, onVerified }) {
         onVerified?.(data.user);
         onClose();
       }, 800);
+
     } catch {
       setError("Server error. Try again.");
     } finally {
@@ -84,35 +125,9 @@ export default function EmailVerificationModal({ email, onClose, onVerified }) {
     }
   };
 
-  const handleResend = async () => {
-    if (countdown > 0) return;
-    setResending(true);
-    setError("");
-    setSuccess("");
-
-    try {
-      const res = await fetch("/api/auth/resend-verification", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.message || "Could not resend. Try again.");
-        return;
-      }
-
-      setSuccess("A new code was sent.");
-      setCountdown(60);
-      setCode(["", "", "", "", "", ""]);
-      inputRefs.current[0]?.focus();
-    } catch {
-      setError("Server error. Try again.");
-    } finally {
-      setResending(false);
-    }
+  const handleResend = () => {
+    if (countdown > 0 || resending) return;
+    sendOTP();
   };
 
   return (
@@ -123,7 +138,6 @@ export default function EmailVerificationModal({ email, onClose, onVerified }) {
       <div className="login_mode_main">
         <div className="modal-box">
           <div className="admin_login">
-            {/* Header */}
             <div className="verification-header">
               <div className="verification-icon">✉</div>
               <h2 className="verification-title">Check your email</h2>
@@ -132,7 +146,6 @@ export default function EmailVerificationModal({ email, onClose, onVerified }) {
               </p>
             </div>
 
-            {/* Code inputs */}
             <div className="code-inputs" onPaste={handlePaste}>
               {code.map((digit, i) => (
                 <input
@@ -150,11 +163,11 @@ export default function EmailVerificationModal({ email, onClose, onVerified }) {
               ))}
             </div>
 
-            {/* Feedback */}
             {error && <p className="verification-error">{error}</p>}
             {success && <p className="verification-success">{success}</p>}
 
-            {/* Verify button */}
+            {resending && <p className="verification-info">Sending code...</p>}
+
             <button
               onClick={handleSubmit}
               disabled={loading || !!success}
@@ -163,7 +176,6 @@ export default function EmailVerificationModal({ email, onClose, onVerified }) {
               {loading ? "Verifying..." : "Verify Email"}
             </button>
 
-            {/* Resend */}
             <div className="resend-row">
               <span className="resend-label">Didn't receive a code?</span>
               <button

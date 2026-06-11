@@ -66,6 +66,7 @@ export default function LoginModal({ onClose, onSuccess }) {
     return (
       <EmailVerificationModal
         email={email}
+      
         onClose={onClose}
         onVerified={(user) => {
           login(user);
@@ -75,6 +76,7 @@ export default function LoginModal({ onClose, onSuccess }) {
             onSuccess(user);
           }
         }}
+        
       />
     );
   }
