@@ -78,12 +78,17 @@ export function CartProvider({ children }) {
     localStorage.setItem("user", JSON.stringify(userData));
   };
 
+  // const logout = () => {
+  //   setUser(null);
+  //   setCart([]);
+  //   localStorage.removeItem("user");
+  //   localStorage.removeItem("cart");
+  // };
   const logout = () => {
-    setUser(null);
-    setCart([]);
-    localStorage.removeItem("user");
-    localStorage.removeItem("cart");
-  };
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  setUser(null);
+};
 
   const addToCart = (product) => {
     setCart((prev) => {

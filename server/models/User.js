@@ -17,15 +17,22 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
+      required: false,
+      default: "",
     },
     role: { type: String, default: "user" },
     isVerified: {
       type: Boolean,
-      default: false,  // ← false until OTP verified
+      default: false, // ← false until OTP verified
     },
+    provider: {
+      type: String,
+      enum: ["local", "google", "facebook"],
+      default: "local",
+    },
+    providerId: { type: String, default: "" },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const User = mongoose.model("User", userSchema);

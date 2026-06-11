@@ -2,23 +2,22 @@ import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 dotenv.config();
 
-// ✅ Debug — confirm env vars are loading
 console.log("EMAIL_USER:", process.env.EMAIL_USER);
 console.log("PASS SET:", !!process.env.EMAIL_APP_PASSWORD);
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: process.env.EMAIL_USER,          // ✅ no quotes
-    pass: process.env.EMAIL_APP_PASSWORD,  // ✅ no quotes
+    user: process.env.EMAIL_USER,          
+    pass: process.env.EMAIL_APP_PASSWORD, 
   },
 });
 
 const sendOTPEmail = async (toEmail, otp) => {
   try {
     const info = await transporter.sendMail({
-      from: `"Nazir Sons" <${process.env.EMAIL_USER}>`,  // ✅ no quotes
-      to: toEmail,                                        // ✅ dynamic recipient
+      from: `"Nazir Sons" <${process.env.EMAIL_USER}>`,  
+      to: toEmail,                                       
       subject: "Your Email Verification Code",
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 480px; margin: auto; 
@@ -29,16 +28,16 @@ const sendOTPEmail = async (toEmail, otp) => {
                       color: #4f46e5; padding: 16px 0;">
             ${otp}
           </div>
-          <p style="color: #6b7280;">Expires in <strong>10 minutes</strong>.</p>
+          <p style="color: #6b7280;">Expires in <strong>5 minutes</strong>.</p>
           <p style="color: #9ca3af; font-size: 12px;">
             If you didn't request this, ignore this email.
           </p>
         </div>
       `,
     });
-    console.log("Email sent ✅:", info.messageId);
+    console.log("Email sent:", info.messageId);
   } catch (err) {
-    console.error("sendOTPEmail failed ❌:", err.message);
+    console.error("sendOTPEmail failed:", err.message);
     throw err;
   }
 };

@@ -14,6 +14,7 @@ import OrderSuccess from "./user/pages/OrderSuccess";
 import AdminOrders from "./admin/pages/AdminOrders";
 import AdminLogin from "./admin/pages/AdminLogin";
 import Dashboard from "./admin/pages/Dashboard";
+import ProfilePage from "./user/pages/ProfilePage";
 function App() {
   function ProtectedRoute({ children }) {
     const token = localStorage.getItem("adminToken");
@@ -34,6 +35,7 @@ function App() {
           <Route path="/order-success" element={<OrderSuccess />} />
           <Route path="/admin/orders" element={<AdminOrders />} />
           <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/profile" element={<ProfilePage />} />
           {/* <Route path="/admin/dashboard" element={<Dashboard/> } /> */}
           <Route path="*" element={<h1>404 Not Found</h1>}></Route>
           <Route

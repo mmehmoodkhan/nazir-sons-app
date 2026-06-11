@@ -10,8 +10,8 @@ export default function EmailVerificationModal({ email, onClose, onVerified }) {
   const [success, setSuccess] = useState("");
   const [countdown, setCountdown] = useState(0); // ← start at 0
   const inputRefs = useRef([]);
-
-  // ✅ STEP 1 — define sendOTP FIRST
+  const [sentMessage, setSentMessage] = useState(""); // ← add this
+  //  STEP 1 — define sendOTP FIRST
   const sendOTP = async () => {
     setResending(true);
     setError("");
@@ -26,17 +26,18 @@ export default function EmailVerificationModal({ email, onClose, onVerified }) {
 
       const text = await res.text();
       let data = {};
-      try { data = JSON.parse(text); } catch {}
+      try {
+        data = JSON.parse(text);
+      } catch {}
 
       if (!res.ok) {
         setError(data.message || "Could not send code.");
         return;
       }
 
-      setSuccess("Code sent! Check your email.");
+      setSentMessage("Code sent! Check your email.");
       setCountdown(60);
       inputRefs.current[0]?.focus();
-
     } catch {
       setError("Server error. Try again.");
     } finally {
@@ -44,14 +45,14 @@ export default function EmailVerificationModal({ email, onClose, onVerified }) {
     }
   };
 
- const hasSentRef = useRef(false);
+  const hasSentRef = useRef(false);
 
-useEffect(() => {
-  if (!email) return;
-  if (hasSentRef.current) return;
-  hasSentRef.current = true;
-  sendOTP();
-}, []);
+  useEffect(() => {
+    if (!email) return;
+    if (hasSentRef.current) return;
+    hasSentRef.current = true;
+    sendOTP();
+  }, []);
 
   // Countdown timer
   useEffect(() => {
@@ -80,9 +81,14 @@ useEffect(() => {
 
   const handlePaste = (e) => {
     e.preventDefault();
-    const pasted = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+    const pasted = e.clipboardData
+      .getData("text")
+      .replace(/\D/g, "")
+      .slice(0, 6);
     const updated = [...code];
-    pasted.split("").forEach((char, i) => { updated[i] = char; });
+    pasted.split("").forEach((char, i) => {
+      updated[i] = char;
+    });
     setCode(updated);
     inputRefs.current[Math.min(pasted.length, 5)]?.focus();
   };
@@ -105,7 +111,9 @@ useEffect(() => {
 
       const text = await res.text();
       let data = {};
-      try { data = JSON.parse(text); } catch {}
+      try {
+        data = JSON.parse(text);
+      } catch {}
 
       if (!res.ok) {
         setError(data.message || "Invalid code. Try again.");
@@ -117,7 +125,6 @@ useEffect(() => {
         onVerified?.(data.user);
         onClose();
       }, 800);
-
     } catch {
       setError("Server error. Try again.");
     } finally {
@@ -164,8 +171,8 @@ useEffect(() => {
             </div>
 
             {error && <p className="verification-error">{error}</p>}
+            {sentMessage && <p className="verification-info">{sentMessage}</p>}
             {success && <p className="verification-success">{success}</p>}
-
             {resending && <p className="verification-info">Sending code...</p>}
 
             <button

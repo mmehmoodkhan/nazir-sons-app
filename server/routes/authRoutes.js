@@ -4,9 +4,94 @@ import { sendOTPEmail } from "../utils/mailer.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
-
+import axios from "axios";
 const router = express.Router();
 const otpStore = new Map();
+// google start 
+
+router.post("/google", async (req, res) => {
+  const { token } = req.body;
+
+  if (!token)
+    return res.status(400).json({ message: "Token is required." });
+
+  try {
+    // Step 1: Verify Google token
+    // const ticket = await googleClient.verifyIdToken({
+    //   idToken: token,
+    //   audience: process.env.GOOGLE_CLIENT_ID,
+    // });
+    // const googleRes = await axios.get(
+    //   `https://oauth2.googleapis.com/tokeninfo?id_token=${token}`
+    // );
+
+    // const { email, name, sub: googleId } = ticket.getPayload();
+
+    // // Step 2: Find or create user
+    // let user = await User.findOne({ email });
+    const googleRes = await axios.get(
+      `https://oauth2.googleapis.com/tokeninfo?id_token=${token}`
+    );
+
+    const { email, name, sub: googleId } = googleRes.data;
+
+    console.log("Google profile:", { email, name, googleId });
+
+    if (!email)
+      return res.status(401).json({ message: "Could not get email from Google." });
+
+    // Find or create user
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = await User.create({
+        name,
+        email,
+        password:   "",
+        isVerified: true,
+        provider:   "google",
+        providerId: googleId,
+      });
+    }
+
+    // Step 3: Issue JWT
+    const jwtToken = jwt.sign(
+      { userId: user._id, role: user.role || "user" },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    return res.json({
+      token: jwtToken,
+      user: { userId: user._id, name: user.name, email: user.email },
+    });
+
+  } catch (err) {
+    console.error("Google verify error:", err.message);
+    return res.status(401).json({ message: "Invalid Google token." });
+  }
+});
+// google end 
+
+router.put("/update-profile", async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) return res.status(401).json({ message: "Unauthorized." });
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const { name, email } = req.body;
+
+    const user = await User.findByIdAndUpdate(
+      decoded.userId,
+      { name, email },
+      { new: true }
+    );
+
+    return res.json({ message: "Profile updated.", user });
+  } catch (err) {
+    return res.status(500).json({ message: "Server error." });
+  }
+});
 
 // ── POST /api/auth/admin-login ────────────────────────
 

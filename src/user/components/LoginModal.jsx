@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import EmailVerificationModal from "../components/EmailVerificationModal";
-
+import { GoogleLogin } from "@react-oauth/google";
 export default function LoginModal({ onClose, onSuccess }) {
   const { login } = useCart();
   const navigate = useNavigate();
@@ -14,6 +14,8 @@ export default function LoginModal({ onClose, onSuccess }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showVerify, setShowVerify] = useState(false);
+
+  // Inside your modal JSX, replace the old button with:
 
   const handleSubmit = async () => {
     if (!email || !password) {
@@ -66,7 +68,6 @@ export default function LoginModal({ onClose, onSuccess }) {
     return (
       <EmailVerificationModal
         email={email}
-      
         onClose={onClose}
         onVerified={(user) => {
           login(user);
@@ -76,7 +77,6 @@ export default function LoginModal({ onClose, onSuccess }) {
             onSuccess(user);
           }
         }}
-        
       />
     );
   }
@@ -107,7 +107,6 @@ export default function LoginModal({ onClose, onSuccess }) {
               </button>
             </div>
 
-            {/* Fields */}
             {mode === "signup" && (
               <input
                 className="input-field"
@@ -142,9 +141,52 @@ export default function LoginModal({ onClose, onSuccess }) {
               {loading
                 ? "Please wait..."
                 : mode === "login"
-                ? "Login"
-                : "Create Account"}
+                  ? "Login"
+                  : "Create Account"}
             </button>
+
+            {/*  Divider */}
+            <div
+              style={{ textAlign: "center", margin: "12px 0", color: "#999" }}
+            >
+              or
+            </div>
+
+            {/* Google Login Button — NOW INSIDE RETURN */}
+            <GoogleLogin
+              onSuccess={async (credentialResponse) => {
+                console.log(credentialResponse);
+                try {
+                  const res = await fetch("/api/auth/google", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      token: credentialResponse.credential,
+                    }),
+                  });
+
+                  const data = await res.json();
+
+                  if (!res.ok) {
+                    setError(data.message || "Google login failed.");
+                    return;
+                  }
+
+                  localStorage.setItem("token", data.token);
+                  login(data.user);
+                  onClose();
+                  navigate("/");
+                  onSuccess?.(data.user);
+                } catch {
+                  setError("Server error. Try again.");
+                }
+              }}
+              onError={() => setError("Google login failed.")}
+              width="100%"
+              text="continue_with"
+              shape="rectangular"
+              theme="outline"
+            />
 
             <button onClick={onClose} className="cancel_btn">
               Cancel

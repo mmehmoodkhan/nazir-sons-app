@@ -28,7 +28,11 @@ export default function Header() {
       <section className="user-navbar_wrapper">
         <nav className="user-navbar">
           <div className="app_logo">
-            <img src="../images/logo_transparent.png" alt="Logo" onClick={()=> navigate("/")} />
+            <img
+              src="../images/logo_transparent.png"
+              alt="Logo"
+              onClick={() => navigate("/")}
+            />
           </div>
           <div className="user-search-bar">
             <input
@@ -53,7 +57,9 @@ export default function Header() {
             {user ? (
               <div className="nav-location">
                 <span className="nav_location_icon">
-                  <img src="../images/profile-icon.png" alt="profile" />
+                  <Link to="/profile">
+                    <img src="../images/profile-icon.png" alt="profile" />
+                  </Link>
                 </span>
                 <div>
                   <button className="nav_cart_btn" onClick={handleLogout}>
