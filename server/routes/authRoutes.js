@@ -139,7 +139,7 @@ router.post("/register", async (req, res) => {
 
     const hashed = await bcrypt.hash(password, 10);
 
-    // ✅ Single save — no duplicate
+    //  Single save — no duplicate
     const user = await User.create({
       name,
       email,
@@ -169,7 +169,14 @@ router.post("/login", async (req, res) => {
     if (!match)
       return res.status(400).json({ message: "Invalid email or password." });
 
+    const token = jwt.sign(
+      { userId: user._id, role: user.role || "user" },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
     res.json({
+      token,
       user: { userId: user._id, name: user.name, email: user.email },
     });
   } catch (err) {

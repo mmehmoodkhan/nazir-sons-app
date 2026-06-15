@@ -1,9 +1,27 @@
 import express from "express";
 import Order from "../models/order.js";
 import Product from "../models/Product.js";
+import jwt from "jsonwebtoken";
 
 const router = express.Router();
+// =====================
 
+router.get("/my-orders", async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) return res.status(401).json({ success: false, message: "Unauthorized." });
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const orders = await Order.find({ userId: decoded.userId }).sort({ createdAt: -1 });
+
+    res.json({ success: true, orders });
+  } catch (err) {
+    console.error("my-orders error:", err);
+    res.status(500).json({ success: false, message: "Failed to fetch orders" });
+  }
+});
+// ================
 router.post("/checkout", async (req, res) => {
   try {
     const {

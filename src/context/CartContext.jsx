@@ -20,7 +20,6 @@ export function CartProvider({ children }) {
 
   //  NEW — fetch fresh products from backend
   const refreshProducts = async () => {
-    
     try {
       const res = await fetch("/api/products");
       const data = await res.json();
@@ -85,10 +84,10 @@ export function CartProvider({ children }) {
   //   localStorage.removeItem("cart");
   // };
   const logout = () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("user");
-  setUser(null);
-};
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setUser(null);
+  };
 
   const addToCart = (product) => {
     setCart((prev) => {

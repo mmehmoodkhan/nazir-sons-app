@@ -1,23 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import "./CategorySection.css";
 
 export const CategorySection = ({ products }) => {
-  const [activeCategory, setActiveCategory] = useState("All");
-  const { cart, addToCart, removeFromCart } = useCart(); //  same cart context
+  const [searchParams] = useSearchParams();
+  const [activeCategory, setActiveCategory] = useState(
+    searchParams.get("category") || "All"
+  );
+  const { cart, addToCart, removeFromCart } = useCart();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const cat = searchParams.get("category");
+    if (cat) setActiveCategory(cat);
+  }, [searchParams]);
 
   const getQty = (productId) => {
     const item = cart.find((i) => i._id === productId);
     return item ? item.quantity : 0;
   };
 
-  // Get unique categories from products
   const categories = [
     "All",
     ...new Set(products.map((p) => p.category).filter(Boolean)),
   ];
 
-  // Filter products by selected category
   const filteredProducts =
     activeCategory === "All"
       ? products
@@ -25,7 +33,6 @@ export const CategorySection = ({ products }) => {
 
   return (
     <section className="cat_section">
-      {/* ── Category Filter Tabs */}
       <div className="cat_tabs">
         {categories.map((cat) => (
           <button
@@ -38,7 +45,6 @@ export const CategorySection = ({ products }) => {
         ))}
       </div>
 
-      {/* ── Products Grid */}
       <div className="products-grid">
         {filteredProducts.length === 0 ? (
           <p>No products found</p>
@@ -46,7 +52,12 @@ export const CategorySection = ({ products }) => {
           filteredProducts.map((product) => {
             const qty = getQty(product._id);
             return (
-              <div className="product-card" key={product._id}>
+              <div
+                className="product-card"
+                key={product._id}
+                onClick={() => navigate(`/product/${product._id}`)}
+                style={{ cursor: "pointer" }}
+              >
                 <span className="product-img">
                   <img src={product.image} alt={product.name} />
                 </span>
@@ -60,7 +71,6 @@ export const CategorySection = ({ products }) => {
                           Rs {product.originalPrice} /-
                         </span>
                       )}
-                    
                   </div>
                   <p
                     className="product-stock"
@@ -73,40 +83,15 @@ export const CategorySection = ({ products }) => {
                       ? "Sold Out"
                       : `Stock: ${product.stock}`}
                   </p>
-                  <div className="add_to_card_wrapper">
+                  <div
+                    className="add_to_card_wrapper"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     {product.stock === 0 ? (
-                      // ✅ Show Sold Out when stock is 0
                       <button className="btn_soldout" disabled>
                         Sold Out
                       </button>
                     ) : qty === 0 ? (
-                      <button
-                        className="btn_add_to"
-                        onClick={() => addToCart(product)}
-                      >
-                        Add to Cart
-                      </button>
-                    ) : (
-                      <div className="qty_controls">
-                        <button
-                          className="qty_btn"
-                          onClick={() => removeFromCart(product._id)}
-                        >
-                          −
-                        </button>
-                        <span className="qty_count">{qty}</span>
-                        <button
-                          className="qty_btn"
-                          onClick={() => addToCart(product)}
-                          disabled={qty >= product.stock} // already stops at stock limit
-                        >
-                          +
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                  {/* <div className="add_to_card_wrapper">
-                    {qty === 0 ? (
                       <button
                         className="btn_add_to"
                         onClick={() => addToCart(product)}
@@ -131,7 +116,7 @@ export const CategorySection = ({ products }) => {
                         </button>
                       </div>
                     )}
-                  </div> */}
+                  </div>
                 </div>
               </div>
             );

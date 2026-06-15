@@ -7,7 +7,7 @@ import Header from "../components/header";
 const TABS = ["Account", "Edit Profile", "Address", "Orders", "Payment"];
 
 export default function ProfilePage() {
-  const { user, logout } = useCart();
+  const { user, logout, login, clearCart } = useCart();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("Account");
 
@@ -48,7 +48,7 @@ export default function ProfilePage() {
     setOrdersLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("/api/orders/my-orders", {
+      const res = await fetch("/api/order/my-orders", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -79,13 +79,13 @@ export default function ProfilePage() {
         return;
       }
       setEditMsg("Profile updated successfully!");
+      login(data.user);
     } catch {
       setEditMsg("Server error.");
     } finally {
       setEditLoading(false);
     }
   };
-
   const handleAddressSave = () => {
     localStorage.setItem("userAddress", JSON.stringify(address));
     setAddressMsg("Address saved!");
@@ -98,7 +98,10 @@ export default function ProfilePage() {
   }, []);
 
   const handleLogout = () => {
-    logout();
+    clearCart(); // empty the cart
+    logout(); // clear user from context
+    localStorage.removeItem("user"); // clear stored user
+    localStorage.removeItem("cart"); // clear stored cart
     navigate("/");
   };
 
@@ -269,7 +272,29 @@ export default function ProfilePage() {
                       <p className="order-date">
                         {new Date(order.createdAt).toLocaleDateString()}
                       </p>
-                      <p className="order-total">Total: Rs. {order.total}</p>
+
+                      <div className="order-items-list">
+                        {order.items?.map((item, idx) => (
+                          <div className="order-line-item" key={idx}>
+                            <span>
+                              {item.name} × {item.quantity}
+                            </span>
+                            <span>Rs. {item.price * item.quantity}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <p className="order-subtotal">
+                        Subtotal: Rs. {order.subTotal}
+                      </p>
+                      <p className="order-shipping">
+                        Shipping: Rs. {order.shipCharges}
+                      </p>
+                      <p className="order-total">
+                        Total: Rs. {order.totalPrice}
+                      </p>
+                      <p className="order-payment">
+                        Payment: {order.paymentMethod} ({order.paymentStatus})
+                      </p>
                     </div>
                   ))}
                 </div>

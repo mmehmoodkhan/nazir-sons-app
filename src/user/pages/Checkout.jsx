@@ -1,9 +1,10 @@
 import { useCart } from "../../context/CartContext";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Checkout.css";
 import DeliverySlots from "./DeliverySlots";
-
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 const Checkout = () => {
   const { cart, clearCart, user } = useCart();
   const navigate = useNavigate();
@@ -25,6 +26,13 @@ const Checkout = () => {
   const [mobileNumber, setMobileNumber] = useState("");
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [locationLoading, setLocationLoading] = useState(false);
+  const [locationError, setLocationError] = useState("");
+  const [coords, setCoords] = useState(null); // { lat, lng }
+
+  const mapContainerRef = useRef(null);
+  const mapRef = useRef(null);
+  const markerRef = useRef(null);
 
   const shipCharges = 299;
   const subTotal = cart.reduce(
@@ -44,7 +52,30 @@ const Checkout = () => {
       setErrors((prev) => ({ ...prev, deliveryCode: "" }));
     }
   };
+  const reverseGeocode = async (lat, lng) => {
+    try {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
+      );
+      const data = await res.json();
+      const addr = data.address || {};
 
+      setAddress(
+        [addr.house_number, addr.road].filter(Boolean).join(" ") ||
+          data.display_name ||
+          "",
+      );
+      setArea(addr.suburb || addr.neighbourhood || addr.town || "");
+      setCity(addr.city || addr.town || addr.county || "");
+      setDeliverHere(data.display_name || "");
+
+      clearError("address");
+      clearError("area");
+      clearError("city");
+    } catch {
+      setLocationError("Could not fetch address for this location.");
+    }
+  };
   const handleCodeKeyDown = (e, index) => {
     if (e.key === "Backspace" && !deliveryCode[index] && index > 0) {
       document.getElementById(`otp-${index - 1}`)?.focus();
@@ -91,6 +122,75 @@ const Checkout = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const handleUseMyLocation = () => {
+    if (!navigator.geolocation) {
+      setLocationError("Geolocation is not supported by your browser.");
+      return;
+    }
+
+    setLocationLoading(true);
+    setLocationError("");
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        setCoords({ lat: latitude, lng: longitude });
+        await reverseGeocode(latitude, longitude);
+        setLocationLoading(false);
+      },
+      (err) => {
+        setLocationLoading(false);
+        if (err.code === err.PERMISSION_DENIED) {
+          setLocationError(
+            "Location permission denied. Please enter address manually.",
+          );
+        } else {
+          setLocationError("Unable to retrieve your location.");
+        }
+      },
+      { enableHighAccuracy: true, timeout: 10000 },
+    );
+  };
+  useEffect(() => {
+    if (!coords || !mapContainerRef.current) return;
+
+    if (!mapRef.current) {
+      // Initialize map
+      mapRef.current = L.map(mapContainerRef.current).setView(
+        [coords.lat, coords.lng],
+        16,
+      );
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "&copy; OpenStreetMap contributors",
+      }).addTo(mapRef.current);
+
+      markerRef.current = L.marker([coords.lat, coords.lng], {
+        draggable: true,
+      }).addTo(mapRef.current);
+
+      markerRef.current.on("dragend", (e) => {
+        const { lat, lng } = e.target.getLatLng();
+        setCoords({ lat, lng });
+        reverseGeocode(lat, lng);
+      });
+    } else {
+      // Update existing map/marker position
+      mapRef.current.setView([coords.lat, coords.lng], 16);
+      markerRef.current.setLatLng([coords.lat, coords.lng]);
+    }
+  }, [coords]);
+
+  // Cleanup map on unmount
+  useEffect(() => {
+    return () => {
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+    };
+  }, []);
+
   const handleCheckout = async () => {
     if (!validate()) {
       document.querySelector(".field-error")?.scrollIntoView({
@@ -105,7 +205,7 @@ const Checkout = () => {
 
     const orderData = {
       orderId,
-      userId: user?._id || "guest",
+      userId: user?._id || user?.userId || "guest",
       customer: { firstName, lastName, email, phone },
       delivery: { address, houseNo, area, city, deliverHere },
       deliverySlot: selectedSlotRef.current, // ✅ use ref not state
@@ -206,6 +306,7 @@ const Checkout = () => {
           {/* ── Contact Information ─────────────────────── */}
           <div className="cart_contact">
             <h2 className="section-title">Contact Information</h2>
+
             <div className="cart_contacts_inner">
               <div className="form_group">
                 <label>
@@ -310,7 +411,24 @@ const Checkout = () => {
           {/* ── Delivery Information ────────────────────── */}
           <div className="cart_contact">
             <h2 className="section-title">Delivery Information</h2>
+
+            <button
+              type="button"
+              className="use-location-btn"
+              onClick={handleUseMyLocation}
+              disabled={locationLoading}
+            >
+              📍{" "}
+              {locationLoading
+                ? "Detecting location..."
+                : "Use my current location"}
+            </button>
+            {locationError && (
+              <span className="field-error">{locationError}</span>
+            )}
+
             <div className="delv_info_wrapper">
+              {/* ...existing Address, House No, Area, City fields unchanged */}
               <div className="input_group">
                 <label>
                   Address <span className="text-danger">*</span>
@@ -378,7 +496,23 @@ const Checkout = () => {
                   value={deliverHere}
                   onChange={(e) => setDeliverHere(e.target.value)}
                 />
-                <div id="mapContainer"></div>
+                <div>
+                  <label>We will deliver here</label>
+                  <input
+                    className="input-field"
+                    type="text"
+                    value={deliverHere}
+                    onChange={(e) => setDeliverHere(e.target.value)}
+                  />
+                  {coords && (
+                    <>
+                      <div ref={mapContainerRef} className="checkout-map"></div>
+                      <p className="map-hint">
+                        Drag the pin to set your exact delivery location.
+                      </p>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
           </div>

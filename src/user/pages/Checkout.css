@@ -235,6 +235,34 @@ label {
   margin-bottom: 0;
 }
 
+.use-location-btn {
+  background: #f0f8ff;
+  border: 1px solid #4a90d9;
+  color: #4a90d9;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.use-location-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.checkout-map {
+  height: 250px;
+  width: 100%;
+  margin-top: 10px;
+  border-radius: 8px;
+  z-index: 1;
+}
+
+.map-hint {
+  font-size: 12px;
+  color: #777;
+  margin-top: 4px;
+}
 /* ── Responsive ──────────────────────────────────────── */
 @media (max-width: 480px) {
   .payment_grid {

@@ -8,19 +8,31 @@ import LoginModal from "./LoginModal";
 export default function Header() {
   const navigate = useNavigate();
   const [showLogin, setShowLogin] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showResults, setShowResults] = useState(false);
 
   // ── single useCart() call — get everything at once
-  const { cart, user, logout, clearCart } = useCart();
+  const { cart, user, logout, clearCart, products } = useCart();
 
   const cartCount = cart.reduce((s, i) => s + i.quantity, 0);
 
-  const handleLogout = () => {
-    clearCart(); // empty the cart
-    logout(); // clear user from context
-    localStorage.removeItem("user"); // clear stored user
-    localStorage.removeItem("cart"); // clear stored cart
-    navigate("/");
-  };
+  const filteredProducts =
+    searchTerm.trim() === ""
+      ? []
+      : products.filter((p) =>
+          p.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+
+  // const handleResultClick = (product) => {
+  //   setSearchTerm("");
+  //   setShowResults(false);
+  //   navigate(`/product/${product._id}`);
+  // };
+const handleResultClick = (product) => {
+  setSearchTerm("");
+  setShowResults(false);
+  navigate(`/?category=${encodeURIComponent(product.category || "All")}`);
+};
 
   return (
     <div className="header_main_wrapper">
@@ -39,7 +51,32 @@ export default function Header() {
               className="nav_search_input"
               type="text"
               placeholder="Search products..."
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setShowResults(true);
+              }}
+              onFocus={() => setShowResults(true)}
+              onBlur={() => setTimeout(() => setShowResults(false), 150)}
             />
+
+            {showResults && searchTerm.trim() !== "" && (
+              <ul className="search-results-dropdown">
+                {filteredProducts.length === 0 ? (
+                  <li className="search-result-empty">No products found.</li>
+                ) : (
+                  filteredProducts.map((product) => (
+                    <li
+                      key={product._id}
+                      className="search-result-item"
+                      onMouseDown={() => handleResultClick(product)}
+                    >
+                      {product.name}
+                    </li>
+                  ))
+                )}
+              </ul>
+            )}
           </div>
           <div className="nav-location">
             <span className="nav_location_icon">
@@ -62,9 +99,6 @@ export default function Header() {
                   </Link>
                 </span>
                 <div>
-                  <button className="nav_cart_btn" onClick={handleLogout}>
-                    Logout
-                  </button>
                   <span>
                     <p className="user_loged">{user.name}</p>
                   </span>
@@ -95,15 +129,6 @@ export default function Header() {
             </button>
           </div>
         </nav>
-        {/* <nav className="user_navbar2">
-          <div className="select-wrapper">Shop By Department</div>
-          <ul className="nav_links">
-            <li className="nav_item"><Link to="/departments">Grocery Foods</Link></li>
-            <li className="nav_item"><Link to="/shop">Shop</Link></li>
-            <li className="nav_item"><Link to="/about">About Us</Link></li>
-            <li className="nav_item"><Link to="/contact">Contact</Link></li>
-          </ul>
-        </nav> */}
       </section>
     </div>
   );

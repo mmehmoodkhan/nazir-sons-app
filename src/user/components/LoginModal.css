@@ -105,6 +105,9 @@
   font-size: 14px;
   text-align: center;
 }
+.not_login {
+  margin: 1rem 0 0 0;
+}
 
 @keyframes fadeIn {
   from {

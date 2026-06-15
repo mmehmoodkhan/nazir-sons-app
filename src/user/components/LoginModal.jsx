@@ -49,12 +49,11 @@ export default function LoginModal({ onClose, onSuccess }) {
       }
 
       // Login flow
+      localStorage.setItem("token", data.token);
       login(data.user);
       onClose();
       navigate("/");
-      if (typeof onSuccess === "function") {
-        onSuccess(data.user);
-      }
+
     } catch (err) {
       console.error("Full error:", err);
       setError("Server error. Try again.");
@@ -188,7 +187,7 @@ export default function LoginModal({ onClose, onSuccess }) {
               theme="outline"
             />
 
-            <button onClick={onClose} className="cancel_btn">
+            <button onClick={onClose} className="cancel_btn not_login">
               Cancel
             </button>
           </div>
