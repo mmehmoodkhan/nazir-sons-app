@@ -13,7 +13,18 @@ import statsRoute from "./routes/statsRoute.js";
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      const allowed =
+        /^http:\/\/localhost:5173$/.test(origin) ||
+        /^http:\/\/192\.168\.\d{1,3}\.\d{1,3}:5173$/.test(origin);
+      callback(null, allowed);
+    },
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 // Connect MongoDB

@@ -5,6 +5,7 @@ import "./Checkout.css";
 import DeliverySlots from "./DeliverySlots";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import Header from "../components/header";
 const Checkout = () => {
   const { cart, clearCart, user } = useCart();
   const navigate = useNavigate();
@@ -289,213 +290,208 @@ const Checkout = () => {
     errors[field] ? <span className="field-error">{errors[field]}</span> : null;
 
   return (
-    <div className="checkout_wrapper">
-      <div>
-        <button
-          className="back_to"
-          type="button"
-          onClick={() => navigate("/cart")}
-        >
-          ← Back to Cart
-        </button>
-      </div>
-      <h2>Checkout</h2>
+    <>
+      <Header />
 
-      <div className="checkkout_mian">
-        <div className="cart_contact_main">
-          {/* ── Contact Information ─────────────────────── */}
-          <div className="cart_contact">
-            <h2 className="section-title">Contact Information</h2>
+      <div className="checkout_wrapper">
+        <div>
+          <button
+            className="back_to"
+            type="button"
+            onClick={() => navigate("/cart")}
+          >
+            ← Back to Cart
+          </button>
+        </div>
+        <h2>Checkout</h2>
 
-            <div className="cart_contacts_inner">
-              <div className="form_group">
-                <label>
-                  First Name <span className="text-danger">*</span>
-                </label>
-                <input
-                  className={`input-field ${errors.firstName ? "input-error" : ""}`}
-                  placeholder="First Name"
-                  value={firstName}
-                  onChange={(e) => {
-                    setFirstName(e.target.value);
-                    clearError("firstName");
-                  }}
-                />
-                <ErrorMsg field="firstName" />
-              </div>
-
-              <div className="form_group">
-                <label>
-                  Last Name <span className="text-danger">*</span>
-                </label>
-                <input
-                  className={`input-field ${errors.lastName ? "input-error" : ""}`}
-                  placeholder="Last Name"
-                  value={lastName}
-                  onChange={(e) => {
-                    setLastName(e.target.value);
-                    clearError("lastName");
-                  }}
-                />
-                <ErrorMsg field="lastName" />
-              </div>
-
-              <div className="form_group">
-                <label>
-                  Email <span className="text-danger">*</span>
-                </label>
-                <input
-                  className={`input-field ${errors.email ? "input-error" : ""}`}
-                  type="email"
-                  placeholder="example@email.com"
-                  value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                    clearError("email");
-                  }}
-                />
-                <ErrorMsg field="email" />
-              </div>
-
-              <div className="form_group">
-                <label>
-                  Phone <span className="text-danger">*</span>
-                </label>
-                <input
-                  className={`input-field ${errors.phone ? "input-error" : ""}`}
-                  type="tel"
-                  placeholder="03001234567"
-                  value={phone}
-                  onChange={(e) => {
-                    setPhone(e.target.value);
-                    clearError("phone");
-                  }}
-                />
-                <ErrorMsg field="phone" />
-              </div>
-            </div>
-
-            {/* OTP */}
-            <div className="opt_wrapper">
-              <label>
-                Delivery Code <span className="text-danger">*</span>
-              </label>
-              <div className="opt_wrapper_inner">
-                {deliveryCode.map((digit, i) => (
-                  <input
-                    key={i}
-                    id={`otp-${i}`}
-                    className={`input-field ${errors.deliveryCode ? "input-error" : ""}`}
-                    type="text"
-                    inputMode="numeric"
-                    maxLength={1}
-                    value={digit}
-                    onChange={(e) => handleCodeChange(e.target.value, i)}
-                    onKeyDown={(e) => handleCodeKeyDown(e, i)}
-                  />
-                ))}
-              </div>
-              <ErrorMsg field="deliveryCode" />
-              <p>Enter a 4-digit code to receive your order.</p>
-            </div>
-
-            <label>Order Note</label>
-            <textarea
-              className="input-field"
-              placeholder="Special instructions for your order"
-              value={orderNote}
-              onChange={(e) => setOrderNote(e.target.value)}
-            />
-          </div>
-
-          {/* ── Delivery Information ────────────────────── */}
-          <div className="cart_contact">
-            <h2 className="section-title">Delivery Information</h2>
-
-            <button
-              type="button"
-              className="use-location-btn"
-              onClick={handleUseMyLocation}
-              disabled={locationLoading}
-            >
-              📍{" "}
-              {locationLoading
-                ? "Detecting location..."
-                : "Use my current location"}
-            </button>
-            {locationError && (
-              <span className="field-error">{locationError}</span>
-            )}
-
-            <div className="delv_info_wrapper">
-              {/* ...existing Address, House No, Area, City fields unchanged */}
-              <div className="input_group">
-                <label>
-                  Address <span className="text-danger">*</span>
-                </label>
-                <input
-                  className={`input-field ${errors.address ? "input-error" : ""}`}
-                  type="text"
-                  value={address}
-                  onChange={(e) => {
-                    setAddress(e.target.value);
-                    clearError("address");
-                  }}
-                />
-                <ErrorMsg field="address" />
-              </div>
-
-              <div className="input_group">
-                <label>House No, Apartment, Suite, etc.</label>
-                <input
-                  className="input-field"
-                  type="text"
-                  value={houseNo}
-                  onChange={(e) => setHouseNo(e.target.value)}
-                />
-              </div>
+        <div className="checkkout_mian">
+          <div className="cart_contact_main">
+            {/* ── Contact Information ─────────────────────── */}
+            <div className="cart_contact">
+              <h2 className="section-title">Contact Information</h2>
 
               <div className="cart_contacts_inner">
                 <div className="form_group">
                   <label>
-                    Area <span className="text-danger">*</span>
+                    First Name <span className="text-danger">*</span>
                   </label>
                   <input
-                    className={`input-field ${errors.area ? "input-error" : ""}`}
-                    type="text"
-                    value={area}
+                    className={`input-field ${errors.firstName ? "input-error" : ""}`}
+                    placeholder="First Name"
+                    value={firstName}
                     onChange={(e) => {
-                      setArea(e.target.value);
-                      clearError("area");
+                      setFirstName(e.target.value);
+                      clearError("firstName");
                     }}
                   />
-                  <ErrorMsg field="area" />
+                  <ErrorMsg field="firstName" />
                 </div>
+
                 <div className="form_group">
                   <label>
-                    City <span className="text-danger">*</span>
+                    Last Name <span className="text-danger">*</span>
                   </label>
                   <input
-                    className={`input-field ${errors.city ? "input-error" : ""}`}
-                    type="text"
-                    value={city}
+                    className={`input-field ${errors.lastName ? "input-error" : ""}`}
+                    placeholder="Last Name"
+                    value={lastName}
                     onChange={(e) => {
-                      setCity(e.target.value);
-                      clearError("city");
+                      setLastName(e.target.value);
+                      clearError("lastName");
                     }}
                   />
-                  <ErrorMsg field="city" />
+                  <ErrorMsg field="lastName" />
+                </div>
+
+                <div className="form_group">
+                  <label>
+                    Email <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    className={`input-field ${errors.email ? "input-error" : ""}`}
+                    type="email"
+                    placeholder="example@email.com"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      clearError("email");
+                    }}
+                  />
+                  <ErrorMsg field="email" />
+                </div>
+
+                <div className="form_group">
+                  <label>
+                    Phone <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    className={`input-field ${errors.phone ? "input-error" : ""}`}
+                    type="tel"
+                    placeholder="03001234567"
+                    value={phone}
+                    onChange={(e) => {
+                      setPhone(e.target.value);
+                      clearError("phone");
+                    }}
+                  />
+                  <ErrorMsg field="phone" />
                 </div>
               </div>
 
-              <div>
-                <label>We will deliver here</label>
-                <input
-                  className="input-field"
-                  type="text"
-                  value={deliverHere}
-                  onChange={(e) => setDeliverHere(e.target.value)}
-                />
+              {/* OTP */}
+              <div className="opt_wrapper">
+                <label>
+                  Delivery Code <span className="text-danger">*</span>
+                </label>
+                <div className="opt_wrapper_inner">
+                  {deliveryCode.map((digit, i) => (
+                    <input
+                      key={i}
+                      id={`otp-${i}`}
+                      className={`input-field ${errors.deliveryCode ? "input-error" : ""}`}
+                      type="text"
+                      inputMode="numeric"
+                      maxLength={1}
+                      value={digit}
+                      onChange={(e) => handleCodeChange(e.target.value, i)}
+                      onKeyDown={(e) => handleCodeKeyDown(e, i)}
+                    />
+                  ))}
+                </div>
+                <ErrorMsg field="deliveryCode" />
+                <p>Enter a 4-digit code to receive your order.</p>
+              </div>
+
+              <label>Order Note</label>
+              <textarea
+                className="input-field"
+                placeholder="Special instructions for your order"
+                value={orderNote}
+                onChange={(e) => setOrderNote(e.target.value)}
+              />
+            </div>
+
+            {/* ── Delivery Information ────────────────────── */}
+            <div className="cart_contact">
+              <h2 className="section-title">Delivery Information</h2>
+
+              <button
+                type="button"
+                className="use-location-btn"
+                onClick={handleUseMyLocation}
+                disabled={locationLoading}
+              >
+                📍{" "}
+                {locationLoading
+                  ? "Detecting location..."
+                  : "Use my current location"}
+              </button>
+              {locationError && (
+                <span className="field-error">{locationError}</span>
+              )}
+
+              <div className="delv_info_wrapper">
+                {/* ...existing Address, House No, Area, City fields unchanged */}
+                <div className="input_group">
+                  <label>
+                    Address <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    className={`input-field ${errors.address ? "input-error" : ""}`}
+                    type="text"
+                    value={address}
+                    onChange={(e) => {
+                      setAddress(e.target.value);
+                      clearError("address");
+                    }}
+                  />
+                  <ErrorMsg field="address" />
+                </div>
+
+                <div className="input_group">
+                  <label>House No, Apartment, Suite, etc.</label>
+                  <input
+                    className="input-field"
+                    type="text"
+                    value={houseNo}
+                    onChange={(e) => setHouseNo(e.target.value)}
+                  />
+                </div>
+
+                <div className="cart_contacts_inner">
+                  <div className="form_group">
+                    <label>
+                      Area <span className="text-danger">*</span>
+                    </label>
+                    <input
+                      className={`input-field ${errors.area ? "input-error" : ""}`}
+                      type="text"
+                      value={area}
+                      onChange={(e) => {
+                        setArea(e.target.value);
+                        clearError("area");
+                      }}
+                    />
+                    <ErrorMsg field="area" />
+                  </div>
+                  <div className="form_group">
+                    <label>
+                      City <span className="text-danger">*</span>
+                    </label>
+                    <input
+                      className={`input-field ${errors.city ? "input-error" : ""}`}
+                      type="text"
+                      value={city}
+                      onChange={(e) => {
+                        setCity(e.target.value);
+                        clearError("city");
+                      }}
+                    />
+                    <ErrorMsg field="city" />
+                  </div>
+                </div>
+
                 <div>
                   <label>We will deliver here</label>
                   <input
@@ -504,165 +500,177 @@ const Checkout = () => {
                     value={deliverHere}
                     onChange={(e) => setDeliverHere(e.target.value)}
                   />
-                  {coords && (
-                    <>
-                      <div ref={mapContainerRef} className="checkout-map"></div>
-                      <p className="map-hint">
-                        Drag the pin to set your exact delivery location.
-                      </p>
-                    </>
-                  )}
+                  <div>
+                    <label>We will deliver here</label>
+                    <input
+                      className="input-field"
+                      type="text"
+                      value={deliverHere}
+                      onChange={(e) => setDeliverHere(e.target.value)}
+                    />
+                    {coords && (
+                      <>
+                        <div
+                          ref={mapContainerRef}
+                          className="checkout-map"
+                        ></div>
+                        <p className="map-hint">
+                          Drag the pin to set your exact delivery location.
+                        </p>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* ── Delivery Slots ──────────────────────────── */}
-          <div className="cart_contact">
-            <div className="delv_slots_wrapper">
-              <h2 className="section-title">Delivery Slots</h2>
-              <h4>Select a date</h4>
-              <div className="delv_slots_list">
-                <DeliverySlots
-                  onConfirm={(slot) => {
-                    setSelectedSlot(slot);
-                    selectedSlotRef.current = slot;
-                    clearError("selectedSlot");
-                  }}
-                />
+            {/* ── Delivery Slots ──────────────────────────── */}
+            <div className="cart_contact">
+              <div className="delv_slots_wrapper">
+                <h2 className="section-title">Delivery Slots</h2>
+                <h4>Select a date</h4>
+                <div className="delv_slots_list">
+                  <DeliverySlots
+                    onConfirm={(slot) => {
+                      setSelectedSlot(slot);
+                      selectedSlotRef.current = slot;
+                      clearError("selectedSlot");
+                    }}
+                  />
+                </div>
+                <ErrorMsg field="selectedSlot" />
               </div>
-              <ErrorMsg field="selectedSlot" />
             </div>
           </div>
-        </div>
 
-        {/* ── Order Summary + Payment ──────────────────────── */}
-        <div className="place_order_area">
-          <div className="grand_total">
-            <p>Subtotal</p>
-            <p>Rs {subTotal.toFixed(2)}</p>
-          </div>
-          <div className="grand_total">
-            <p>Shipping Charges</p>
-            <p>Rs {shipCharges}</p>
-          </div>
-          <hr />
-          <div className="net_total">
-            <p>Net Total</p>
-            <p>Rs {totalPrice.toFixed(2)}</p>
-          </div>
+          {/* ── Order Summary + Payment ──────────────────────── */}
+          <div className="place_order_area">
+            <div className="grand_total">
+              <p>Subtotal</p>
+              <p>Rs {subTotal.toFixed(2)}</p>
+            </div>
+            <div className="grand_total">
+              <p>Shipping Charges</p>
+              <p>Rs {shipCharges}</p>
+            </div>
+            <hr />
+            <div className="net_total">
+              <p>Net Total</p>
+              <p>Rs {totalPrice.toFixed(2)}</p>
+            </div>
 
-          {/* Payment method */}
-          <div className="payment_methods">
-            <p className="payment_methods_title">Payment method</p>
+            {/* Payment method */}
+            <div className="payment_methods">
+              <p className="payment_methods_title">Payment method</p>
 
-            <div className="payment_grid">
-              {[
-                {
-                  value: "cod",
-                  label: "Cash on delivery",
-                  sub: "Pay at door",
-                  logo: null,
-                  emoji: "💵",
-                },
-                {
-                  value: "jazzcash",
-                  label: "JazzCash",
-                  sub: "Mobile wallet",
-                  logo: "../images/jazzcash-logo.png",
-                  emoji: "📱",
-                },
-                {
-                  value: "easypaisa",
-                  label: "EasyPaisa",
-                  sub: "Mobile wallet",
-                  logo: "../images/easypaisa-logo.png",
-                  emoji: "📲",
-                },
-              ].map(({ value, label, sub, logo, emoji }) => {
-                const active = paymentMethod === value;
-                return (
-                  <label
-                    key={value}
-                    className={`payment_card ${active ? "active" : ""}`}
-                    onClick={() => {
-                      setPaymentMethod(value);
+              <div className="payment_grid">
+                {[
+                  {
+                    value: "cod",
+                    label: "Cash on delivery",
+                    sub: "Pay at door",
+                    logo: null,
+                    emoji: "💵",
+                  },
+                  {
+                    value: "jazzcash",
+                    label: "JazzCash",
+                    sub: "Mobile wallet",
+                    logo: "../images/jazzcash-logo.png",
+                    emoji: "📱",
+                  },
+                  {
+                    value: "easypaisa",
+                    label: "EasyPaisa",
+                    sub: "Mobile wallet",
+                    logo: "../images/easypaisa-logo.png",
+                    emoji: "📲",
+                  },
+                ].map(({ value, label, sub, logo, emoji }) => {
+                  const active = paymentMethod === value;
+                  return (
+                    <label
+                      key={value}
+                      className={`payment_card ${active ? "active" : ""}`}
+                      onClick={() => {
+                        setPaymentMethod(value);
+                        clearError("mobileNumber");
+                      }}
+                    >
+                      <input
+                        type="radio"
+                        value={value}
+                        checked={active}
+                        onChange={() => {}}
+                      />
+
+                      {active && <div className="payment_checkmark">✓</div>}
+
+                      <div className={`payment_icon_wrap ${value}`}>
+                        {logo ? (
+                          <img
+                            src={logo}
+                            alt={label}
+                            onError={(e) => {
+                              e.target.style.display = "none";
+                              e.target.nextSibling.style.display = "block";
+                            }}
+                          />
+                        ) : (
+                          <span>{emoji}</span>
+                        )}
+                      </div>
+
+                      <span className="payment_card_label">{label}</span>
+                      <span className="payment_card_sub">{sub}</span>
+                    </label>
+                  );
+                })}
+              </div>
+
+              {/* Mobile number field for wallets */}
+              {paymentMethod !== "cod" && (
+                <div className="payment_mobile_field">
+                  <label>
+                    Mobile number <span style={{ color: "#e53e3e" }}>*</span>
+                  </label>
+                  <input
+                    className={`input-field ${errors.mobileNumber ? "input-error" : ""}`}
+                    type="tel"
+                    placeholder="03001234567"
+                    value={mobileNumber}
+                    onChange={(e) => {
+                      setMobileNumber(e.target.value);
                       clearError("mobileNumber");
                     }}
-                  >
-                    <input
-                      type="radio"
-                      value={value}
-                      checked={active}
-                      onChange={() => {}}
-                    />
-
-                    {active && <div className="payment_checkmark">✓</div>}
-
-                    <div className={`payment_icon_wrap ${value}`}>
-                      {logo ? (
-                        <img
-                          src={logo}
-                          alt={label}
-                          onError={(e) => {
-                            e.target.style.display = "none";
-                            e.target.nextSibling.style.display = "block";
-                          }}
-                        />
-                      ) : (
-                        <span>{emoji}</span>
-                      )}
-                    </div>
-
-                    <span className="payment_card_label">{label}</span>
-                    <span className="payment_card_sub">{sub}</span>
-                  </label>
-                );
-              })}
+                  />
+                  <p className="payment_mobile_hint">
+                    Enter the number linked to your wallet
+                  </p>
+                  <ErrorMsg field="mobileNumber" />
+                </div>
+              )}
             </div>
 
-            {/* Mobile number field for wallets */}
-            {paymentMethod !== "cod" && (
-              <div className="payment_mobile_field">
-                <label>
-                  Mobile number <span style={{ color: "#e53e3e" }}>*</span>
-                </label>
-                <input
-                  className={`input-field ${errors.mobileNumber ? "input-error" : ""}`}
-                  type="tel"
-                  placeholder="03001234567"
-                  value={mobileNumber}
-                  onChange={(e) => {
-                    setMobileNumber(e.target.value);
-                    clearError("mobileNumber");
-                  }}
-                />
-                <p className="payment_mobile_hint">
-                  Enter the number linked to your wallet
-                </p>
-                <ErrorMsg field="mobileNumber" />
-              </div>
+            {/* payment end  */}
+
+            {errors.general && (
+              <p style={{ color: "#e53e3e", fontSize: 13, marginTop: 8 }}>
+                {errors.general}
+              </p>
             )}
+
+            <button
+              className="place_order_btn"
+              onClick={handleCheckout}
+              disabled={paymentLoading}
+            >
+              {paymentLoading ? "Processing..." : "Place Order"}
+            </button>
           </div>
-
-          {/* payment end  */}
-
-          {errors.general && (
-            <p style={{ color: "#e53e3e", fontSize: 13, marginTop: 8 }}>
-              {errors.general}
-            </p>
-          )}
-
-          <button
-            className="place_order_btn"
-            onClick={handleCheckout}
-            disabled={paymentLoading}
-          >
-            {paymentLoading ? "Processing..." : "Place Order"}
-          </button>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

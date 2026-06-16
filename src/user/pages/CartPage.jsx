@@ -56,6 +56,7 @@ export default function CartPage({ onCheckout }) {
             <div>🛒</div>
             <h3>Your cart is empty</h3>
             <p>Add some items from the shop to get started.</p>
+            <div><button className="continue-shop-btn" onClick={()=>navigate('/')}>Continue Shopping</button></div>
           </div>
         </div>
       </>

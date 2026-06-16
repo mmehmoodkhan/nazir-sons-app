@@ -20,7 +20,7 @@ export function EditProduct() {
   });
 
   useEffect(() => {
-    fetch(`http://localhost:5000/api/products/${id}`)
+    fetch(`/api/products/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setForm({
@@ -36,7 +36,7 @@ export function EditProduct() {
   }, [id]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/products")
+    fetch("/api/products")
       .then((res) => res.json())
       .then((data) => {
         const unique = [...new Set(data.map((p) => p.category).filter(Boolean))];
@@ -97,7 +97,7 @@ export function EditProduct() {
       ...form,
       originalPrice: form.originalPrice !== "" ? Number(form.originalPrice) : null,
     };
-    await fetch(`http://localhost:5000/api/products/${id}`, {
+    await fetch(`/api/products/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),

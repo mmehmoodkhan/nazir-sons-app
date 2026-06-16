@@ -14,7 +14,19 @@ const { getProducts, addProduct } = require("./controllers/productController");
 // Connect to MongoDB
 connectDB();
 app.use(express.json());
-app.use(cors({ origin: "http://localhost:5000" }));
+// app.use(cors({ origin: "http://localhost:5000" }));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true); // same-origin / curl / no-origin requests
+      const allowed =
+        /^http:\/\/localhost:5173$/.test(origin) ||
+        /^http:\/\/192\.168\.\d{1,3}\.\d{1,3}:5173$/.test(origin);
+      callback(null, allowed);
+    },
+    credentials: true,
+  })
+);
 
 
 // Routes

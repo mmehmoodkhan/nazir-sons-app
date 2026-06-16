@@ -10,7 +10,7 @@ function Products() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/products")
+    fetch("/api/products")
       .then((res) => res.json())
       .then((data) => refreshProducts (data));
   }, []);
@@ -29,7 +29,7 @@ function Products() {
 
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure?")) return;
-    await fetch(`http://localhost:5000/api/products/${id}`, {
+    await fetch(`/api/products/${id}`, {
       method: "DELETE",
     });
     refreshProducts(products.filter((p) => p._id !== id));

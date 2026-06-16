@@ -18,7 +18,7 @@ const AdminOrders = () => {
   const fetchOrders = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/order/all");
+      const res = await fetch("/api/order/all");
       const data = await res.json();
       if (data.success) setOrders(data.orders);
     } catch (err) {
@@ -35,7 +35,7 @@ const AdminOrders = () => {
   }, []);
 
   const updateStatus = async (orderId, status) => {
-    await fetch(`http://localhost:5000/api/order/${orderId}/status`, {
+    await fetch(`/api/order/${orderId}/status`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status }),

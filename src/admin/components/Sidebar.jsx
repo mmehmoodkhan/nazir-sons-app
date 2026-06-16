@@ -11,7 +11,8 @@ export default function Sidebar() {
   const [orders, setOrders] = useState([]);
   const fetchOrders = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/order/all");
+      // const res = await fetch("http://localhost:5000/api/order/all");
+      const res = await fetch("/api/order/all");
       const data = await res.json();
       if (data.success) setOrders(data.orders);
     } catch (err) {

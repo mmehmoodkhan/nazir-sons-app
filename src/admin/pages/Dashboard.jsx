@@ -8,7 +8,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   useEffect(() => {
-  fetch("http://localhost:5000/api/stats")
+  fetch("/api/stats")
     .then(res => {
       if (!res.ok) throw new Error(`Server error: ${res.status}`); //  catch 404
       return res.json();

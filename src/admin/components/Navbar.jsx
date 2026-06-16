@@ -28,10 +28,10 @@ export default function Navbar({title}) {
               placeholder="Search anything..."
             />
           </div>
-          <div className="nav-icon tb-icon">
+          {/* <div className="nav-icon tb-icon">
             🔔
             <span>3</span>
-          </div>
+          </div> */}
 
           <div className="nav-icon tb-icon">
             ✉️

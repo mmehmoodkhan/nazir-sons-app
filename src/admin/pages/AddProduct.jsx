@@ -19,7 +19,7 @@ function AddProduct() {
   });
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/products")
+    fetch("/api/products")
       .then((res) => res.json())
       .then((data) => {
         const unique = [
@@ -86,7 +86,7 @@ function AddProduct() {
       originalPrice:
         form.originalPrice !== "" ? Number(form.originalPrice) : null,
     };
-    await fetch("http://localhost:5000/api/products/add", {
+    await fetch("/api/products/add", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload), //  sends null or a number

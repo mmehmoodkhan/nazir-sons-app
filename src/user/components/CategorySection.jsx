@@ -6,7 +6,7 @@ import "./CategorySection.css";
 export const CategorySection = ({ products }) => {
   const [searchParams] = useSearchParams();
   const [activeCategory, setActiveCategory] = useState(
-    searchParams.get("category") || "All"
+    searchParams.get("category") || "All",
   );
   const { cart, addToCart, removeFromCart } = useCart();
   const navigate = useNavigate();
@@ -31,6 +31,15 @@ export const CategorySection = ({ products }) => {
       ? products
       : products.filter((p) => p.category === activeCategory);
 
+  const categoryImages = {
+    All: "../images/cart-icon.png",
+    Breakfast: "../images/plain-bread.jpg",
+    Cooking: "../images/dalda.jpeg",
+    Dairy: "../images/olper1.jpeg",
+    Beverages: "../images/olper1.jpeg",
+  };
+  console.log(categoryImages);
+
   return (
     <section className="cat_section">
       <div className="cat_tabs">
@@ -40,7 +49,13 @@ export const CategorySection = ({ products }) => {
             onClick={() => setActiveCategory(cat)}
             className={`cat_tab ${activeCategory === cat ? "active" : ""}`}
           >
-            {cat}
+            <img
+              src={categoryImages[cat] || "/images/cart-icon.png"}
+              alt={cat}
+              className="cat_tab_img"
+            />
+            <span className="cat_tab_overlay"></span>
+            <span className="cat_tab_label">{cat}</span>
           </button>
         ))}
       </div>
