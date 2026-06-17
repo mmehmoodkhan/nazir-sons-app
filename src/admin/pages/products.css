@@ -65,13 +65,18 @@
     padding-top: 1rem;
 }
 .edit-btn {
-    background: #1e90ff;
+    background: var(--link);
     color: #fff;
     border: none;
     padding: 0.5rem 0.75rem;
     border-radius: 4px;
     cursor: pointer;
     margin-right: 10px;
+    border: 1px solid var(--link);
+}
+.edit-btn:hover {
+    background: var(--white);
+    color: var(--link);
 }
 .delete-btn {
     background: #ff4d4d;
@@ -81,8 +86,33 @@
     border-radius: 4px;
     cursor: pointer;
 }
-
-
+.add_new_product_btn {
+    background: var(--link);
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.7s ease-in-out;
+    font-size: 14px;
+    border: 1px solid var(--link);
+    margin: 20px 5px;
+    text-decoration: none;
+}
+.add_new_product_btn span {
+    font-weight: bold;
+    font-size: 27px;
+    position: relative;
+    top: 6px;
+    height: 10px;
+    display: inline-block;
+    margin-right: 2px;
+}
+.add_pro_div {
+    text-align: right;
+    margin-bottom: 2rem;
+}
 
 /* Sold out overlay on image */
 .product-img {

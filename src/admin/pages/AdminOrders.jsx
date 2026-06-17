@@ -13,38 +13,75 @@ const STATUS_COLORS = {
 const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [filter, setFilter] = useState("all");
+  const [search, setSearch] = useState("");
 
   const fetchOrders = async () => {
     setLoading(true);
+    setError("");
     try {
-      const res = await fetch("/api/order/all");
+      const res = await fetch(`/api/order/all?ts=${Date.now()}`, {
+        cache: "no-store",
+      });
       const data = await res.json();
-      if (data.success) setOrders(data.orders);
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "Failed to fetch orders");
+      }
+
+      setOrders(data.orders || []);
     } catch (err) {
       console.error("Failed to fetch orders", err);
+      setError(err.message || "Failed to fetch orders");
     } finally {
       setLoading(false);
     }
   };
   //  auto refresh order page
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchOrders();
     // const interval = setInterval(fetchOrders, 30000);
     // return () => clearInterval(interval);
   }, []);
 
   const updateStatus = async (orderId, status) => {
-    await fetch(`/api/order/${orderId}/status`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status }),
-    });
-    fetchOrders();
+    try {
+      setError("");
+      const res = await fetch(`/api/order/${orderId}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "Failed to update order status");
+      }
+
+      fetchOrders();
+    } catch (err) {
+      console.error("Failed to update order status", err);
+      setError(err.message || "Failed to update order status");
+    }
   };
 
-  const filtered =
-    filter === "all" ? orders : orders.filter((o) => o.status === filter);
+  const filtered = orders.filter((order) => {
+    const matchesStatus = filter === "all" || order.status === filter;
+    const term = search.trim().toLowerCase();
+
+    if (!matchesStatus) return false;
+    if (!term) return true;
+
+    const customerName = `${order.customer?.firstName || ""} ${
+      order.customer?.lastName || ""
+    }`;
+
+    return [order.orderId, customerName, order.customer?.email]
+      .filter(Boolean)
+      .some((value) => value.toLowerCase().includes(term));
+  });
 
   // if (loading) return <p className="ao-loading">Loading orders...</p>;
 
@@ -65,8 +102,12 @@ const AdminOrders = () => {
               Orders
               <span className="ao-count">{orders.length} total</span>
             </h2>
-            <button className="ao-btn-refresh" onClick={fetchOrders}>
-              ↻ Refresh
+            <button
+              className="ao-btn-refresh"
+              onClick={fetchOrders}
+              disabled={loading}
+            >
+              {loading ? "Loading..." : "Refresh"}
             </button>
           </div>
 
@@ -90,8 +131,22 @@ const AdminOrders = () => {
             )}
           </div>
 
+          <div className="ao-toolbar">
+            <input
+              className="ao-search"
+              type="search"
+              placeholder="Search by order id or customer name"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+
           {/* ── Orders */}
-          {filtered.length === 0 ? (
+          {error ? (
+            <p className="ao-error">{error}</p>
+          ) : loading ? (
+            <p className="ao-loading">Loading orders...</p>
+          ) : filtered.length === 0 ? (
             <p className="ao-empty">No orders found.</p>
           ) : (
             filtered.map((order) => (
@@ -171,8 +226,14 @@ const AdminOrders = () => {
                   </div>
                   {order.items?.map((item, i) => (
                     <div key={i} className="ao-item-row">
-                      <span>
-                        {item.name} × {item.quantity}
+                      <span className="order_image">
+                        {item.name} <span className="cross_text">×</span> {item.quantity}
+                        {item.image && (
+                          <span className="ao-item-image">
+                            <img src={item.image} alt={item.name} />
+                          </span>
+                          
+                        )}
                       </span>
                       <span className="ao-item-price">
                         Rs {(item.price * item.quantity).toFixed(2)}

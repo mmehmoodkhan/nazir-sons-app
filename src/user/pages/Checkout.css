@@ -264,6 +264,11 @@ label {
   color: #777;
   margin-top: 4px;
 }
+.express_delivery p {
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: var(--text);
+}
 /* ── Responsive ──────────────────────────────────────── */
 @media (max-width: 480px) {
   .payment_grid {

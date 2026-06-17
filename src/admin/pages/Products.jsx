@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { NavLink,useNavigate } from "react-router-dom";
 import "./Products.css";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 
 function Products() {
-  const [products, refreshProducts ] = useState([]);
+  const [products, refreshProducts] = useState([]);
   const [activeCategory, setActiveCategory] = useState("All");
   const navigate = useNavigate();
 
   useEffect(() => {
     fetch("/api/products")
       .then((res) => res.json())
-      .then((data) => refreshProducts (data));
+      .then((data) => refreshProducts(data));
   }, []);
 
   // Get unique categories from products
@@ -73,7 +73,14 @@ function Products() {
               </button>
             ))}
           </div>
-
+          <div className="add_pro_div">
+            <NavLink
+              to="/admin/add-product"
+              className="add_new_product_btn"
+            >
+             <span>+</span> Add Products
+            </NavLink>
+          </div>
           {/* Products Grid */}
           <div className="products-grid">
             {filteredProducts.length === 0 ? (

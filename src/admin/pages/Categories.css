@@ -1,0 +1,38 @@
+.admin_Categories_main {
+    padding: 40px 50px;
+}
+.admin_cat_inner {
+    overflow: auto;
+}
+.admin_cat_table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.admin_cat_table th {
+    text-align: left;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+    color: var(--text-h);
+}
+.admin_cat_table tr td {
+    border-bottom: 1px solid #ddd;
+    padding: 8px;
+    cursor: pointer;
+}
+.edit_cat {
+    margin-right: 1rem;
+    border: none;
+    background: var(--link);
+    color: var(--white);
+    padding: 0.4rem 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.delete_cat {
+    background: #ff4d4d;
+    color: var(--white);
+    border: none;
+    padding: 0.4rem 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+}

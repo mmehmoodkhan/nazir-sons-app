@@ -380,7 +380,7 @@ const Checkout = () => {
               </div>
 
               {/* OTP */}
-              <div className="opt_wrapper">
+              {/* <div className="opt_wrapper">
                 <label>
                   Delivery Code <span className="text-danger">*</span>
                 </label>
@@ -401,7 +401,7 @@ const Checkout = () => {
                 </div>
                 <ErrorMsg field="deliveryCode" />
                 <p>Enter a 4-digit code to receive your order.</p>
-              </div>
+              </div> */}
 
               <label>Order Note</label>
               <textarea
@@ -491,7 +491,6 @@ const Checkout = () => {
                     <ErrorMsg field="city" />
                   </div>
                 </div>
-
                 <div>
                   <label>We will deliver here</label>
                   <input
@@ -500,26 +499,14 @@ const Checkout = () => {
                     value={deliverHere}
                     onChange={(e) => setDeliverHere(e.target.value)}
                   />
-                  <div>
-                    <label>We will deliver here</label>
-                    <input
-                      className="input-field"
-                      type="text"
-                      value={deliverHere}
-                      onChange={(e) => setDeliverHere(e.target.value)}
-                    />
-                    {coords && (
-                      <>
-                        <div
-                          ref={mapContainerRef}
-                          className="checkout-map"
-                        ></div>
-                        <p className="map-hint">
-                          Drag the pin to set your exact delivery location.
-                        </p>
-                      </>
-                    )}
-                  </div>
+                  {coords && (
+                    <>
+                      <div ref={mapContainerRef} className="checkout-map"></div>
+                      <p className="map-hint">
+                        Drag the pin to set your exact delivery location.
+                      </p>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -527,8 +514,17 @@ const Checkout = () => {
             {/* ── Delivery Slots ──────────────────────────── */}
             <div className="cart_contact">
               <div className="delv_slots_wrapper">
-                <h2 className="section-title">Delivery Slots</h2>
-                <h4>Select a date</h4>
+                <h2 className="section-title">Delivery Timings</h2>
+                <div className="express_delivery">
+                  <p>9:00 AM - 12:00 PM</p>
+                <p>We will deliver your order within 10-15 Minuts.</p>
+                <hr />
+                <h2 className="section-title">Delivery Charges</h2>
+                <p>Express Delivery Charges only Rs.30</p>
+                <p><b>FREE</b> delivery on orders above Rs. 1,000</p>
+                <p>Minimum order: Rs. 500</p>
+                </div>
+                {/* <h4>Select a date</h4>
                 <div className="delv_slots_list">
                   <DeliverySlots
                     onConfirm={(slot) => {
@@ -538,7 +534,7 @@ const Checkout = () => {
                     }}
                   />
                 </div>
-                <ErrorMsg field="selectedSlot" />
+                <ErrorMsg field="selectedSlot" /> */}
               </div>
             </div>
           </div>

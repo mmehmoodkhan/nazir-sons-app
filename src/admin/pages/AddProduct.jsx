@@ -6,8 +6,8 @@ import Navbar from "../components/Navbar";
 function AddProduct() {
   const [categories, setCategories] = useState([]);
   const [isNewCategory, setIsNewCategory] = useState(false);
-  const [errors, setErrors] = useState({}); // ✅ error state
-  const [submitting, setSubmitting] = useState(false); // ✅ prevent double submit
+  const [errors, setErrors] = useState({}); 
+  const [submitting, setSubmitting] = useState(false); //  prevent double submit
   const [form, setForm] = useState({
     name: "",
     price: "",

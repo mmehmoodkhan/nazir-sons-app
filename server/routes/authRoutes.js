@@ -54,6 +54,10 @@ router.post("/google", async (req, res) => {
       });
     }
 
+    if (user.isBlocked) {
+      return res.status(403).json({ message: "Your account has been blocked." });
+    }
+
     // Step 3: Issue JWT
     const jwtToken = jwt.sign(
       { userId: user._id, role: user.role || "user" },
@@ -106,6 +110,10 @@ router.post("/admin-login", async (req, res) => {
     // check role
     if (user.role !== "admin") {
       return res.status(403).json({ message: "Access denied. Admins only." });
+    }
+
+    if (user.isBlocked) {
+      return res.status(403).json({ message: "Your account has been blocked." });
     }
 
     const match = await bcrypt.compare(password, user.password);
@@ -164,6 +172,10 @@ router.post("/login", async (req, res) => {
     const user = await User.findOne({ email });
     if (!user)
       return res.status(400).json({ message: "Invalid email or password." });
+
+    if (user.isBlocked) {
+      return res.status(403).json({ message: "Your account has been blocked." });
+    }
 
     const match = await bcrypt.compare(password, user.password);
     if (!match)
@@ -272,5 +284,87 @@ router.post("/verify-email", async (req, res) => {
 });
 
 // end mailer
+
+// GET /api/auth/admin-profile - logged-in admin profile
+router.get("/admin-profile", async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) return res.status(401).json({ message: "Unauthorized." });
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (decoded.role !== "admin") {
+      return res.status(403).json({ message: "Admins only." });
+    }
+
+    const admin = await User.findById(decoded.userId).select(
+      "-password -providerId",
+    );
+
+    if (!admin) {
+      return res.status(404).json({ message: "Admin profile not found." });
+    }
+
+    return res.json({ success: true, admin });
+  } catch (err) {
+    console.error("Fetch admin profile error:", err.message);
+    return res.status(500).json({ message: "Server error." });
+  }
+});
+
+// GET /api/auth/users - admin users list
+router.get("/users", async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) return res.status(401).json({ message: "Unauthorized." });
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (decoded.role !== "admin") {
+      return res.status(403).json({ message: "Admins only." });
+    }
+
+    const users = await User.find({})
+      .select("-password -providerId")
+      .sort({ createdAt: -1 });
+
+    return res.json({ success: true, users });
+  } catch (err) {
+    console.error("Fetch users error:", err.message);
+    return res.status(500).json({ message: "Server error." });
+  }
+});
+
+// PATCH /api/auth/users/:id/block - admin block/unblock user
+router.patch("/users/:id/block", async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) return res.status(401).json({ message: "Unauthorized." });
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (decoded.role !== "admin") {
+      return res.status(403).json({ message: "Admins only." });
+    }
+
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    if (user.role === "admin") {
+      return res.status(400).json({ message: "Admin users cannot be blocked." });
+    }
+
+    user.isBlocked = Boolean(req.body.isBlocked);
+    await user.save();
+
+    const updatedUser = await User.findById(user._id).select(
+      "-password -providerId",
+    );
+
+    return res.json({ success: true, user: updatedUser });
+  } catch (err) {
+    console.error("Block user error:", err.message);
+    return res.status(500).json({ message: "Server error." });
+  }
+});
 
 export default router;

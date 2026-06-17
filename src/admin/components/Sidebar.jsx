@@ -35,10 +35,10 @@ export default function Sidebar() {
           <NavLink to="/admin/dashboard" className={({isActive})=> isActive ? "active" : ""}>Dashboard</NavLink>
         </li>
         <li>
-          <NavLink to="/admin/products" className={({isActive})=> isActive ? "active" : ""}>Show All Products</NavLink>
+          <NavLink to="/admin/products" className={({isActive})=> isActive ? "active" : ""}>Products</NavLink>
         </li>
         <li>
-          <NavLink to="/admin/add-product" className={({isActive})=> isActive ? "active" : ""}>Add Products</NavLink>
+          <NavLink to="/admin/Categories" className={({isActive})=> isActive ? "active" : ""}>Categories</NavLink>
         </li>
         <li>
           <NavLink to="/admin/orders" className={({isActive})=> isActive ? "active" : ""}>

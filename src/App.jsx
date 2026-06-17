@@ -16,11 +16,16 @@ import AdminLogin from "./admin/pages/AdminLogin";
 import Dashboard from "./admin/pages/Dashboard";
 import ProfilePage from "./user/pages/ProfilePage";
 import ProductDetailPage from "./user/pages/ProductDetailPage";
+import Categories from "./admin/pages/Categories";
+import Users from "./admin/pages/Users";
+import AdminProfile from "./admin/pages/AdminProfile";
+
+function ProtectedRoute({ children }) {
+  const token = localStorage.getItem("adminToken");
+  return token ? children : <Navigate to="/admin/login" />;
+}
+
 function App() {
-  function ProtectedRoute({ children }) {
-    const token = localStorage.getItem("adminToken");
-    return token ? children : <Navigate to="/admin/login" />;
-  }
   return (
     <>
       {/* <Navbar /> */}
@@ -31,10 +36,27 @@ function App() {
           <Route path="/admin/products" element={<Products />}></Route>
           <Route path="/" element={<Home />} />
           <Route path="/admin/add-product" element={<AddProduct />} />
+          <Route path="/admin/Categories" element={<Categories />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/order-success" element={<OrderSuccess />} />
           <Route path="/admin/orders" element={<AdminOrders />} />
+          <Route
+            path="/admin/users"
+            element={
+              <ProtectedRoute>
+                <Users />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/profile"
+            element={
+              <ProtectedRoute>
+                <AdminProfile />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/product/:id" element={<ProductDetailPage />} />
