@@ -11,6 +11,7 @@ import { useCart } from "../../context/CartContext";
 import Header from "../components/header";
 import "./CartPage.css";
 import LoginModal from "../components/LoginModal";
+import { Footer } from "../components/Footer";
 // import { useAuth } from "../../context/AuthContext";
 export default function CartPage({ onCheckout }) {
   const { cart = [], setCart, user, removeFromCart } = useCart();
@@ -177,6 +178,7 @@ export default function CartPage({ onCheckout }) {
           )}
         </div>
       </div>
+       <Footer />
     </div>
   );
 }

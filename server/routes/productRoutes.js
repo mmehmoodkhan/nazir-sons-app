@@ -15,13 +15,9 @@ const router = express.Router();
 router.get("/products", async (req, res) => {
   try {
     const ids = req.query.ids?.split(",").filter(Boolean) || [];
-    if (ids.length === 0) return res.json([]);
 
-    const products = await Product.find(
-      { _id: { $in: ids } },
-      "name price image stock", // only send what cart needs
-    );
-
+    const query = ids.length > 0 ? { _id: { $in: ids } } : {};
+    const products = await Product.find(query, "name price image stock");
     res.json(products);
   } catch (err) {
     res.status(500).json({ error: "Failed to fetch products" });

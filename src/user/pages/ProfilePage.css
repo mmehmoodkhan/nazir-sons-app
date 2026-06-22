@@ -342,6 +342,7 @@
 @media (max-width: 768px) {
   .profile-page {
     flex-direction: column;
+    margin-top: 200px;
   }
   .profile-sidebar {
     width: 100%;
@@ -366,5 +367,19 @@
   .profile-logout-btn {
     width: auto;
     margin-top: 0;
+  }
+  .profile-card {
+    max-width: 100%;
+  }
+}
+@media (max-width: 480px) {
+  .profile-card {
+    padding: 20px;
+  }
+  .profile-sidebar .profile-avatar {
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    margin-bottom: 0;
   }
 }

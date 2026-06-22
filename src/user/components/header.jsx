@@ -4,6 +4,7 @@ import "./header.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import LoginModal from "./LoginModal";
+// import { Cursor } from "mongoose";
 export default function Header() {
   const navigate = useNavigate();
   const [showLogin, setShowLogin] = useState(false);
@@ -19,7 +20,7 @@ export default function Header() {
     searchTerm.trim() === ""
       ? []
       : products.filter((p) =>
-          p.name.toLowerCase().includes(searchTerm.toLowerCase())
+          p.name.toLowerCase().includes(searchTerm.toLowerCase()),
         );
 
   // const handleResultClick = (product) => {
@@ -27,11 +28,11 @@ export default function Header() {
   //   setShowResults(false);
   //   navigate(`/product/${product._id}`);
   // };
-const handleResultClick = (product) => {
-  setSearchTerm("");
-  setShowResults(false);
-  navigate(`/?category=${encodeURIComponent(product.category || "All")}`);
-};
+  const handleResultClick = (product) => {
+    setSearchTerm("");
+    setShowResults(false);
+    navigate(`/?category=${encodeURIComponent(product.category || "All")}`);
+  };
 
   return (
     <div className="header_main_wrapper">
@@ -77,55 +78,62 @@ const handleResultClick = (product) => {
               </ul>
             )}
           </div>
-          <div className="nav-location">
-            <span className="nav_location_icon">
-              <img src="../images/location-icon.png" alt="Location" />
-            </span>
-            <div>
-              <p className="nav_location_text">Deliver to:</p>
-              <div className="loc_city">
-                <p>Lahore</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="nav-location">
-            {user ? (
-              <div className="nav-location">
-                <span className="nav_location_icon">
-                  <Link to="/profile">
-                    <img src="../images/profile-icon.png" alt="profile" />
-                  </Link>
-                </span>
-                <div>
-                  <span>
-                    <p className="user_loged">{user.name}</p>
-                  </span>
+          <div className="header_ban_right">
+            <div className="nav-location">
+              <span className="nav_location_icon">
+                <img src="../images/location-icon.png" alt="Location" />
+              </span>
+              <div>
+                <p className="nav_location_text">Deliver to:</p>
+                <div className="loc_city">
+                  <p>Lahore</p>
                 </div>
               </div>
-            ) : (
-              <div className="nav_user_login">
-                <span className="nav_location_icon">
-                  <img src="../images/profile-icon.png" alt="profile" />
-                </span>
-                <button
-                  className="nav_cart_btn"
-                  onClick={() => setShowLogin(true)}
-                >
-                  Login
-                </button>
-              </div>
-            )}
-            {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
-          </div>
+            </div>
 
-          <div className="nav-location">
-            <button className="nav_cart_btn" onClick={() => navigate("/cart")}>
-              <span className="nav_location_icon">
-                <img src="../images/cart-icon.png" alt="cart" />
-              </span>
-              {cartCount > 0 && <span className="cart_info">{cartCount}</span>}
-            </button>
+            <div className="nav-location">
+              {user ? (
+                <div className="nav-location">
+                  <span className="nav_location_icon">
+                    <Link to="/profile">
+                      <img src="../images/profile-icon.png" alt="profile" />
+                    </Link>
+                  </span>
+                  <div className="pro_name" onClick={() => navigate("/profile")}>
+                    <span>
+                      <p className="user_loged">{user.name}</p>
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <div className="nav_user_login">
+                  <span className="nav_location_icon">
+                    <img src="../images/profile-icon.png" alt="profile" />
+                  </span>
+                  <button
+                    className="nav_cart_btn"
+                    onClick={() => setShowLogin(true)}
+                  >
+                    Login
+                  </button>
+                </div>
+              )}
+              {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
+            </div>
+
+            <div className="nav-location">
+              <button
+                className="nav_cart_btn"
+                onClick={() => navigate("/cart")}
+              >
+                <span className="nav_location_icon">
+                  <img src="../images/cart-icon.png" alt="cart" />
+                </span>
+                {cartCount > 0 && (
+                  <span className="cart_info">{cartCount}</span>
+                )}
+              </button>
+            </div>
           </div>
         </nav>
       </section>

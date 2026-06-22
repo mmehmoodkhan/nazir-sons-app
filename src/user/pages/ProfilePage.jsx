@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import "./ProfilePage.css";
 import Header from "../components/header";
+import { Footer } from "../components/Footer";
 
 const TABS = ["Account", "Edit Profile", "Address", "Orders", "Payment"];
 
@@ -386,6 +387,7 @@ export default function ProfilePage() {
           )}
         </main>
       </div>
+      <Footer/>
     </>
   );
 }

@@ -9,7 +9,7 @@
   display: inline-block;
   padding: 50px;
   background: var(--bg);
-  margin-top: 160px;
+  margin-top: 130px;
 }
 label {
   margin-bottom: 0.5rem;
@@ -362,9 +362,32 @@ label {
   color: var(--text-h);
 }
 /* ── Responsive ──────────────────────────────────────── */
-@media (max-width: 480px) {
+@media (max-width: 992px) {
+  .place_order_area {
+    padding: 1.5rem;
+  }
+  .checkkout_mian {
+    flex-direction: column;
+  }
+
+  .cart_contact_main,
+  .place_order_area {
+    width: 100%;
+  }
+  .checkout_wrapper {
+    padding: 2rem;
+    margin-top: 120px;
+  }
+}
+@media (max-width: 575px) {
   .payment_grid {
     grid-template-columns: 1fr;
+  }
+  .delivery_section {
+    flex-direction: column;
+  }
+  .slots-grid {
+    grid-template-columns: 1fr!important;
   }
 
   .payment_card {
@@ -378,4 +401,7 @@ label {
   .payment_card_sub {
     text-align: left;
   }
+  .form_group {
+    width: 100%;
+}
 }

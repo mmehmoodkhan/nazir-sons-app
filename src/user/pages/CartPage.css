@@ -4,6 +4,7 @@
 }
 .cart-page-main {
   margin-top: 220px;
+  padding: 0px 3rem;
 }
 .cart_inner_main {
   display: flex;
@@ -177,4 +178,25 @@
 .proceed-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+@media (max-width: 768px) {
+  .cart_inner_main {
+    flex-direction: column;
+  }
+  .cart_sub_one,
+  .cart_sub_two {
+    width: 100%;
+  }
+}
+@media (max-width: 576px) {
+  .cart_img {
+    width: 100px;
+    height: 100px;
+  }
+  .cart-item {
+    gap: 2rem;
+  }
+  .cart_inner_main {
+    gap: 0;
+  }
 }

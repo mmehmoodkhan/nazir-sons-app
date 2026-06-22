@@ -36,3 +36,16 @@
     border-radius: 4px;
     cursor: pointer;
 }
+@media (max-width: 575px) {
+    .admin_Categories_main {
+    padding: 114px 50px;
+}
+    .admin_cat_table {
+        font-size: 14px;
+    }
+    .edit_cat, .delete_cat {
+        padding: 0.3rem 0.5rem;
+        font-size: 12px;
+        margin-bottom: 5px;
+    }
+}

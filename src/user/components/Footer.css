@@ -116,12 +116,15 @@
   .footer_col_logo {
     grid-column: 1 / -1;
   }
+  .site_footer {
+    padding-top: 0;
+  }
 }
 
 /* ── Mobile ── */
 @media (max-width: 560px) {
   .site_footer {
-    padding: 44px 16px 0;
+    padding: 0 16px 0;
   }
 
   .footer_inner {
@@ -132,5 +135,8 @@
 
   .footer_heading {
     margin-bottom: 14px;
+  }
+  .site_footer {
+    margin-top: 2rem;
   }
 }

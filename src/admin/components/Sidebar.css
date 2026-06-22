@@ -109,7 +109,7 @@ a:-webkit-any-link:focus-visible, :focus-visible {
 @media screen and (max-width: 575px) {
   .sidebar {
     position: fixed;
-    top: 59px;
+    top: 32px;
     height: 100%;
     transition: 0.3s;
     z-index: 999;

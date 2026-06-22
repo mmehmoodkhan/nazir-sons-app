@@ -26,13 +26,14 @@ app.use(
       callback(null, allowed);
     },
     credentials: true,
-  })
+  }),
 );
 app.use(express.json());
 
 // Connect MongoDB
+mongoose;
 mongoose
-  .connect("mongodb://127.0.0.1:27017/groceryApp")
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error("MongoDB error:", err));
 
@@ -55,4 +56,3 @@ app.use("/api", statsRoute);
 app.listen(5000, () => {
   console.log("Server running on port 5000");
 });
-

@@ -164,7 +164,7 @@
 
 @media screen and (max-width: 575px) {
   .delivery-settings-main {
-    padding: 1rem;
+    padding: 3rem 1rem 1rem;
     margin-top: 60px;
   }
 

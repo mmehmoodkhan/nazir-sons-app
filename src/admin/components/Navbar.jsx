@@ -233,9 +233,9 @@ export default function Navbar({ title }) {
             onClick={() => setsidebarOpen(!sidebarOpen)}
             type="button"
           >
-            {sidebarOpen ? "X" : "Menu"}
+            {sidebarOpen ? "X" : "☰"}
           </button>
-          <h2>{title}</h2>
+          <h2 className="db_title">{title}</h2>
         </div>
 
         <div className="nav-right">
@@ -331,7 +331,7 @@ export default function Navbar({ title }) {
             <span className="profile-avatar" aria-hidden="true">
               A
             </span>
-            <div className="profile-name">Admin</div>
+            {/* <div className="profile-name">Admin</div> */}
           </div>
         </div>
       </div>

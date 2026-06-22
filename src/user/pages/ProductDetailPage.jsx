@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import Header from "../components/header";
 import "./ProductDetailPage.css";
+import { Footer } from "../components/Footer";
 
 export default function ProductDetailPage() {
   const { id } = useParams();
@@ -46,8 +47,9 @@ export default function ProductDetailPage() {
     <>
       <Header />
       <div className="product-detail-page">
+        {/* <h2 className="heddings">Product Detail</h2> */}
         <div className="product-detail-image">
-          <img src={product.image} alt={product.name} />
+          <span className="pro-detail-img"><img src={product.image} alt={product.name} /></span>
         </div>
         <div className="product-detail-info">
           <h1 className="product-detail-name">{product.name}</h1>
@@ -106,6 +108,7 @@ export default function ProductDetailPage() {
           </button>
         </div>
       </div>
+      <Footer/>
     </>
   );
 }

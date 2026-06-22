@@ -87,3 +87,20 @@
 .login-btn:hover {
   background: #3742fa;
 }
+@media screen and (max-width: 768px) {
+  .admin_login_wrapper {
+    flex-direction: column;
+    padding: 2rem;
+  }
+  .admin_login_left {
+    width: 100%;
+    border-right: none;
+    border-bottom: 2px solid;
+    padding-bottom: 2rem;
+  }
+  .admin_login_right {
+    width: 100%;
+    padding-left: 0;
+    padding-top: 2rem;
+  }
+}

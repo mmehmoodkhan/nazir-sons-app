@@ -1,8 +1,8 @@
 .header_main_wrapper {
-    position: fixed;
-    width: 100%;
-    top: 0;
-    z-index: 999;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 999;
 }
 .app_logo img {
   height: 100px;
@@ -10,7 +10,6 @@
   cursor: pointer;
 }
 .user-navbar_wrapper {
-  padding: 10px 20px;
   background-color: #f8f8f8;
 }
 .user-navbar {
@@ -42,6 +41,7 @@
   display: flex;
   align-items: center;
   position: relative;
+  width: 135px;
 }
 .cart_info {
   background: var(--accent);
@@ -65,6 +65,7 @@
   height: 25px;
   margin-right: 1rem;
   object-fit: contain;
+  margin-left: 5px;
 }
 .nav_location_text {
   font-size: 14px;
@@ -80,7 +81,7 @@
   font-weight: 600;
   font-size: 1rem;
   word-spacing: -2px;
-  text-transform:capitalize;
+  text-transform: capitalize;
   width: 95px;
   white-space: nowrap;
   overflow: hidden;
@@ -90,7 +91,8 @@
   display: flex;
   align-items: center;
 }
-.nav_cart, .nav_cart {
+.nav_cart,
+.nav_cart {
   position: relative;
   display: flex;
   align-items: center;
@@ -101,14 +103,16 @@
 }
 .nav_cart_btn {
   background: transparent;
-  border:none;
+  border: none;
   cursor: pointer;
+  position: relative;
 }
-.nav-location:after, .nav_cart:after {
+.nav-location:after,
+.nav_cart:after {
   content: "";
   position: absolute;
   top: 0;
-  right: -22px;
+  right: 0;
   bottom: 0;
   width: 2px;
   height: 100%;
@@ -148,8 +152,8 @@
   text-decoration: none;
 }
 .user_navbar2 {
-    display: flex;
-    gap: 10%;
+  display: flex;
+  gap: 10%;
 }
 .user-search-bar {
   position: relative;
@@ -184,4 +188,52 @@
 .search-result-empty {
   padding: 10px 14px;
   color: #888;
+}
+.header_ban_right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.nav-location:nth-child(2)::after {
+  right: -20px;
+}
+.nav-location:nth-child(3) {
+  margin-left: 13px;
+}
+.pro_name {
+  cursor: pointer;
+}
+
+@media (max-width: 992px) {
+  .nav-location:after,
+  .nav_cart:after {
+    right: -20px;
+  }
+  .app_logo img {
+    height: 90px;
+  }
+  .nav-location {
+    width: 124px;
+  }
+}
+@media screen and (max-width: 768px) {
+  .user-search-bar {
+    width: calc(100% - 100px);
+  }
+  .user-navbar {
+    flex-wrap: wrap;
+    padding: 1rem;
+  }
+  .header_ban_right {
+    justify-content: center;
+    width: 100%;
+  }
+}
+@media screen and (max-width: 576px) {
+  .nav_location_icon img {
+    margin: 0 10px 0 5px;
+  }
+      .nav-location:after, .nav_cart:after {
+        right: -12px;
+    }
 }
