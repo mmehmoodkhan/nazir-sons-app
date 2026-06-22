@@ -1,5 +1,6 @@
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import "./DeliverySlots.css";
+
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTHS = [
   "Jan",
@@ -16,23 +17,21 @@ const MONTHS = [
   "Dec",
 ];
 
-// All slots defined with startHour (24h) for clock comparison
-const ALL_SLOTS = [
-  { time: "9:00 – 11:00 AM", startHour: 9, type: "express", label: "Express" },
-  { time: "11:00 AM – 1:00 PM", startHour: 11, type: "free", label: "Free" },
-  { time: "1:00 – 3:00 PM", startHour: 13, type: "free", label: "Free" },
-  { time: "3:00 – 5:00 PM", startHour: 15, type: "free", label: "Free" },
-  { time: "5:00 – 7:00 PM", startHour: 17, type: "express", label: "Express" },
-  { time: "7:00 – 9:00 PM", startHour: 19, type: "free", label: "Free" },
+const FALLBACK_SLOTS = [
+  { time: "9:00 AM - 11:00 AM", startHour: 9, type: "express", label: "Express" },
+  { time: "11:00 AM - 1:00 PM", startHour: 11, type: "free", label: "Free" },
+  { time: "1:00 PM - 3:00 PM", startHour: 13, type: "free", label: "Free" },
+  { time: "3:00 PM - 5:00 PM", startHour: 15, type: "free", label: "Free" },
+  { time: "5:00 PM - 7:00 PM", startHour: 17, type: "express", label: "Express" },
+  { time: "7:00 PM - 9:00 PM", startHour: 19, type: "free", label: "Free" },
 ];
-
-const FUTURE_SLOTS = ALL_SLOTS.map((s) => ({ ...s }));
 
 function getRelLabel(i) {
   if (i === 0) return "Today";
   if (i === 1) return "Tomorrow";
   return `${i} days`;
 }
+
 function generateDates(count = 7) {
   const today = new Date();
   return Array.from({ length: count }, (_, i) => {
@@ -42,10 +41,9 @@ function generateDates(count = 7) {
   });
 }
 
-// Returns today's slots, marking past ones as "passed" (with 1hr lead-time buffer)
-function getTodaySlots(now) {
+function getTodaySlots(now, baseSlots) {
   const currentHour = now.getHours() + now.getMinutes() / 60;
-  return ALL_SLOTS.map((slot) => {
+  return baseSlots.map((slot) => {
     const isPassed = slot.startHour <= currentHour + 1;
     return {
       ...slot,
@@ -58,10 +56,6 @@ function getTodaySlots(now) {
 function formatTime(date) {
   return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
-
-// ─── Styles ────────────────────────────────────────────────────────────────
-
-// ─── Sub-components ────────────────────────────────────────────────────────
 
 function DateChip({ entry, active, onClick }) {
   const d = entry.date;
@@ -97,34 +91,60 @@ function SlotCard({ slot, active, onClick }) {
   );
 }
 
-// ─── Main Component ────────────────────────────────────────────────────────
-
 export default function DeliverySlots({ onConfirm }) {
   const [now, setNow] = useState(new Date());
+  const [baseSlots, setBaseSlots] = useState(FALLBACK_SLOTS);
+  const [loadingSlots, setLoadingSlots] = useState(true);
+  const [slotError, setSlotError] = useState("");
   const [selectedDate, setSelectedDate] = useState(0);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const scrollRef = useRef(null);
 
-  // Tick every minute — slots auto-update as time passes
   useEffect(() => {
     const timer = setInterval(() => setNow(new Date()), 60 * 1000);
     return () => clearInterval(timer);
   }, []);
 
-  const dates = generateDates(7);
-  const slots = selectedDate === 0 ? getTodaySlots(now) : FUTURE_SLOTS;
-
-  // Auto-deselect if the selected slot becomes passed after a tick
   useEffect(() => {
-    if (selectedDate === 0 && selectedSlot !== null) {
-      const s = slots[selectedSlot];
-      if (s && (s.type === "passed" || s.type === "full")) {
-        setSelectedSlot(null);
+    let ignore = false;
+
+    async function fetchSlots() {
+      setLoadingSlots(true);
+      setSlotError("");
+
+      try {
+        const res = await fetch("/api/delivery-slots");
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.message || "Could not load slots.");
+        if (!ignore && Array.isArray(data.slots) && data.slots.length > 0) {
+          setBaseSlots(data.slots);
+        }
+      } catch {
+        if (!ignore) setSlotError("Showing default slots until vendor slots load.");
+      } finally {
+        if (!ignore) setLoadingSlots(false);
       }
     }
-  }, [now, selectedDate, selectedSlot, slots]);
+
+    fetchSlots();
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
+  const dates = useMemo(() => generateDates(7), []);
+  const slots = useMemo(
+    () => (selectedDate === 0 ? getTodaySlots(now, baseSlots) : baseSlots),
+    [baseSlots, now, selectedDate],
+  );
 
   const d = dates[selectedDate].date;
+  const selectedSlotData = selectedSlot !== null ? slots[selectedSlot] : null;
+  const selectedSlotAvailable =
+    selectedSlotData &&
+    selectedSlotData.type !== "passed" &&
+    selectedSlotData.type !== "full";
 
   function handleDateSelect(i) {
     setSelectedDate(i);
@@ -132,8 +152,8 @@ export default function DeliverySlots({ onConfirm }) {
   }
 
   function handleConfirm() {
-    if (selectedSlot === null) return;
-    const slot = slots[selectedSlot];
+    if (!selectedSlotAvailable) return;
+    const slot = selectedSlotData;
     const info = {
       date: d,
       dateLabel: `${DAYS[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()}`,
@@ -141,83 +161,75 @@ export default function DeliverySlots({ onConfirm }) {
       type: slot.type,
     };
     if (onConfirm) onConfirm(info);
-    else alert(`Delivery confirmed!\n${info.dateLabel} · ${info.time}`);
+    else alert(`Delivery confirmed!\n${info.dateLabel} - ${info.time}`);
   }
 
-  // Change the confirm button label to make it clear
-const confirmLabel =
-  selectedSlot !== null
-    ? `✓ Confirm — ${DAYS[d.getDay()]} ${MONTHS[d.getMonth()]} ${d.getDate()}, ${slots[selectedSlot].time}`
-    : "Select a slot then click here to confirm";
-    
+  const confirmLabel =
+    selectedSlotAvailable
+      ? `Confirm - ${DAYS[d.getDay()]} ${MONTHS[d.getMonth()]} ${d.getDate()}, ${selectedSlotData.time}`
+      : "Select a slot then click here to confirm";
+
   const availableToday =
     selectedDate === 0
       ? slots.filter((s) => s.type !== "passed" && s.type !== "full").length
       : null;
 
   return (
-    <>
-      <style>{`
-        @keyframes blink {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.3; }
-        }
-        .clock-dot { animation: blink 1.8s ease-in-out infinite; }
-      `}</style>
+    <div>
+      <p className="subheading">Select a date and time slot that works for you</p>
 
-      <div>
-        <p className="subheading">Select a date and time that works for you</p>
-
-        {/* Live clock badge */}
-        <div className="live-clock">
-          <div className="clock-badge">
-            <span className="clock-dot" />
-            Live · {formatTime(now)}
-          </div>
-
-          <div className="scroll-hint">↔ Swipe to see more</div>
+      <div className="live-clock">
+        <div className="clock-badge">
+          <span className="clock-dot" />
+          Live - {formatTime(now)}
         </div>
 
-        <div ref={scrollRef} className="date-row">
-          {dates.map((entry) => (
-            <DateChip
-              key={entry.index}
-              entry={entry}
-              active={selectedDate === entry.index}
-              onClick={() => handleDateSelect(entry.index)}
-            />
-          ))}
-        </div>
-
-        <div className="divider" />
-
-        <div className="slots-header">
-          <span className="slots-label">
-            {DAYS[d.getDay()]}, {MONTHS[d.getMonth()]} {d.getDate()} — Slots
-          </span>
-          {selectedDate === 0 && availableToday !== null && (
-            <span className="today-note">{availableToday} available now</span>
-          )}
-        </div>
-
-        <div className="slots-grid">
-          {slots.map((slot, i) => (
-            <SlotCard
-              key={i}
-              slot={slot}
-              active={selectedSlot === i}
-              onClick={() => setSelectedSlot(i)}
-            />
-          ))}
-        </div>
-        <button
-          className="confirm-btn"
-          onClick={handleConfirm}
-          disabled={selectedSlot === null}
-        >
-          {confirmLabel}
-        </button>
+        <div className="scroll-hint">Swipe to see more</div>
       </div>
-    </>
+
+      <div ref={scrollRef} className="date-row">
+        {dates.map((entry) => (
+          <DateChip
+            key={entry.index}
+            entry={entry}
+            active={selectedDate === entry.index}
+            onClick={() => handleDateSelect(entry.index)}
+          />
+        ))}
+      </div>
+
+      <div className="divider" />
+
+      <div className="slots-header">
+        <span className="slots-label">
+          {DAYS[d.getDay()]}, {MONTHS[d.getMonth()]} {d.getDate()} - Slots
+        </span>
+        {selectedDate === 0 && availableToday !== null && (
+          <span className="today-note">{availableToday} available now</span>
+        )}
+      </div>
+
+      {slotError && <p className="slots-message">{slotError}</p>}
+      {loadingSlots && <p className="slots-message">Loading vendor slots...</p>}
+
+      <div className="slots-grid">
+        {slots.map((slot, i) => (
+          <SlotCard
+            key={slot._id || `${slot.time}-${i}`}
+            slot={slot}
+            active={selectedSlot === i}
+            onClick={() => setSelectedSlot(i)}
+          />
+        ))}
+      </div>
+
+      <button
+        className="confirm-btn"
+        onClick={handleConfirm}
+        disabled={!selectedSlotAvailable}
+      >
+        {confirmLabel}
+      </button>
+    </div>
   );
 }

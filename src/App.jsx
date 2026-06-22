@@ -19,6 +19,7 @@ import ProductDetailPage from "./user/pages/ProductDetailPage";
 import Categories from "./admin/pages/Categories";
 import Users from "./admin/pages/Users";
 import AdminProfile from "./admin/pages/AdminProfile";
+import DeliverySlotSettings from "./admin/pages/DeliverySlotSettings";
 
 function ProtectedRoute({ children }) {
   const token = localStorage.getItem("adminToken");
@@ -41,6 +42,14 @@ function App() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/order-success" element={<OrderSuccess />} />
           <Route path="/admin/orders" element={<AdminOrders />} />
+          <Route
+            path="/admin/delivery-slots"
+            element={
+              <ProtectedRoute>
+                <DeliverySlotSettings />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/admin/users"
             element={

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useCart } from "../../context/CartContext";
 import { HeroSlider } from "../components/HeroSlider";
 import { CategorySection } from "../components/CategorySection";
+import { Footer } from "../components/Footer";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
@@ -36,6 +37,7 @@ export default function Home() {
           <CategorySection products={products} />
         </div>
       </div>
+      <Footer />
     </>
   );
 }

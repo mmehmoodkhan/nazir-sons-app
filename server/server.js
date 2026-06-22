@@ -10,6 +10,9 @@ import authRoutes from "./routes/authRoutes.js";
 import orderRoutes from "./routes/order.js";
 import paymentRoutes from "./routes/payment.js";
 import statsRoute from "./routes/statsRoute.js";
+import deliverySlotRoutes from "./routes/deliverySlots.js";
+import phoneOtpRoutes from "./routes/phoneOtp.js";
+import deliverySettingRoutes from "./routes/deliverySettings.js";
 
 const app = express();
 
@@ -45,6 +48,9 @@ app.use("/api/order", orderRoutes); //  this + "/checkout" = /api/order/checkout
 app.use("/api/products", productRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/delivery-slots", deliverySlotRoutes);
+app.use("/api/phone-otp", phoneOtpRoutes);
+app.use("/api/delivery-settings", deliverySettingRoutes);
 app.use("/api", statsRoute);
 app.listen(5000, () => {
   console.log("Server running on port 5000");

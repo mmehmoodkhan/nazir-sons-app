@@ -136,7 +136,7 @@ export default function ProfilePage() {
           </nav>
 
           <button className="profile-logout-btn" onClick={handleLogout}>
-            🚪 Logout
+            Logout
           </button>
         </aside>
 
@@ -256,45 +256,106 @@ export default function ProfilePage() {
               ) : orders.length === 0 ? (
                 <p className="profile-info">No orders yet.</p>
               ) : (
+                // <div className="orders-list">
+                //   {orders.map((order) => (
+                //     <div className="order-item" key={order._id}>
+                //       <div className="order-item-header">
+                //         <span className="order-id">
+                //           #{order._id.slice(-6).toUpperCase()}
+                //         </span>
+                //         <span
+                //           className={`order-status order-status--${order.status}`}
+                //         >
+                //           {order.status}
+                //         </span>
+                //       </div>
+                //       <p className="order-date">
+                //         {new Date(order.createdAt).toLocaleDateString()}
+                //       </p>
+
+                //       <div className="order-items-list">
+                //         {order.items?.map((item, idx) => (
+                //           <div className="order-line-item" key={idx}>
+                //             <span>
+                //               {item.name} × {item.quantity}
+                //             </span>
+                //             <span>Rs. {item.price * item.quantity}</span>
+                //           </div>
+                //         ))}
+                //       </div>
+                //       <p className="order-subtotal">
+                //         Subtotal: Rs. {order.subTotal}
+                //       </p>
+                //       <p className="order-shipping">
+                //         Shipping: Rs. {order.shipCharges}
+                //       </p>
+                //       <p className="order-total">
+                //         Total: Rs. {order.totalPrice}
+                //       </p>
+                //       <p className="order-payment">
+                //         Payment: {order.paymentMethod} ({order.paymentStatus})
+                //       </p>
+                //     </div>
+                //   ))}
+                // </div>
                 <div className="orders-list">
                   {orders.map((order) => (
                     <div className="order-item" key={order._id}>
-                      <div className="order-item-header">
-                        <span className="order-id">
-                          #{order._id.slice(-6).toUpperCase()}
-                        </span>
+                      <div className="order-top">
+                        <div>
+                          <h4>Order #{order._id.slice(-6).toUpperCase()}</h4>
+                          <p>
+                            {new Date(order.createdAt).toLocaleDateString()}
+                          </p>
+                        </div>
+
                         <span
                           className={`order-status order-status--${order.status}`}
                         >
                           {order.status}
                         </span>
                       </div>
-                      <p className="order-date">
-                        {new Date(order.createdAt).toLocaleDateString()}
-                      </p>
 
                       <div className="order-items-list">
                         {order.items?.map((item, idx) => (
                           <div className="order-line-item" key={idx}>
-                            <span>
-                              {item.name} × {item.quantity}
-                            </span>
-                            <span>Rs. {item.price * item.quantity}</span>
+                            <div>
+                              <strong>{item.name}</strong>
+                              <span> × {item.quantity}</span>
+                            </div>
+
+                            <div>
+                              Rs.{" "}
+                              {(item.price * item.quantity).toLocaleString()}
+                            </div>
                           </div>
                         ))}
                       </div>
-                      <p className="order-subtotal">
-                        Subtotal: Rs. {order.subTotal}
-                      </p>
-                      <p className="order-shipping">
-                        Shipping: Rs. {order.shipCharges}
-                      </p>
-                      <p className="order-total">
-                        Total: Rs. {order.totalPrice}
-                      </p>
-                      <p className="order-payment">
-                        Payment: {order.paymentMethod} ({order.paymentStatus})
-                      </p>
+
+                      <div className="order-summary">
+                        <div>
+                          <span>Subtotal</span>
+                          <span>Rs. {order.subTotal}</span>
+                        </div>
+
+                        <div>
+                          <span>Shipping</span>
+                          <span>Rs. {order.shipCharges}</span>
+                        </div>
+
+                        <div className="order-grand-total">
+                          <span>Total</span>
+                          <span>Rs. {order.totalPrice}</span>
+                        </div>
+                      </div>
+
+                      <div className="order-footer">
+                        <span>💳 {order.paymentMethod}</span>
+
+                        <span className="payment-status">
+                          {order.paymentStatus}
+                        </span>
+                      </div>
                     </div>
                   ))}
                 </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import "./CategorySection.css";
@@ -8,56 +8,205 @@ export const CategorySection = ({ products }) => {
   const [activeCategory, setActiveCategory] = useState(
     searchParams.get("category") || "All",
   );
+  const [selectedCategory, setSelectedCategory] = useState(
+    searchParams.get("category") || "All",
+  );
   const { cart, addToCart, removeFromCart } = useCart();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const cat = searchParams.get("category");
-    if (cat) setActiveCategory(cat);
-  }, [searchParams]);
-
-  const getQty = (productId) => {
-    const item = cart.find((i) => i._id === productId);
-    return item ? item.quantity : 0;
-  };
 
   const categories = [
     "All",
     ...new Set(products.map((p) => p.category).filter(Boolean)),
   ];
 
+  const tabsTrackRef = useRef(null);
+  const tabRefs = useRef({});
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+  const [isAutoplayPaused, setIsAutoplayPaused] = useState(false);
+  const dragState = useRef({
+    isDown: false,
+    startX: 0,
+    scrollLeft: 0,
+    moved: false,
+  });
+
+  useEffect(() => {
+    const cat = searchParams.get("category");
+    if (cat) {
+      setActiveCategory(cat);
+      setSelectedCategory(cat);
+    }
+  }, [searchParams]);
+
+  const updateScrollButtons = () => {
+    const track = tabsTrackRef.current;
+    if (!track) return;
+    const maxScroll = track.scrollWidth - track.clientWidth;
+    setCanScrollLeft(track.scrollLeft > 4);
+    setCanScrollRight(track.scrollLeft < maxScroll - 4);
+  };
+
+  useEffect(() => {
+    updateScrollButtons();
+    const track = tabsTrackRef.current;
+    if (!track) return;
+    track.addEventListener("scroll", updateScrollButtons);
+    window.addEventListener("resize", updateScrollButtons);
+    return () => {
+      track.removeEventListener("scroll", updateScrollButtons);
+      window.removeEventListener("resize", updateScrollButtons);
+    };
+  }, [products]);
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      const activeTab = tabRefs.current[activeCategory];
+      const track = tabsTrackRef.current;
+      if (!activeTab || !track) return;
+
+      const trackRect = track.getBoundingClientRect();
+      const tabRect = activeTab.getBoundingClientRect();
+      const currentOffset = tabRect.left - trackRect.left;
+      const targetScrollLeft =
+        track.scrollLeft +
+        currentOffset -
+        trackRect.width / 2 +
+        tabRect.width / 2;
+
+      track.scrollTo({ left: targetScrollLeft, behavior: "smooth" });
+    });
+
+    return () => cancelAnimationFrame(frame);
+  }, [activeCategory, products]);
+
+  const scrollByAmount = (amount) => {
+    tabsTrackRef.current?.scrollBy({ left: amount, behavior: "smooth" });
+  };
+
+  const AUTOPLAY_INTERVAL_MS = 3000;
+  const categoriesKey = categories.join("|");
+
+  useEffect(() => {
+    if (isAutoplayPaused || categories.length <= 1) return;
+
+    const timer = setInterval(() => {
+      setActiveCategory((current) => {
+        const currentIndex = categories.indexOf(current);
+        const nextIndex = (currentIndex + 1) % categories.length;
+        return categories[nextIndex];
+      });
+    }, AUTOPLAY_INTERVAL_MS);
+
+    return () => clearInterval(timer);
+  }, [isAutoplayPaused, categoriesKey]);
+
+  const pauseAutoplay = () => setIsAutoplayPaused(true);
+  const resumeAutoplay = () => setIsAutoplayPaused(false);
+
+  const handlePointerDown = (e) => {
+    const track = tabsTrackRef.current;
+    if (!track) return;
+    pauseAutoplay();
+    dragState.current.isDown = true;
+    dragState.current.moved = false;
+    dragState.current.startX = e.pageX ?? e.touches?.[0]?.pageX ?? 0;
+    dragState.current.scrollLeft = track.scrollLeft;
+  };
+
+  const handlePointerMove = (e) => {
+    if (!dragState.current.isDown) return;
+    const track = tabsTrackRef.current;
+    if (!track) return;
+    const x = e.pageX ?? e.touches?.[0]?.pageX ?? 0;
+    const walk = x - dragState.current.startX;
+    if (Math.abs(walk) > 5) dragState.current.moved = true;
+    track.scrollLeft = dragState.current.scrollLeft - walk;
+  };
+
+  const endDrag = () => {
+    dragState.current.isDown = false;
+    resumeAutoplay();
+  };
+
+  const getQty = (productId) => {
+    const item = cart.find((i) => i._id === productId);
+    return item ? item.quantity : 0;
+  };
+
   const filteredProducts =
-    activeCategory === "All"
+    selectedCategory === "All"
       ? products
-      : products.filter((p) => p.category === activeCategory);
+      : products.filter((p) => p.category === selectedCategory);
 
   const categoryImages = {
-    All: "../images/cart-icon.png",
-    Breakfast: "../images/plain-bread.jpg",
-    Cooking: "../images/dalda.jpeg",
-    Dairy: "../images/olper1.jpeg",
-    Beverages: "../images/olper1.jpeg",
+    All: "/images/cart-icon.png",
+    Breakfast: "/images/plain-bread.jpg",
+    Cooking: "/images/dalda.jpeg",
+    Dairy: "/images/olper1.jpeg",
+    Beverages: "/images/olper1.jpeg",
   };
-  console.log(categoryImages);
 
   return (
     <section className="cat_section">
-      <div className="cat_tabs">
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setActiveCategory(cat)}
-            className={`cat_tab ${activeCategory === cat ? "active" : ""}`}
-          >
-            <img
-              src={categoryImages[cat] || "/images/cart-icon.png"}
-              alt={cat}
-              className="cat_tab_img"
-            />
-            <span className="cat_tab_overlay"></span>
-            <span className="cat_tab_label">{cat}</span>
-          </button>
-        ))}
+      <div
+        className="cat_tabs_slider"
+        onMouseEnter={pauseAutoplay}
+        onMouseLeave={() => {
+          endDrag();
+          resumeAutoplay();
+        }}
+      >
+        <button
+          type="button"
+          className={`cat_tabs_arrow cat_tabs_arrow_left ${!canScrollLeft ? "is-hidden" : ""}`}
+          onClick={() => scrollByAmount(-240)}
+          aria-label="Scroll categories left"
+        >
+          ‹
+        </button>
+
+        <div
+          className="cat_tabs"
+          ref={tabsTrackRef}
+          onMouseDown={handlePointerDown}
+          onMouseMove={handlePointerMove}
+          onMouseUp={endDrag}
+          onTouchStart={handlePointerDown}
+          onTouchMove={handlePointerMove}
+          onTouchEnd={endDrag}
+        >
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              ref={(el) => (tabRefs.current[cat] = el)}
+              onClick={() => {
+                if (dragState.current.moved) return;
+                setActiveCategory(cat);
+                setSelectedCategory(cat);
+              }}
+              className={`cat_tab ${activeCategory === cat ? "active" : ""}`}
+            >
+              <img
+                src={categoryImages[cat] || "../images/cart-icon.png"}
+                alt={cat}
+                className="cat_tab_img"
+                draggable={false}
+              />
+              <span className="cat_tab_overlay"></span>
+              <span className="cat_tab_label">{cat}</span>
+            </button>
+          ))}
+        </div>
+
+        <button
+          type="button"
+          className={`cat_tabs_arrow cat_tabs_arrow_right ${!canScrollRight ? "is-hidden" : ""}`}
+          onClick={() => scrollByAmount(240)}
+          aria-label="Scroll categories right"
+        >
+          ›
+        </button>
       </div>
 
       <div className="products-grid">

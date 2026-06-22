@@ -4,6 +4,10 @@ import "./index.css";
 import App from "./App.jsx";
 import { BrowserRouter } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import "@fontsource/montserrat";
+import "@fontsource/montserrat/400.css";
+import "@fontsource/montserrat/500.css";
+import "@fontsource/montserrat/700.css";
 // Temporarily in main.jsx
 console.log(import.meta.env.VITE_GOOGLE_CLIENT_ID);
 console.log(window.location.origin);

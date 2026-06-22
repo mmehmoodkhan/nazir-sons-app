@@ -9,19 +9,23 @@ export default function Sidebar() {
     navigate("/admin/login");               //   redirect to login
   };
   const [orders, setOrders] = useState([]);
-  const fetchOrders = async () => {
-    try {
-      // const res = await fetch("http://localhost:5000/api/order/all");
-      const res = await fetch("/api/order/all");
-      const data = await res.json();
-      if (data.success) setOrders(data.orders);
-    } catch (err) {
-      console.error("Failed to fetch orders", err);
-    } finally {
-    }
-  };
+
   useEffect(() => {
-    fetchOrders();
+    let ignore = false;
+    async function loadOrders() {
+      try {
+        const res = await fetch("/api/order/all");
+        const data = await res.json();
+        if (!ignore && data.success) setOrders(data.orders);
+      } catch (err) {
+        console.error("Failed to fetch orders", err);
+      }
+    }
+
+    loadOrders();
+    return () => {
+      ignore = true;
+    };
   }, []);
   return (
     <div className="sidebar">
@@ -44,6 +48,9 @@ export default function Sidebar() {
           <NavLink to="/admin/orders" className={({isActive})=> isActive ? "active" : ""}>
             Orders <span className="sidebar_order-count">{orders.length}</span>
           </NavLink>
+        </li>
+        <li>
+          <NavLink to="/admin/delivery-slots" className={({isActive})=> isActive ? "active" : ""}>Delivery Slots</NavLink>
         </li>
         <li>
           <NavLink to="/admin/users" className={({isActive})=> isActive ? "active" : ""}>Users</NavLink>

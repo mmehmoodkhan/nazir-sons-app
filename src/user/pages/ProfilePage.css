@@ -25,7 +25,7 @@
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  background: #222;
+  background: var(--link);
   color: #fff;
   font-size: 28px;
   font-weight: 700;
@@ -68,15 +68,16 @@
   font-size: 14px;
   cursor: pointer;
   color: #555;
-  transition: background 0.2s;
+  transition: all 0.2s ease-in-out;
 }
 
 .profile-nav-btn:hover {
-  background: #f5f5f5;
+  background: var(--link);
+  color: var(--white);
 }
 
 .profile-nav-btn.active {
-  background: #222;
+  background: var(--link);
   color: #fff;
   font-weight: 600;
 }
@@ -85,18 +86,18 @@
   margin-top: auto;
   width: 100%;
   padding: 10px;
-  border: 1px solid #ff4444;
+  border: 1px solid var(--link);
   border-radius: 8px;
   background: transparent;
-  color: #ff4444;
-  font-size: 14px;
+  color: var(--link);
+  font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .profile-logout-btn:hover {
-  background: #ff4444;
-  color: #fff;
+  background: var(--link);
+  color: var(--white);
 }
 
 /* ── Main ── */
@@ -110,7 +111,7 @@
   border-radius: 12px;
   padding: 32px;
   max-width: 620px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .profile-card-title {
@@ -171,55 +172,155 @@
 
 .profile-save-btn {
   padding: 11px 24px;
-  background: #222;
-  color: #fff;
-  border: none;
+  background: var(--link);
+  color: var(--white);
+  border: 1px solid var(--link);
   border-radius: 8px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   margin-top: 8px;
   transition: background 0.2s;
+  transition: all 0.2s ease-in-out;
 }
 
 .profile-save-btn:hover {
-  background: #444;
+  background: var(--white);
+  color: var(--link);
 }
 
 /* Messages */
-.profile-success { color: green; font-size: 13px; margin: 8px 0; }
-.profile-error   { color: red;   font-size: 13px; margin: 8px 0; }
-.profile-info    { color: #888;  font-size: 14px; }
+.profile-success {
+  color: green;
+  font-size: 13px;
+  margin: 8px 0;
+}
+.profile-error {
+  color: red;
+  font-size: 13px;
+  margin: 8px 0;
+}
+.profile-info {
+  color: #888;
+  font-size: 14px;
+}
 
 /* Orders */
-.orders-list { display: flex; flex-direction: column; gap: 12px; }
+/* Orders */
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
 
 .order-item {
-  border: 1px solid #eee;
-  border-radius: 8px;
-  padding: 16px;
+  background: #fff;
+  border: 1px solid #eaeaea;
+  border-radius: 16px;
+  padding: 20px;
+  transition: all 0.25s ease;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
 }
 
-.order-item-header {
+.order-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.order-top {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 6px;
+  align-items: center;
+  margin-bottom: 18px;
 }
 
-.order-id   { font-weight: 700; font-size: 14px; }
-.order-date { font-size: 12px; color: #888; margin: 4px 0; }
-.order-total{ font-size: 14px; font-weight: 600; }
+.order-top h4 {
+  margin: 0;
+  font-size: 16px;
+  color: #222;
+}
 
-.order-status {
-  font-size: 12px;
-  padding: 3px 10px;
-  border-radius: 20px;
+.order-top p {
+  margin: 4px 0 0;
+  color: #888;
+  font-size: 13px;
+}
+
+.order-items-list {
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  padding: 14px 0;
+}
+
+.order-line-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  font-size: 14px;
+}
+
+.order-summary {
+  margin-top: 15px;
+}
+
+.order-summary div {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  color: #666;
+}
+
+.order-grand-total {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111;
+  border-top: 1px dashed #ddd;
+  padding-top: 12px;
+}
+
+.order-footer {
+  margin-top: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fafafa;
+  padding: 12px 14px;
+  border-radius: 10px;
+}
+
+.payment-status {
   font-weight: 600;
+  color: #16a34a;
 }
 
-.order-status--pending   { background: #fff3cd; color: #856404; }
-.order-status--delivered { background: #d1fae5; color: #065f46; }
-.order-status--cancelled { background: #fee2e2; color: #991b1b; }
+/* Status badges */
+.order-status {
+  padding: 6px 14px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.order-status--pending {
+  background: #fff7e6;
+  color: #d97706;
+}
+
+.order-status--processing {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+
+.order-status--delivered {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.order-status--cancelled {
+  background: #fee2e2;
+  color: #dc2626;
+}
 
 /* Payment */
 .payment-item {
@@ -239,10 +340,31 @@
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
-  .profile-page    { flex-direction: column; }
-  .profile-sidebar { width: 100%; height: auto; position: static; flex-direction: row; flex-wrap: wrap; justify-content: center; padding: 20px; }
-  .profile-nav     { flex-direction: row; flex-wrap: wrap; justify-content: center; }
-  .profile-nav-btn { width: auto; }
-  .profile-main    { padding: 20px; }
-  .profile-logout-btn { width: auto; margin-top: 0; }
+  .profile-page {
+    flex-direction: column;
+  }
+  .profile-sidebar {
+    width: 100%;
+    height: auto;
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 20px;
+  }
+  .profile-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .profile-nav-btn {
+    width: auto;
+  }
+  .profile-main {
+    padding: 20px;
+  }
+  .profile-logout-btn {
+    width: auto;
+    margin-top: 0;
+  }
 }

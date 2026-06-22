@@ -2,6 +2,8 @@ import express from "express";
 import Order from "../models/order.js";
 import Product from "../models/Product.js";
 import jwt from "jsonwebtoken";
+import { verifyPhoneOtpToken } from "./phoneOtp.js";
+import { calculateShippingCharge, getDeliveryPricing } from "./deliverySettings.js";
 
 const router = express.Router();
 // =====================
@@ -27,11 +29,22 @@ router.post("/checkout", async (req, res) => {
     const {
       orderId, userId, customer, delivery,
       deliverySlot, deliveryCode, orderNote,
-      items, subTotal, shipCharges, totalPrice,
-      paymentMethod, paymentStatus,
+      items, subTotal,
+      paymentMethod, paymentStatus, phoneOtpToken,
     } = req.body;
 
+    if (!verifyPhoneOtpToken(customer?.phone, phoneOtpToken)) {
+      return res.status(400).json({
+        success: false,
+        message: "Please verify your phone number before placing the order.",
+      });
+    }
+
     //  STEP 1 — Check and reduce stock before saving order
+    const pricing = await getDeliveryPricing();
+    const finalShipCharges = calculateShippingCharge(subTotal, pricing);
+    const finalTotalPrice = Number(subTotal || 0) + finalShipCharges;
+
     for (const item of items) {
       const product = await Product.findById(item._id); // cart sends _id not productId
 
@@ -59,8 +72,8 @@ router.post("/checkout", async (req, res) => {
       orderNote,
       items,
       subTotal,
-      shipCharges,
-      totalPrice,
+      shipCharges: finalShipCharges,
+      totalPrice: finalTotalPrice,
       paymentMethod,
       paymentStatus,
       status: "pending",

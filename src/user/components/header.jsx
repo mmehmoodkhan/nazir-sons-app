@@ -4,7 +4,6 @@ import "./header.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import LoginModal from "./LoginModal";
-
 export default function Header() {
   const navigate = useNavigate();
   const [showLogin, setShowLogin] = useState(false);

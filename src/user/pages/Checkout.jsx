@@ -6,6 +6,9 @@ import DeliverySlots from "./DeliverySlots";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import Header from "../components/header";
+
+const isValidPakistaniPhone = (value) => /^03\d{9}$/.test(value.trim());
+
 const Checkout = () => {
   const { cart, clearCart, user } = useCart();
   const navigate = useNavigate();
@@ -17,6 +20,11 @@ const Checkout = () => {
   const [phone, setPhone] = useState(user?.phone || "");
   const [orderNote, setOrderNote] = useState("");
   const [deliveryCode, setDeliveryCode] = useState(["", "", "", ""]);
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpVerified, setOtpVerified] = useState(false);
+  const [otpLoading, setOtpLoading] = useState(false);
+  const [otpMessage, setOtpMessage] = useState("");
+  const [phoneOtpToken, setPhoneOtpToken] = useState("");
   const [address, setAddress] = useState("");
   const [houseNo, setHouseNo] = useState("");
   const [area, setArea] = useState("");
@@ -30,16 +38,24 @@ const Checkout = () => {
   const [locationLoading, setLocationLoading] = useState(false);
   const [locationError, setLocationError] = useState("");
   const [coords, setCoords] = useState(null); // { lat, lng }
+  const [deliveryPricing, setDeliveryPricing] = useState({
+    shippingCharge: 30,
+    freeShippingThreshold: 1000,
+  });
 
   const mapContainerRef = useRef(null);
   const mapRef = useRef(null);
   const markerRef = useRef(null);
 
-  const shipCharges = 299;
   const subTotal = cart.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0,
   );
+  const shipCharges =
+    deliveryPricing.freeShippingThreshold > 0 &&
+    subTotal >= deliveryPricing.freeShippingThreshold
+      ? 0
+      : deliveryPricing.shippingCharge;
   const totalPrice = subTotal + shipCharges;
 
   const handleCodeChange = (value, index) => {
@@ -51,6 +67,11 @@ const Checkout = () => {
     }
     if (errors.deliveryCode) {
       setErrors((prev) => ({ ...prev, deliveryCode: "" }));
+    }
+    if (otpVerified) {
+      setOtpVerified(false);
+      setPhoneOtpToken("");
+      setOtpMessage("OTP changed. Please verify again.");
     }
   };
   const reverseGeocode = async (lat, lng) => {
@@ -83,6 +104,91 @@ const Checkout = () => {
     }
   };
 
+  const resetPhoneOtp = () => {
+    setOtpSent(false);
+    setOtpVerified(false);
+    setPhoneOtpToken("");
+    setOtpMessage("");
+    setDeliveryCode(["", "", "", ""]);
+  };
+
+  const handleSendOtp = async () => {
+    if (!isValidPakistaniPhone(phone)) {
+      setErrors((prev) => ({
+        ...prev,
+        phone: "Enter a valid Pakistani number (03xxxxxxxxx)",
+      }));
+      return;
+    }
+
+    setOtpLoading(true);
+    setOtpMessage("");
+    setOtpVerified(false);
+    setPhoneOtpToken("");
+
+    try {
+      const res = await fetch("/api/phone-otp/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.message || "Could not send OTP.");
+
+      setOtpSent(true);
+      setDeliveryCode(["", "", "", ""]);
+      setOtpMessage(data.devOtp ? `OTP sent. Dev code: ${data.devOtp}` : "OTP sent to your phone.");
+      document.getElementById("otp-0")?.focus();
+    } catch (err) {
+      setErrors((prev) => ({
+        ...prev,
+        deliveryCode: err.message,
+      }));
+    } finally {
+      setOtpLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    const otp = deliveryCode.join("");
+    if (!/^\d{4}$/.test(otp)) {
+      setErrors((prev) => ({
+        ...prev,
+        deliveryCode: "Enter the 4-digit OTP.",
+      }));
+      return;
+    }
+
+    setOtpLoading(true);
+    setOtpMessage("");
+
+    try {
+      const res = await fetch("/api/phone-otp/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone, otp }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.message || "Invalid OTP.");
+
+      setOtpVerified(true);
+      setPhoneOtpToken(data.verificationToken);
+      setOtpMessage("Phone number verified.");
+      clearError("deliveryCode");
+    } catch (err) {
+      setOtpVerified(false);
+      setPhoneOtpToken("");
+      setErrors((prev) => ({
+        ...prev,
+        deliveryCode: err.message,
+      }));
+    } finally {
+      setOtpLoading(false);
+    }
+  };
+
   const clearError = (field) => {
     if (errors[field]) setErrors((prev) => ({ ...prev, [field]: "" }));
   };
@@ -98,11 +204,15 @@ const Checkout = () => {
       newErrors.email = "Enter a valid email address";
 
     if (!phone.trim()) newErrors.phone = "Phone number is required";
-    else if (!/^03\d{9}$/.test(phone))
+    else if (!isValidPakistaniPhone(phone))
       newErrors.phone = "Enter a valid Pakistani number (03xxxxxxxxx)";
 
-    if (deliveryCode.some((d) => d === ""))
-      newErrors.deliveryCode = "Enter all 4 digits of the delivery code";
+    if (!otpSent)
+      newErrors.deliveryCode = "Send an OTP to your phone number first";
+    else if (deliveryCode.some((d) => d === ""))
+      newErrors.deliveryCode = "Enter the 4-digit OTP";
+    else if (!otpVerified || !phoneOtpToken)
+      newErrors.deliveryCode = "Verify your phone OTP before placing the order";
 
     if (!address.trim()) newErrors.address = "Address is required";
     if (!area.trim()) newErrors.area = "Area is required";
@@ -115,7 +225,7 @@ const Checkout = () => {
     if (paymentMethod !== "cod") {
       if (!mobileNumber.trim())
         newErrors.mobileNumber = "Mobile number is required";
-      else if (!/^03\d{9}$/.test(mobileNumber))
+      else if (!isValidPakistaniPhone(mobileNumber))
         newErrors.mobileNumber = "Enter a valid Pakistani number (03xxxxxxxxx)";
     }
 
@@ -152,6 +262,35 @@ const Checkout = () => {
       { enableHighAccuracy: true, timeout: 10000 },
     );
   };
+
+  useEffect(() => {
+    let ignore = false;
+
+    async function fetchDeliveryPricing() {
+      try {
+        const res = await fetch("/api/delivery-settings");
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || "Could not load pricing.");
+
+        if (!ignore && data.settings) {
+          setDeliveryPricing({
+            shippingCharge: Number(data.settings.shippingCharge || 0),
+            freeShippingThreshold: Number(data.settings.freeShippingThreshold || 0),
+          });
+        }
+      } catch {
+        if (!ignore) {
+          setDeliveryPricing({ shippingCharge: 30, freeShippingThreshold: 1000 });
+        }
+      }
+    }
+
+    fetchDeliveryPricing();
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
   useEffect(() => {
     if (!coords || !mapContainerRef.current) return;
 
@@ -218,6 +357,7 @@ const Checkout = () => {
       totalPrice,
       paymentMethod,
       paymentStatus: paymentMethod === "cod" ? "pending" : "paid",
+      phoneOtpToken,
     };
 
     try {
@@ -372,7 +512,9 @@ const Checkout = () => {
                     value={phone}
                     onChange={(e) => {
                       setPhone(e.target.value);
+                      resetPhoneOtp();
                       clearError("phone");
+                      clearError("deliveryCode");
                     }}
                   />
                   <ErrorMsg field="phone" />
@@ -380,10 +522,21 @@ const Checkout = () => {
               </div>
 
               {/* OTP */}
-              {/* <div className="opt_wrapper">
+              <div className="opt_wrapper">
                 <label>
-                  Delivery Code <span className="text-danger">*</span>
+                  Phone OTP <span className="text-danger">*</span>
                 </label>
+                <div className="otp_actions">
+                  <button
+                    type="button"
+                    className="otp_action_btn"
+                    onClick={handleSendOtp}
+                    disabled={otpLoading || !isValidPakistaniPhone(phone)}
+                  >
+                    {otpSent ? "Resend OTP" : "Send OTP"}
+                  </button>
+                  {otpVerified && <span className="otp_verified">Verified</span>}
+                </div>
                 <div className="opt_wrapper_inner">
                   {deliveryCode.map((digit, i) => (
                     <input
@@ -394,14 +547,30 @@ const Checkout = () => {
                       inputMode="numeric"
                       maxLength={1}
                       value={digit}
+                      disabled={!otpSent || otpVerified}
                       onChange={(e) => handleCodeChange(e.target.value, i)}
                       onKeyDown={(e) => handleCodeKeyDown(e, i)}
                     />
                   ))}
                 </div>
+                {otpSent && !otpVerified && (
+                  <button
+                    type="button"
+                    className="otp_verify_btn"
+                    onClick={handleVerifyOtp}
+                    disabled={otpLoading || deliveryCode.some((digit) => !digit)}
+                  >
+                    {otpLoading ? "Checking..." : "Verify OTP"}
+                  </button>
+                )}
                 <ErrorMsg field="deliveryCode" />
-                <p>Enter a 4-digit code to receive your order.</p>
-              </div> */}
+                {otpMessage && (
+                  <p className={otpVerified ? "otp_success_text" : "otp_hint_text"}>
+                    {otpMessage}
+                  </p>
+                )}
+                <p>Verify your Pakistani mobile number before placing the order.</p>
+              </div>
 
               <label>Order Note</label>
               <textarea
@@ -416,7 +585,7 @@ const Checkout = () => {
             <div className="cart_contact">
               <h2 className="section-title">Delivery Information</h2>
 
-              <button
+              {/* <button
                 type="button"
                 className="use-location-btn"
                 onClick={handleUseMyLocation}
@@ -426,7 +595,7 @@ const Checkout = () => {
                 {locationLoading
                   ? "Detecting location..."
                   : "Use my current location"}
-              </button>
+              </button> */}
               {locationError && (
                 <span className="field-error">{locationError}</span>
               )}
@@ -516,15 +685,77 @@ const Checkout = () => {
               <div className="delv_slots_wrapper">
                 <h2 className="section-title">Delivery Timings</h2>
                 <div className="express_delivery">
-                  <p>9:00 AM - 12:00 PM</p>
-                <p>We will deliver your order within 10-15 Minuts.</p>
-                <hr />
-                <h2 className="section-title">Delivery Charges</h2>
-                <p>Express Delivery Charges only Rs.30</p>
-                <p><b>FREE</b> delivery on orders above Rs. 1,000</p>
-                <p>Minimum order: Rs. 500</p>
+                  <h4>9:00 AM - 12:00 PM</h4>
+                  <p className="delv_time">
+                    We will deliver your order within 10-15 Minuts.
+                  </p>
+                  <div className="delivery_section">
+                    <div className="how_to_delvery">
+                      <h2 className="section-title">How to Order</h2>
+                      <div className="d-felx-delvery">
+                        <div className="count_div">1</div>
+                        <div>
+                          <h3>Call or whatsApp</h3>
+                          <p>
+                            Reach us at +92 3013827812 with your order details.
+                          </p>
+                        </div>
+                      </div>
+                      <div className="d-felx-delvery">
+                        <div className="count_div">2</div>
+                        <div>
+                          <h3>Confirm Your Order</h3>
+                          <p>
+                            Once we receive your order, we will confirm it via
+                            call or WhatsApp.
+                          </p>
+                        </div>
+                      </div>
+                      <div className="d-felx-delvery">
+                        <div className="count_div">3</div>
+                        <div>
+                          <h3>Fast Delivery</h3>
+                          <p>
+                            We will deliver your order within{" "}
+                            <b>10-15 Minuts.</b>
+                          </p>
+                        </div>
+                      </div>
+                      <div className="d-felx-delvery">
+                        <div className="count_div">4</div>
+                        <div>
+                          <h3>Receive at Your Door</h3>
+                          <p>
+                            Sit back and relax. Your order will be delivered
+                            promptly.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="delv_charge">
+                      <h2 className="section-title">Delivery Charges</h2>
+                      <div className="d-felx-delvery">
+                        <div className="count_div">✓</div>
+                        <p>
+                          Express Delivery Charges only <b>Rs. 30</b>
+                        </p>
+                      </div>
+                      <div className="d-felx-delvery">
+                        <div className="count_div">✓</div>
+                        <p>
+                          <b>FREE</b> delivery on orders above <b>Rs. 1,000</b>
+                        </p>
+                      </div>
+                      <div className="d-felx-delvery">
+                        <div className="count_div">✓</div>
+                        <p>
+                          Minimum order: <b>Rs. 500</b>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                {/* <h4>Select a date</h4>
+                <h2 className="slot-section-title">Select a Date and Time Slot</h2>
                 <div className="delv_slots_list">
                   <DeliverySlots
                     onConfirm={(slot) => {
@@ -534,7 +765,7 @@ const Checkout = () => {
                     }}
                   />
                 </div>
-                <ErrorMsg field="selectedSlot" /> */}
+                <ErrorMsg field="selectedSlot" />
               </div>
             </div>
           </div>

@@ -3,7 +3,7 @@ import "../components/HeroSlider.css";
 const SLIDES = [
   {
     id: 1,
-       image: "../images/banner1.jpeg",
+    image: "../images/banner1.jpeg",
     title: "Fresh Groceries",
     subtitle: "Delivered to your door in 30 minutes",
     btn: "Shop Now",
@@ -11,7 +11,7 @@ const SLIDES = [
   },
   {
     id: 2,
-      image: "../images/banner2.jpeg",
+    image: "../images/banner2.jpeg",
     title: "Daily Essentials",
     subtitle: "Best prices on everyday items",
     btn: "Explore",
@@ -23,7 +23,7 @@ const SLIDES = [
     title: "Special Offers",
     subtitle: "Up to 30% off on selected products",
     btn: "View Deals",
-    link: "/shop",
+    link: "/",
   },
 ];
 
