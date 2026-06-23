@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { NavLink,useNavigate } from "react-router-dom";
 import "./Products.css";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
@@ -95,6 +96,14 @@ function Categories() {
           <Navbar title="Categories" />
         </div>
         <section className="admin_Categories_main">
+          <div className="add_pro_div">
+            <NavLink
+              to="/admin/add-category"
+              className="add_new_product_btn"
+            >
+             <span>+</span> Add Category
+            </NavLink>
+          </div>
           <div className="admin_cat_inner">
             <table className="admin_cat_table">
               <thead>

@@ -20,6 +20,7 @@ import Categories from "./admin/pages/Categories";
 import Users from "./admin/pages/Users";
 import AdminProfile from "./admin/pages/AdminProfile";
 import DeliverySlotSettings from "./admin/pages/DeliverySlotSettings";
+import AddCategory from "./admin/pages/AddCategory";
 
 function ProtectedRoute({ children }) {
   const token = localStorage.getItem("adminToken");
@@ -38,6 +39,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/admin/add-product" element={<AddProduct />} />
           <Route path="/admin/Categories" element={<Categories />} />
+          <Route path="/admin/Add-category" element={<AddCategory />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/order-success" element={<OrderSuccess />} />

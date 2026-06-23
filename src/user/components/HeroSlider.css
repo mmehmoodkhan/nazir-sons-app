@@ -4,7 +4,7 @@
   height: 450px;
   overflow: hidden;
   background: #0f172a;
-  margin-top:160px;
+  margin-top: 160px;
 }
 
 .hero_slide {
@@ -66,7 +66,9 @@
   font-size: 14px;
   font-weight: 600;
   text-decoration: none;
-  transition: background 0.15s, transform 0.1s;
+  transition:
+    background 0.15s,
+    transform 0.1s;
 }
 
 .hero_btn:hover {
@@ -99,8 +101,12 @@
   background: rgba(255, 255, 255, 0.3);
 }
 
-.hero_arrow_left  { left: 16px; }
-.hero_arrow_right { right: 16px; }
+.hero_arrow_left {
+  left: 16px;
+}
+.hero_arrow_right {
+  right: 16px;
+}
 
 /* ── Dots ────────────────────────────────────────────── */
 .hero_dots {
@@ -121,7 +127,9 @@
   background: rgba(255, 255, 255, 0.45);
   cursor: pointer;
   padding: 0;
-  transition: background 0.2s, transform 0.2s;
+  transition:
+    background 0.2s,
+    transform 0.2s;
 }
 
 .hero_dot.active {
@@ -130,9 +138,28 @@
 }
 
 /* ── Responsive ──────────────────────────────────────── */
+@media (max-width: 768px) {
+  .hero_content {
+    left: 10%;
+  }
+}
 @media (max-width: 600px) {
-  .hero_slider   { height: 260px; }
-  .hero_title    { font-size: 24px; }
-  .hero_subtitle { font-size: 13px; }
-  .hero_btn      { padding: 10px 20px; font-size: 13px; }
+  .hero_slider {
+    height: 260px;
+  }
+  .hero_title {
+    font-size: 24px;
+  }
+  .hero_subtitle {
+    font-size: 13px;
+  }
+  .hero_btn {
+    padding: 10px 20px;
+    font-size: 13px;
+  }
+}
+@media (max-width: 575px) {
+  .hero_content {
+    left: 20%;
+  }
 }
