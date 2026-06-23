@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { NavLink,useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import "./Products.css";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
@@ -74,11 +74,8 @@ function Products() {
             ))}
           </div>
           <div className="add_pro_div">
-            <NavLink
-              to="/admin/add-product"
-              className="add_new_product_btn"
-            >
-             <span>+</span> Add Products
+            <NavLink to="/admin/add-product" className="add_new_product_btn">
+              <span>+</span> Add Products
             </NavLink>
           </div>
           {/* Products Grid */}
@@ -90,8 +87,11 @@ function Products() {
                 // Replace the product-card div with this:
                 <div className="product-card" key={product._id}>
                   <span className="product-img">
-                    <img src={product.image} alt={product.name} />
-                    {/* ✅ Sold Out overlay on image */}
+                    {product.image ? (
+                      <img src={product.image} alt={product.name} />
+                    ) : (
+                      <div className="no-image-placeholder">No Image</div>
+                    )}
                     {product.stock === 0 && (
                       <span className="soldout-badge">Sold Out</span>
                     )}
@@ -100,7 +100,6 @@ function Products() {
                     <h3 className="product-name">{product.name}</h3>
                     <p className="product-price">Price: {product.price}</p>
 
-                    {/* ✅ Stock shown in red/orange based on level */}
                     <p
                       className="product-stock"
                       style={{
@@ -137,32 +136,6 @@ function Products() {
                     </div>
                   </div>
                 </div>
-                // <div className="product-card" key={product._id}>
-                //   <span className="product-img">
-                //     <img src={product.image} alt={product.name} />
-                //   </span>
-                //   <div className="product-detail">
-                //     <h3 className="product-name">{product.name}</h3>
-                //     <p className="product-price">Price: {product.price}</p>
-                //     <p className="product-stock">Stock: {product.stock}</p>
-                //     <div>
-                //       <button
-                //         className="edit-btn"
-                //         onClick={() =>
-                //           navigate(`/admin/products/edit/${product._id}`)
-                //         }
-                //       >
-                //         Edit
-                //       </button>
-                //       <button
-                //         className="delete-btn"
-                //         onClick={() => handleDelete(product._id)}
-                //       >
-                //         Delete
-                //       </button>
-                //     </div>
-                //   </div>
-                // </div>
               ))
             )}
           </div>

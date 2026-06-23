@@ -10,12 +10,15 @@ const STATUS_COLORS = {
   cancelled: "badge-cancelled",
 };
 
+const ORDERS_PER_PAGE = 5;
+
 const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const fetchOrders = async () => {
     setLoading(true);
@@ -38,13 +41,15 @@ const AdminOrders = () => {
       setLoading(false);
     }
   };
-  //  auto refresh order page
+
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchOrders();
-    // const interval = setInterval(fetchOrders, 30000);
-    // return () => clearInterval(interval);
   }, []);
+
+  // Reset to page 1 when filter or search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filter, search]);
 
   const updateStatus = async (orderId, status) => {
     try {
@@ -83,7 +88,18 @@ const AdminOrders = () => {
       .some((value) => value.toLowerCase().includes(term));
   });
 
-  // if (loading) return <p className="ao-loading">Loading orders...</p>;
+  // Pagination calculations
+  const totalPages = Math.ceil(filtered.length / ORDERS_PER_PAGE);
+  const paginatedOrders = filtered.slice(
+    (currentPage - 1) * ORDERS_PER_PAGE,
+    currentPage * ORDERS_PER_PAGE
+  );
+
+  const goToPage = (page) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <div className="ao-wrapper">
@@ -96,7 +112,7 @@ const AdminOrders = () => {
         </div>
 
         <div className="ao_main_inner">
-          {/* ── Header */}
+          {/* Header */}
           <div className="ao-header">
             <h2 className="ao-title">
               Orders
@@ -111,7 +127,7 @@ const AdminOrders = () => {
             </button>
           </div>
 
-          {/* ── Filter tabs */}
+          {/* Filter tabs */}
           <div className="ao-filters">
             {["all", "pending", "confirmed", "delivered", "cancelled"].map(
               (f) => (
@@ -141,7 +157,7 @@ const AdminOrders = () => {
             />
           </div>
 
-          {/* ── Orders */}
+          {/* Orders */}
           {error ? (
             <p className="ao-error">{error}</p>
           ) : loading ? (
@@ -149,117 +165,161 @@ const AdminOrders = () => {
           ) : filtered.length === 0 ? (
             <p className="ao-empty">No orders found.</p>
           ) : (
-            filtered.map((order) => (
-              <div key={order.orderId} className="ao-card">
-                {/* Card header */}
-                <div className="ao-card-header">
-                  <div>
-                    <div className="ao-order-id">{order.orderId}</div>
-                    <div className="ao-order-time">
-                      {new Date(order.createdAt).toLocaleString()}
+            <>
+              {/* Showing X–Y of Z */}
+              <p className="ao-page-info">
+                Showing{" "}
+                <strong>
+                  {(currentPage - 1) * ORDERS_PER_PAGE + 1}–
+                  {Math.min(currentPage * ORDERS_PER_PAGE, filtered.length)}
+                </strong>{" "}
+                of <strong>{filtered.length}</strong> orders
+              </p>
+
+              {paginatedOrders.map((order) => (
+                <div key={order.orderId} className="ao-card">
+                  {/* Card header */}
+                  <div className="ao-card-header">
+                    <div>
+                      <div className="ao-order-id">{order.orderId}</div>
+                      <div className="ao-order-time">
+                        {new Date(order.createdAt).toLocaleString()}
+                      </div>
+                    </div>
+                    <span
+                      className={`ao-badge ${STATUS_COLORS[order.status] || "badge-pending"}`}
+                    >
+                      {order.status}
+                    </span>
+                  </div>
+
+                  {/* Info grid */}
+                  <div className="ao-info-grid">
+                    <div className="ao-info-block">
+                      <label>Customer</label>
+                      <p>
+                        {order.customer?.firstName} {order.customer?.lastName}
+                      </p>
+                      <p className="muted">{order.customer?.phone}</p>
+                      <p className="muted">{order.customer?.email}</p>
+                    </div>
+
+                    <div className="ao-info-block">
+                      <label>Delivery address</label>
+                      <p>{order.delivery?.address}</p>
+                      <p className="muted">
+                        {order.delivery?.area}, {order.delivery?.city}
+                      </p>
+                    </div>
+
+                    <div className="ao-info-block">
+                      <label>Payment</label>
+                      <p className="uppercase">{order.paymentMethod}</p>
+                      <p className="muted capitalize">{order.paymentStatus}</p>
+                    </div>
+
+                    <div className="ao-info-block">
+                      <label>Delivery slot</label>
+                      {order.deliverySlot ? (
+                        <>
+                          <p>{order.deliverySlot.dateLabel}</p>
+                          <p className="muted">{order.deliverySlot.time}</p>
+                          <span
+                            className={`ao-slot-pill ${order.deliverySlot.type === "express" ? "slot-express" : "slot-free"}`}
+                          >
+                            {order.deliverySlot.type === "express"
+                              ? "⚡ Express"
+                              : "✓ Free"}
+                          </span>
+                        </>
+                      ) : (
+                        <p className="muted">Not selected</p>
+                      )}
+                    </div>
+
+                    <div className="ao-info-block">
+                      <label>Total</label>
+                      <p className="ao-total">
+                        Rs {order.totalPrice?.toFixed(2)}
+                      </p>
                     </div>
                   </div>
-                  <span
-                    className={`ao-badge ${STATUS_COLORS[order.status] || "badge-pending"}`}
-                  >
-                    {order.status}
-                  </span>
-                </div>
 
-                {/* Info grid */}
-                <div className="ao-info-grid">
-                  <div className="ao-info-block">
-                    <label>Customer</label>
-                    <p>
-                      {order.customer?.firstName} {order.customer?.lastName}
-                    </p>
-                    <p className="muted">{order.customer?.phone}</p>
-                    <p className="muted">{order.customer?.email}</p>
-                  </div>
-
-                  <div className="ao-info-block">
-                    <label>Delivery address</label>
-                    <p>{order.delivery?.address}</p>
-                    <p className="muted">
-                      {order.delivery?.area}, {order.delivery?.city}
-                    </p>
-                  </div>
-
-                  <div className="ao-info-block">
-                    <label>Payment</label>
-                    <p className="uppercase">{order.paymentMethod}</p>
-                    <p className="muted capitalize">{order.paymentStatus}</p>
-                  </div>
-
-                  {/* ── Delivery slot */}
-                  <div className="ao-info-block">
-                    <label>Delivery slot</label>
-                    {order.deliverySlot ? (
-                      <>
-                        <p>{order.deliverySlot.dateLabel}</p>
-                        <p className="muted">{order.deliverySlot.time}</p>
-                        <span
-                          className={`ao-slot-pill ${order.deliverySlot.type === "express" ? "slot-express" : "slot-free"}`}
-                        >
-                          {order.deliverySlot.type === "express"
-                            ? "⚡ Express"
-                            : "✓ Free"}
+                  {/* Items */}
+                  <div className="ao-items">
+                    <div className="ao-items-label">
+                      Items ({order.items?.length})
+                    </div>
+                    {order.items?.map((item, i) => (
+                      <div key={i} className="ao-item-row">
+                        <span className="order_image">
+                          {item.image && (
+                            <span className="ao-item-image">
+                              <img src={item.image} alt={item.name} />
+                            </span>
+                          )}
+                          {item.name} <span className="cross_text">×</span>{" "}
+                          {item.quantity}
                         </span>
-                      </>
-                    ) : (
-                      <p className="muted">Not selected</p>
+                        <span className="ao-item-price">
+                          Rs {(item.price * item.quantity).toFixed(2)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Status update */}
+                  <div className="ao-status-row">
+                    <span className="ao-status-label">Update status:</span>
+                    {["pending", "confirmed", "delivered", "cancelled"].map(
+                      (s) => (
+                        <button
+                          key={s}
+                          onClick={() => updateStatus(order.orderId, s)}
+                          disabled={order.status === s}
+                          className={`ao-status-btn ${order.status === s ? "current" : ""}`}
+                        >
+                          {s}
+                        </button>
+                      ),
                     )}
                   </div>
-
-                  <div className="ao-info-block">
-                    <label>Total</label>
-                    <p className="ao-total">
-                      Rs {order.totalPrice?.toFixed(2)}
-                    </p>
-                  </div>
                 </div>
+              ))}
 
-                {/* Items */}
-                <div className="ao-items">
-                  <div className="ao-items-label">
-                    Items ({order.items?.length})
-                  </div>
-                  {order.items?.map((item, i) => (
-                    <div key={i} className="ao-item-row">
-                      <span className="order_image">
-                        {item.name} <span className="cross_text">×</span> {item.quantity}
-                        {item.image && (
-                          <span className="ao-item-image">
-                            <img src={item.image} alt={item.name} />
-                          </span>
-                          
-                        )}
-                      </span>
-                      <span className="ao-item-price">
-                        Rs {(item.price * item.quantity).toFixed(2)}
-                      </span>
-                    </div>
-                  ))}
-                </div>
+              {/* Pagination controls */}
+              {totalPages > 1 && (
+                <div className="ao-pagination">
+                  <button
+                    className="ao-page-btn ao_prev-btn"
+                    onClick={() => goToPage(currentPage - 1)}
+                    disabled={currentPage === 1}
+                  >
+                    ← Prev
+                  </button>
 
-                {/* Status update */}
-                <div className="ao-status-row">
-                  <span className="ao-status-label">Update status:</span>
-                  {["pending", "confirmed", "delivered", "cancelled"].map(
-                    (s) => (
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                    (page) => (
                       <button
-                        key={s}
-                        onClick={() => updateStatus(order.orderId, s)}
-                        disabled={order.status === s}
-                        className={`ao-status-btn ${order.status === s ? "current" : ""}`}
+                        key={page}
+                        className={`ao-page-btn ${currentPage === page ? "ao-page-active" : ""}`}
+                        onClick={() => goToPage(page)}
                       >
-                        {s}
+                        {page}
                       </button>
-                    ),
+                    )
                   )}
+
+                  <button
+                    className="ao-page-btn ao_next-btn"
+                    onClick={() => goToPage(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                  >
+                    Next →
+                  </button>
                 </div>
-              </div>
-            ))
+              )}
+            </>
           )}
         </div>
       </div>

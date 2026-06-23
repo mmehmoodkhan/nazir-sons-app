@@ -12,30 +12,31 @@ const formatDate = (value) => {
   });
 };
 
+const USERS_PER_PAGE = 5;
+
 function Users() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
   const [updatingUserId, setUpdatingUserId] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // ── Filter states
+  const [filterRole, setFilterRole] = useState("all");       // name/email filtered via search
+  const [filterStatus, setFilterStatus] = useState("all");   // verified / pending
+  const [filterAccess, setFilterAccess] = useState("all");   // active / blocked
 
   const fetchUsers = async () => {
     setLoading(true);
     setError("");
-
     try {
       const token = localStorage.getItem("adminToken");
       const res = await fetch("/api/auth/users", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || "Failed to fetch users.");
-      }
-
+      if (!res.ok) throw new Error(data.message || "Failed to fetch users.");
       setUsers(data.users || []);
     } catch (err) {
       setError(err.message);
@@ -45,21 +46,21 @@ function Users() {
   };
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchUsers();
   }, []);
+
+  // Reset to page 1 whenever any filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, filterRole, filterStatus, filterAccess]);
 
   const toggleBlockUser = async (user) => {
     const isBlocked = !user.isBlocked;
     const action = isBlocked ? "block" : "unblock";
-
-    if (!window.confirm(`Are you sure you want to ${action} ${user.name}?`)) {
-      return;
-    }
+    if (!window.confirm(`Are you sure you want to ${action} ${user.name}?`)) return;
 
     setUpdatingUserId(user._id);
     setError("");
-
     try {
       const token = localStorage.getItem("adminToken");
       const res = await fetch(`/api/auth/users/${user._id}/block`, {
@@ -71,15 +72,9 @@ function Users() {
         body: JSON.stringify({ isBlocked }),
       });
       const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || `Failed to ${action} user.`);
-      }
-
+      if (!res.ok) throw new Error(data.message || `Failed to ${action} user.`);
       setUsers((currentUsers) =>
-        currentUsers.map((currentUser) =>
-          currentUser._id === user._id ? data.user : currentUser,
-        ),
+        currentUsers.map((u) => (u._id === user._id ? data.user : u)),
       );
     } catch (err) {
       setError(err.message);
@@ -88,20 +83,61 @@ function Users() {
     }
   };
 
+  const clearFilters = () => {
+    setSearch("");
+    setFilterRole("all");
+    setFilterStatus("all");
+    setFilterAccess("all");
+  };
+
+  const hasActiveFilters =
+    search || filterRole !== "all" || filterStatus !== "all" || filterAccess !== "all";
+
   const filteredUsers = useMemo(() => {
-    const term = search.trim().toLowerCase();
-    if (!term) return users;
+    return users.filter((user) => {
+      // Search — name or email
+      const term = search.trim().toLowerCase();
+      if (term) {
+        const matches = [user.name, user.email]
+          .filter(Boolean)
+          .some((v) => v.toLowerCase().includes(term));
+        if (!matches) return false;
+      }
 
-    return users.filter((user) =>
-      [user.name, user.email, user.role, user.provider]
-        .filter(Boolean)
-        .some((value) => value.toLowerCase().includes(term)),
-    );
-  }, [search, users]);
+      // Role filter
+      if (filterRole !== "all" && user.role !== filterRole) return false;
 
-  const verifiedCount = users.filter((user) => user.isVerified).length;
+      // Status filter (verified / pending)
+      if (filterStatus === "verified" && !user.isVerified) return false;
+      if (filterStatus === "pending" && user.isVerified) return false;
+
+      // Access filter (active / blocked)
+      if (filterAccess === "active" && user.isBlocked) return false;
+      if (filterAccess === "blocked" && !user.isBlocked) return false;
+
+      return true;
+    });
+  }, [search, filterRole, filterStatus, filterAccess, users]);
+
+  // Pagination
+  const totalPages = Math.ceil(filteredUsers.length / USERS_PER_PAGE);
+  const paginatedUsers = filteredUsers.slice(
+    (currentPage - 1) * USERS_PER_PAGE,
+    currentPage * USERS_PER_PAGE,
+  );
+
+  const goToPage = (page) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const verifiedCount = users.filter((u) => u.isVerified).length;
   const pendingCount = users.length - verifiedCount;
-  const blockedCount = users.filter((user) => user.isBlocked).length;
+  const blockedCount = users.filter((u) => u.isBlocked).length;
+
+  // Unique roles for dropdown
+  const roles = ["all", ...new Set(users.map((u) => u.role).filter(Boolean))];
 
   return (
     <div className="users-wrapper">
@@ -131,15 +167,71 @@ function Users() {
             </button>
           </div>
 
-          <div className="users-toolbar">
+          {/* ── Filter bar ── */}
+          <div className="users-filter-bar">
+            {/* Search by name / email */}
             <input
               className="users-search"
               type="search"
-              placeholder="Search users"
+              placeholder="Search by name or email"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
+
+            {/* Role */}
+            <select
+              className="users-filter-select"
+              value={filterRole}
+              onChange={(e) => setFilterRole(e.target.value)}
+            >
+              {roles.map((r) => (
+                <option key={r} value={r}>
+                  {r === "all" ? "All Roles" : r.charAt(0).toUpperCase() + r.slice(1)}
+                </option>
+              ))}
+            </select>
+
+            {/* Status — verified / pending */}
+            <select
+              className="users-filter-select"
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+            >
+              <option value="all">All Status</option>
+              <option value="verified">Verified</option>
+              <option value="pending">Pending</option>
+            </select>
+
+            {/* Access — active / blocked */}
+            <select
+              className="users-filter-select"
+              value={filterAccess}
+              onChange={(e) => setFilterAccess(e.target.value)}
+            >
+              <option value="all">All Access</option>
+              <option value="active">Active</option>
+              <option value="blocked">Blocked</option>
+            </select>
+
+            {/* Clear filters */}
+            {hasActiveFilters && (
+              <button className="users-clear-btn" onClick={clearFilters}>
+                ✕ Clear
+              </button>
+            )}
           </div>
+
+          {/* Page info */}
+          {!loading && !error && filteredUsers.length > 0 && (
+            <p className="users-page-info">
+              Showing{" "}
+              <strong>
+                {(currentPage - 1) * USERS_PER_PAGE + 1}–
+                {Math.min(currentPage * USERS_PER_PAGE, filteredUsers.length)}
+              </strong>{" "}
+              of <strong>{filteredUsers.length}</strong> users
+            </p>
+          )}
 
           <div className="users-table-wrap">
             <table className="users-table">
@@ -163,7 +255,6 @@ function Users() {
                     </td>
                   </tr>
                 )}
-
                 {!loading && error && (
                   <tr>
                     <td colSpan={8} className="users-state users-error">
@@ -171,7 +262,6 @@ function Users() {
                     </td>
                   </tr>
                 )}
-
                 {!loading && !error && filteredUsers.length === 0 && (
                   <tr>
                     <td colSpan={8} className="users-state">
@@ -179,10 +269,9 @@ function Users() {
                     </td>
                   </tr>
                 )}
-
                 {!loading &&
                   !error &&
-                  filteredUsers.map((user) => (
+                  paginatedUsers.map((user) => (
                     <tr key={user._id}>
                       <td>
                         <div className="users-name-cell">
@@ -228,7 +317,8 @@ function Users() {
                               : "users-block-btn"
                           }`}
                           disabled={
-                            user.role === "admin" || updatingUserId === user._id
+                            user.role === "admin" ||
+                            updatingUserId === user._id
                           }
                           onClick={() => toggleBlockUser(user)}
                         >
@@ -244,6 +334,39 @@ function Users() {
               </tbody>
             </table>
           </div>
+
+          {/* Pagination controls */}
+          {!loading && !error && totalPages > 1 && (
+            <div className="users-pagination">
+              <button
+                className="users-page-btn"
+                onClick={() => goToPage(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                ← Prev
+              </button>
+
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <button
+                  key={page}
+                  className={`users-page-btn ${
+                    currentPage === page ? "users-page-active" : ""
+                  }`}
+                  onClick={() => goToPage(page)}
+                >
+                  {page}
+                </button>
+              ))}
+
+              <button
+                className="users-page-btn"
+                onClick={() => goToPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                Next →
+              </button>
+            </div>
+          )}
         </section>
       </div>
     </div>

@@ -101,12 +101,13 @@
 }
 .ao-search {
   width: min(100%, 360px);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--link);
   border-radius: 8px;
   padding: 12px 14px;
   color: var(--text);
   background: var(--white);
   outline: none;
+  color: var(--text);
 }
 .ao-search:focus {
   border-color: var(--link);
@@ -119,7 +120,13 @@
 .ao-item-image {
   width: 60px;
   height: 60px;
-  display: inline-block;
+  border-radius: 8px;
+  background: rgb(243, 244, 246);
+  border: 1px dashed rgb(209, 213, 219);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
 }
 .ao-item-image img {
   width: 100%;
@@ -330,4 +337,57 @@
   border: 1px solid #fecdd3;
   border-radius: 8px;
   font-size: 14px;
+}
+/* ── Pagination ── */
+.ao-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 24px 0 8px;
+  flex-wrap: wrap;
+}
+
+.ao-page-btn {
+  padding: 7px 14px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: var(--link);
+}
+
+.ao-page-btn:hover:not(:disabled) {
+  background: var(--link);
+  border-color: var(--link);
+  color: #fff;
+}
+
+.ao-page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ao-page-btn.ao-page-active {
+  background: var(--link);
+  color: #fff;
+  border-color: var(--link);
+  font-weight: 600;
+}
+.ao_prev-btn, .ao_next-btn {
+  background: var(--link);
+  color: var(--white);
+}
+.ao_prev-btn:hover:not(:disabled), .ao_next-btn:hover:not(:disabled) {
+  background: var(--white);
+  color: var(--link);
+}
+
+/* ── Page info text ── */
+.ao-page-info {
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 12px;
 }

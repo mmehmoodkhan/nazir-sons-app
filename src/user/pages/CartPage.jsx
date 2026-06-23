@@ -27,13 +27,19 @@ export default function CartPage({ onCheckout }) {
     }
   };
 
-  const handleLoginSuccess = async (loggedInUser) => {
-    setUser(loggedInUser);
-    setShowLogin(false);
-    // Merge local cart with server (mirrors mergeCart.jsx)
-    await mergeCartWithServer(loggedInUser.userId, cart);
-    setCart([]);
-    setPage("success");
+  // const handleLoginSuccess = async (loggedInUser) => {
+  //   setUser(loggedInUser);
+  //   setShowLogin(false);
+  //   // Merge local cart with server (mirrors mergeCart.jsx)
+  //   await mergeCartWithServer(loggedInUser.userId, cart);
+  //   setCart([]);
+  //   setPage("success");
+  // };
+  // ✅ Always removes the full item regardless of quantity
+  const deleteItem = (id) => {
+    const next = cart.filter((item) => item._id !== id);
+    setCart(next);
+    localStorage.setItem("cart", JSON.stringify(next));
   };
 
   const updateQty = (id, delta) => {
@@ -57,7 +63,14 @@ export default function CartPage({ onCheckout }) {
             <div>🛒</div>
             <h3>Your cart is empty</h3>
             <p>Add some items from the shop to get started.</p>
-            <div><button className="continue-shop-btn" onClick={()=>navigate('/')}>Continue Shopping</button></div>
+            <div>
+              <button
+                className="continue-shop-btn"
+                onClick={() => navigate("/")}
+              >
+                Continue Shopping
+              </button>
+            </div>
           </div>
         </div>
       </>
@@ -126,7 +139,7 @@ export default function CartPage({ onCheckout }) {
 
                     <button
                       className="delete-cart-item"
-                      onClick={() => removeFromCart(item._id)}
+                      onClick={() => deleteItem(item._id)}
                     >
                       <img src="../images/delete-icon.jpg" alt="delete" />
                     </button>
@@ -178,7 +191,7 @@ export default function CartPage({ onCheckout }) {
           )}
         </div>
       </div>
-       <Footer />
+      <Footer />
     </div>
   );
 }
