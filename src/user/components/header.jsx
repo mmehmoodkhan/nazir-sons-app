@@ -79,7 +79,7 @@ export default function Header() {
             )}
           </div>
           <div className="header_ban_right">
-            <div className="nav-location">
+            {/* <div className="nav-location">
               <span className="nav_location_icon">
                 <img src="../images/location-icon.png" alt="Location" />
               </span>
@@ -89,7 +89,7 @@ export default function Header() {
                   <p>Lahore</p>
                 </div>
               </div>
-            </div>
+            </div> */}
 
             <div className="nav-location">
               {user ? (
