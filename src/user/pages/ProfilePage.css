@@ -43,7 +43,7 @@
 
 .profile-email {
   font-size: 12px;
-  color: #999;
+  color: var(--text);
   margin: 0 0 16px;
   text-align: center;
   word-break: break-all;
@@ -133,7 +133,7 @@
 
 .profile-detail-label {
   font-size: 14px;
-  color: #888;
+  color: var(--text);
 }
 
 .profile-detail-value {

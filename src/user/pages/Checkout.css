@@ -10,6 +10,7 @@
   padding: 3.125rem 1.5rem;
   background: var(--bg);
   margin-top: 136px;
+  margin-bottom: 1px;
 }
 label {
   margin-bottom: 0.5rem;

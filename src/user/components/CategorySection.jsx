@@ -14,10 +14,66 @@ export const CategorySection = ({ products }) => {
   const { cart, addToCart, removeFromCart } = useCart();
   const navigate = useNavigate();
 
+  // Load category -> image map saved by admin (`AddCategory` stores this in localStorage)
+  const [categoryImagesMap, setCategoryImagesMap] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("categoryImages") || "{}");
+    } catch {
+      return {};
+    }
+  });
+
   const categories = [
     "All",
-    ...new Set(products.map((p) => p.category).filter(Boolean)),
+    ...new Set([
+      ...products.map((p) => p.category).filter(Boolean),
+      ...Object.keys(categoryImagesMap).filter(Boolean),
+    ]),
   ];
+
+  const categoryKeys = Object.keys(categoryImagesMap || {});
+
+  useEffect(() => {
+    console.log("categoryImagesMap keys:", categoryKeys);
+  }, [categoryKeys]);
+
+  const BASE = import.meta.env.BASE_URL || "/";
+
+  const resolveImg = (src) => {
+    if (!src) return `${BASE}images/cart-icon.png`;
+    if (src.startsWith("data:")) return src; // data URLs (admin uploads)
+    if (/^https?:\/\//.test(src)) return src; // absolute URLs
+    // remove leading ./, ../ or / then prefix with BASE
+    const trimmed = String(src).replace(/^(?:\.\/|\.\.\/|\/+)+/, "");
+    return `${BASE}${trimmed}`;
+  };
+
+  useEffect(() => {
+    const onStorage = (e) => {
+      if (e.key === "categoryImages") {
+        try {
+          setCategoryImagesMap(JSON.parse(e.newValue || "{}"));
+        } catch {
+          setCategoryImagesMap({});
+        }
+      }
+    };
+
+    const onCategoriesUpdated = () => {
+      try {
+        setCategoryImagesMap(JSON.parse(localStorage.getItem("categoryImages") || "{}"));
+      } catch {
+        setCategoryImagesMap({});
+      }
+    };
+
+    window.addEventListener("storage", onStorage);
+    window.addEventListener("categories:updated", onCategoriesUpdated);
+    return () => {
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener("categories:updated", onCategoriesUpdated);
+    };
+  }, []);
 
   const tabsTrackRef = useRef(null);
   const tabRefs = useRef({});
@@ -139,12 +195,13 @@ export const CategorySection = ({ products }) => {
       ? products
       : products.filter((p) => p.category === selectedCategory);
 
+  // fallback static names (kept for backwards compatibility)
   const categoryImages = {
-    All: "/images/cart-icon.png",
-    Breakfast: "/images/plain-bread.jpg",
-    Cooking: "/images/dalda.jpeg",
-    Dairy: "/images/olper1.jpeg",
-    Beverages: "/images/olper1.jpeg",
+    All: "images/cart-icon.png",
+    Breakfast: "images/bran-bread.jpg",
+    Cooking: "images/dalda.jpg",
+    Dairy: "images/asli-milk.jpg",
+    Beverages: "images/juices.jpg",
   };
 
   return (
@@ -188,7 +245,11 @@ export const CategorySection = ({ products }) => {
               className={`cat_tab ${activeCategory === cat ? "active" : ""}`}
             >
               <img
-                src={categoryImages[cat] || "../images/cart-icon.png"}
+                src={resolveImg(
+                  categoryImagesMap[cat] ||
+                    categoryImages[cat] ||
+                    "images/cart-icon.png",
+                )}
                 alt={cat}
                 className="cat_tab_img"
                 draggable={false}
@@ -223,7 +284,8 @@ export const CategorySection = ({ products }) => {
                 style={{ cursor: "pointer" }}
               >
                 <span className="product-img">
-                  <img src={product.image} alt={product.name} />
+                  {/* <img src={product.image} alt={product.name} /> */}
+                  <img src={resolveImg(product.image)} alt={product.name} />
                 </span>
                 <div className="product-detail">
                   <h3 className="product-name">{product.name}</h3>

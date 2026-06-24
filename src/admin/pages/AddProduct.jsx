@@ -5,7 +5,6 @@ import Navbar from "../components/Navbar";
 
 function AddProduct() {
   const [categories, setCategories] = useState([]);
-  const [isNewCategory, setIsNewCategory] = useState(false);
   const [errors, setErrors] = useState({}); 
   const [submitting, setSubmitting] = useState(false); //  prevent double submit
   const [form, setForm] = useState({
@@ -19,14 +18,27 @@ function AddProduct() {
   });
 
   useEffect(() => {
-    fetch("/api/products")
-      .then((res) => res.json())
-      .then((data) => {
-        const unique = [
+    const loadCategories = async () => {
+      try {
+        const res = await fetch("/api/products");
+        const data = await res.json();
+        const fromProducts = [
           ...new Set(data.map((p) => p.category).filter(Boolean)),
         ];
-        setCategories(unique);
-      });
+        const stored = Object.keys(JSON.parse(localStorage.getItem("categoryImages") || "{}"));
+        const combined = [...new Set([...fromProducts, ...stored])];
+        setCategories(combined);
+      } catch (err) {
+        const stored = Object.keys(JSON.parse(localStorage.getItem("categoryImages") || "{}"));
+        setCategories(stored);
+      }
+    };
+
+    loadCategories();
+
+    const onCategoriesUpdated = () => loadCategories();
+    window.addEventListener("categories:updated", onCategoriesUpdated);
+    return () => window.removeEventListener("categories:updated", onCategoriesUpdated);
   }, []);
 
   const handleChange = (e) => {
@@ -45,14 +57,8 @@ function AddProduct() {
   };
 
   const handleCategoryChange = (e) => {
-    if (e.target.value === "__new__") {
-      setIsNewCategory(true);
-      setForm({ ...form, category: "" });
-    } else {
-      setIsNewCategory(false);
-      setForm({ ...form, category: e.target.value });
-      setErrors({ ...errors, category: "" }); // ✅ clear error
-    }
+    setForm({ ...form, category: e.target.value });
+    setErrors({ ...errors, category: "" }); // ✅ clear error
   };
 
   // ✅ Validation function
@@ -94,7 +100,6 @@ function AddProduct() {
 
     alert("Product Added ");
     setErrors({});
-    setIsNewCategory(false);
     setForm({
       name: "",
       price: "",
@@ -164,7 +169,7 @@ function AddProduct() {
           <label className="pro-label">Category</label>
           <select
             name="category"
-            value={isNewCategory ? "__new__" : form.category}
+            value={form.category}
             onChange={handleCategoryChange}
             className="add-pro-input"
             style={{ borderColor: errors.category ? "red" : "" }}
@@ -175,27 +180,9 @@ function AddProduct() {
                 {cat}
               </option>
             ))}
-            <option value="__new__">+ Add New Category</option>
           </select>
           {errors.category && <p style={errorStyle}>{errors.category}</p>}
-
-          {isNewCategory && (
-            <>
-              <label className="pro-label">New Category Name</label>
-              <input
-                type="text"
-                placeholder="Enter new category"
-                className="add-pro-input"
-                value={form.category}
-                onChange={(e) => {
-                  setForm({ ...form, category: e.target.value });
-                  setErrors({ ...errors, category: "" });
-                }}
-                style={{ borderColor: errors.category ? "red" : "" }}
-              />
-              {errors.category && <p style={errorStyle}>{errors.category}</p>}
-            </>
-          )}
+          {/* Inline 'Add New Category' removed. Use Add Category page to create categories. */}
 
           <label className="pro-label">Stock</label>
           <input

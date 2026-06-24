@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useCart } from "../../context/CartContext";
 import "./AddProduct.css";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
@@ -10,16 +11,37 @@ function AddCategory() {
   const [submitting, setSubmitting] = useState(false);
   const [image, setImage] = useState("");
   const [description, setDescription] = useState("");
+  const { refreshProducts } = useCart();
+  const [lastSavedPreview, setLastSavedPreview] = useState("");
 
   useEffect(() => {
-    fetch("/api/products")
-      .then((res) => res.json())
-      .then((data) => {
-        const unique = [
+    const loadCategories = async () => {
+      try {
+        const res = await fetch("/api/products");
+        const data = await res.json();
+        const fromProducts = [
           ...new Set(data.map((p) => p.category).filter(Boolean)),
         ];
-        setCategories(unique);
-      });
+        const stored = Object.keys(
+          JSON.parse(localStorage.getItem("categoryImages") || "{}"),
+        );
+        const combined = [...new Set([...fromProducts, ...stored])];
+        setCategories(combined);
+      } catch (err) {
+        setCategories(
+          Object.keys(
+            JSON.parse(localStorage.getItem("categoryImages") || "{}"),
+          ),
+        );
+      }
+    };
+
+    loadCategories();
+
+    const onCategoriesUpdated = () => loadCategories();
+    window.addEventListener("categories:updated", onCategoriesUpdated);
+    return () =>
+      window.removeEventListener("categories:updated", onCategoriesUpdated);
   }, []);
 
   const handleImageUpload = (e) => {
@@ -39,13 +61,6 @@ function AddCategory() {
       return;
     }
 
-    // STEP 2: ✅ Save image to localStorage FIRST before any async/return
-    const existingImages = JSON.parse(
-      localStorage.getItem("categoryImages") || "{}"
-    );
-    existingImages[categoryName.trim()] = image || "";
-    localStorage.setItem("categoryImages", JSON.stringify(existingImages));
-
     // STEP 3: Duplicate check using already loaded categories state (no re-fetch)
     const normalizedInput = categoryName.trim().toLowerCase();
     if (categories.some((cat) => cat.toLowerCase() === normalizedInput)) {
@@ -53,29 +68,39 @@ function AddCategory() {
       return;
     }
 
-    // STEP 4: Submit
+    // STEP 4: Persist category image mapping and update UI (don't create placeholder product)
     setSubmitting(true);
     setErrors({});
 
     try {
-      await fetch("/api/products/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: `${categoryName.trim()} Placeholder`,
-          price: 0,
-          category: categoryName.trim(),
-          stock: 0,
-          description: description || "Auto-created category placeholder",
-          image: image || null,
-        }),
-      });
+      const existingImages = JSON.parse(
+        localStorage.getItem("categoryImages") || "{}",
+      );
+      existingImages[categoryName.trim()] = image || "";
+      try {
+        localStorage.setItem("categoryImages", JSON.stringify(existingImages));
+        // debug: read back and expose preview for troubleshooting
+        const readBack = localStorage.getItem("categoryImages");
+        console.log("categoryImages saved:", readBack);
+        setLastSavedPreview(readBack || "");
+      } catch (err) {
+        console.error("Failed to write categoryImages to localStorage:", err);
+        alert("Failed to save category image locally.");
+        setSubmitting(false);
+        return;
+      }
 
       setCategories((prev) => [...prev, categoryName.trim()]);
       alert(`Category "${categoryName.trim()}" added successfully!`);
       setCategoryName("");
       setDescription("");
       setImage("");
+
+      // Notify other components in same tab
+      try {
+        refreshProducts?.();
+      } catch {}
+      window.dispatchEvent(new Event("categories:updated"));
     } catch (err) {
       console.error(err);
       alert("Failed to add category");

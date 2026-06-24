@@ -1,9 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import "../components/HeroSlider.css";
+
+// Use Vite base URL so images placed in `public/images` resolve correctly
+const BASE = import.meta.env.BASE_URL || "/";
+
 const SLIDES = [
   {
     id: 1,
-    image: "../images/banner1.jpeg",
+    image: `${BASE}images/banner1.jpeg`,
     title: "Fresh Groceries",
     subtitle: "Delivered to your door in 30 minutes",
     btn: "Shop Now",
@@ -11,7 +15,7 @@ const SLIDES = [
   },
   {
     id: 2,
-    image: "../images/banner2.jpeg",
+    image: `${BASE}images/banner2.jpeg`,
     title: "Daily Essentials",
     subtitle: "Best prices on everyday items",
     btn: "Explore",
@@ -19,7 +23,7 @@ const SLIDES = [
   },
   {
     id: 3,
-    image: "../images/banner3.jpeg",
+    image: `${BASE}images/banner3.jpeg`,
     title: "Special Offers",
     subtitle: "Up to 30% off on selected products",
     btn: "View Deals",
