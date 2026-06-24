@@ -1,10 +1,8 @@
 .product-detail-page {
   display: flex;
   gap: 40px;
-  padding: 0 50px 50px;
-  max-width: 1000px;
-  margin: 160px auto 0;
-  ;
+  margin: 136px auto 0;
+  padding: 3.125rem 0;
 }
 .product-detail-page .heddings {
   width: 100%;
@@ -80,13 +78,11 @@
   font-size: 18px;
 }
 .product-detail-info .add_to_card_wrapper {
-    margin: 0;
+  margin: 0;
 }
 @media (max-width: 768px) {
   .product-detail-page {
     flex-direction: column;
-    padding: 0 20px 20px;
-    margin-top: 200px;
     align-items: center;
     justify-content: center;
   }
@@ -98,5 +94,8 @@
   }
   .product-detail-info .add_to_card_wrapper {
     margin: 0.5rem auto 0;
+  }
+  .product-detail-price-wrapper {
+    justify-content: center;
   }
 }

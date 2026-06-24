@@ -67,7 +67,13 @@ router.post("/google", async (req, res) => {
 
     return res.json({
       token: jwtToken,
-      user: { userId: user._id, name: user.name, email: user.email },
+      user: {
+        userId: user._id,
+        name: user.name,
+        email: user.email,
+        isVerified: Boolean(user.isVerified),
+        provider: user.provider || "email",
+      },
     });
 
   } catch (err) {
@@ -189,7 +195,13 @@ router.post("/login", async (req, res) => {
 
     res.json({
       token,
-      user: { userId: user._id, name: user.name, email: user.email },
+      user: {
+        userId: user._id,
+        name: user.name,
+        email: user.email,
+        isVerified: Boolean(user.isVerified),
+        provider: user.provider || "email",
+      },
     });
   } catch (err) {
     res.status(500).json({ message: "Server error." });
@@ -307,6 +319,26 @@ router.get("/admin-profile", async (req, res) => {
     return res.json({ success: true, admin });
   } catch (err) {
     console.error("Fetch admin profile error:", err.message);
+    return res.status(500).json({ message: "Server error." });
+  }
+});
+
+// GET /api/auth/profile - logged-in user profile
+router.get("/profile", async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) return res.status(401).json({ message: "Unauthorized." });
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.userId).select(
+      "-password -providerId",
+    );
+
+    if (!user) return res.status(404).json({ message: "User not found." });
+
+    return res.json({ success: true, user });
+  } catch (err) {
+    console.error("Fetch profile error:", err.message);
     return res.status(500).json({ message: "Server error." });
   }
 });

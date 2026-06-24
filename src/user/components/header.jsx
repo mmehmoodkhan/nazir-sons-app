@@ -46,40 +46,41 @@ export default function Header() {
               onClick={() => navigate("/")}
             />
           </div>
-          <div className="user-search-bar">
-            <input
-              className="nav_search_input"
-              type="text"
-              placeholder="Search products..."
-              value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                setShowResults(true);
-              }}
-              onFocus={() => setShowResults(true)}
-              onBlur={() => setTimeout(() => setShowResults(false), 150)}
-            />
+          <div className="header_right_bar">
+            <div className="user-search-bar">
+              <input
+                className="nav_search_input"
+                type="text"
+                placeholder="Search products..."
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setShowResults(true);
+                }}
+                onFocus={() => setShowResults(true)}
+                onBlur={() => setTimeout(() => setShowResults(false), 150)}
+              />
 
-            {showResults && searchTerm.trim() !== "" && (
-              <ul className="search-results-dropdown">
-                {filteredProducts.length === 0 ? (
-                  <li className="search-result-empty">No products found.</li>
-                ) : (
-                  filteredProducts.map((product) => (
-                    <li
-                      key={product._id}
-                      className="search-result-item"
-                      onMouseDown={() => handleResultClick(product)}
-                    >
-                      {product.name}
-                    </li>
-                  ))
-                )}
-              </ul>
-            )}
-          </div>
-          <div className="header_ban_right">
-            {/* <div className="nav-location">
+              {showResults && searchTerm.trim() !== "" && (
+                <ul className="search-results-dropdown">
+                  {filteredProducts.length === 0 ? (
+                    <li className="search-result-empty">No products found.</li>
+                  ) : (
+                    filteredProducts.map((product) => (
+                      <li
+                        key={product._id}
+                        className="search-result-item"
+                        onMouseDown={() => handleResultClick(product)}
+                      >
+                        {product.name}
+                      </li>
+                    ))
+                  )}
+                </ul>
+              )}
+            </div>
+            <div className="header_ban_right">
+              {/* <div className="nav-location">
               <span className="nav_location_icon">
                 <img src="../images/location-icon.png" alt="Location" />
               </span>
@@ -91,48 +92,54 @@ export default function Header() {
               </div>
             </div> */}
 
-            <div className="nav-location">
-              {user ? (
-                <div className="nav-location">
-                  <span className="nav_location_icon">
-                    <Link to="/profile">
-                      <img src="../images/profile-icon.png" alt="profile" />
-                    </Link>
-                  </span>
-                  <div className="pro_name" onClick={() => navigate("/profile")}>
-                    <span>
-                      <p className="user_loged">{user.name}</p>
+              <div className="nav-location">
+                {user ? (
+                  <div className="nav-location">
+                    <span className="nav_location_icon">
+                      <Link to="/profile">
+                        <img src="../images/profile-icon.png" alt="profile" />
+                      </Link>
                     </span>
+                    <div
+                      className="pro_name"
+                      onClick={() => navigate("/profile")}
+                    >
+                      <span>
+                        <p className="user_loged">{user.name}</p>
+                      </span>
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <div className="nav_user_login">
-                  <span className="nav_location_icon">
-                    <img src="../images/profile-icon.png" alt="profile" />
-                  </span>
-                  <button
-                    className="nav_cart_btn"
-                    onClick={() => setShowLogin(true)}
-                  >
-                    Login
-                  </button>
-                </div>
-              )}
-              {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
-            </div>
-
-            <div className="nav-location">
-              <button
-                className="nav_cart_btn"
-                onClick={() => navigate("/cart")}
-              >
-                <span className="nav_location_icon">
-                  <img src="../images/cart-icon.png" alt="cart" />
-                </span>
-                {cartCount > 0 && (
-                  <span className="cart_info">{cartCount}</span>
+                ) : (
+                  <div className="nav_user_login">
+                    <span className="nav_location_icon">
+                      <img src="../images/profile-icon.png" alt="profile" />
+                    </span>
+                    <button
+                      className="nav_cart_btn"
+                      onClick={() => setShowLogin(true)}
+                    >
+                      Login
+                    </button>
+                  </div>
                 )}
-              </button>
+                {showLogin && (
+                  <LoginModal onClose={() => setShowLogin(false)} />
+                )}
+              </div>
+
+              <div className="nav-location">
+                <button
+                  className="nav_cart_btn"
+                  onClick={() => navigate("/cart")}
+                >
+                  <span className="nav_location_icon">
+                    <img src="../images/cart-icon.png" alt="cart" />
+                  </span>
+                  {cartCount > 0 && (
+                    <span className="cart_info">{cartCount}</span>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         </nav>

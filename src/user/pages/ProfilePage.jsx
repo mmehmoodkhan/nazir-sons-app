@@ -134,11 +134,10 @@ export default function ProfilePage() {
                 {tab}
               </button>
             ))}
+            <button className="profile-logout-btn" onClick={handleLogout}>
+              <span>➜] </span> Logout
+            </button>
           </nav>
-
-          <button className="profile-logout-btn" onClick={handleLogout}>
-            Logout
-          </button>
         </aside>
 
         {/* Main Content */}
@@ -164,8 +163,8 @@ export default function ProfilePage() {
                 <span className="profile-detail-value">
                   {user?.provider === "google"
                     ? "🔵 Google"
-                    : user?.provider === "facebook"
-                      ? "🔷 Facebook"
+                    // : user?.provider === "facebook"
+                    //   ? "🔷 Facebook"
                       : "📧 Email"}
                 </span>
               </div>
@@ -387,7 +386,7 @@ export default function ProfilePage() {
           )}
         </main>
       </div>
-      <Footer/>
+      <Footer />
     </>
   );
 }

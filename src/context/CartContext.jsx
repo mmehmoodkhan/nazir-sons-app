@@ -34,6 +34,36 @@ export function CartProvider({ children }) {
     refreshProducts();
   }, []);
 
+  // Refresh user from server if token exists (keeps isVerified up-to-date)
+  useEffect(() => {
+    const refreshUser = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      try {
+        const res = await fetch("/api/auth/profile", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) {
+          // invalid token or session expired
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          setUser(null);
+          return;
+        }
+        const data = await res.json();
+        if (data?.user) {
+          setUser(data.user);
+          localStorage.setItem("user", JSON.stringify(data.user));
+        }
+      } catch (err) {
+        console.error("Failed to refresh user profile:", err);
+      }
+    };
+
+    refreshUser();
+  }, []);
+
   //  Validate cart against backend on every load
   useEffect(() => {
     const validateCart = async () => {

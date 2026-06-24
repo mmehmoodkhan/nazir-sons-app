@@ -6,6 +6,7 @@ import DeliverySlots from "./DeliverySlots";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import Header from "../components/header";
+import { Footer } from "../components/Footer";
 
 const isValidPakistaniPhone = (value) => /^03\d{9}$/.test(value.trim());
 
@@ -138,7 +139,11 @@ const Checkout = () => {
 
       setOtpSent(true);
       setDeliveryCode(["", "", "", ""]);
-      setOtpMessage(data.devOtp ? `OTP sent. Dev code: ${data.devOtp}` : "OTP sent to your phone.");
+      setOtpMessage(
+        data.devOtp
+          ? `OTP sent. Dev code: ${data.devOtp}`
+          : "OTP sent to your phone.",
+      );
       document.getElementById("otp-0")?.focus();
     } catch (err) {
       setErrors((prev) => ({
@@ -275,12 +280,17 @@ const Checkout = () => {
         if (!ignore && data.settings) {
           setDeliveryPricing({
             shippingCharge: Number(data.settings.shippingCharge || 0),
-            freeShippingThreshold: Number(data.settings.freeShippingThreshold || 0),
+            freeShippingThreshold: Number(
+              data.settings.freeShippingThreshold || 0,
+            ),
           });
         }
       } catch {
         if (!ignore) {
-          setDeliveryPricing({ shippingCharge: 30, freeShippingThreshold: 1000 });
+          setDeliveryPricing({
+            shippingCharge: 30,
+            freeShippingThreshold: 1000,
+          });
         }
       }
     }
@@ -434,158 +444,170 @@ const Checkout = () => {
       <Header />
 
       <div className="checkout_wrapper">
-        <div>
-          <button
-            className="back_to"
-            type="button"
-            onClick={() => navigate("/cart")}
-          >
-            ← Back to Cart
-          </button>
-        </div>
-        <h2>Checkout</h2>
+        <div className="mian_container">
+          <div>
+            <button
+              className="back_to"
+              type="button"
+              onClick={() => navigate("/cart")}
+            >
+              ← Back to Cart
+            </button>
+          </div>
+          <h2>Checkout</h2>
 
-        <div className="checkkout_mian">
-          <div className="cart_contact_main">
-            {/* ── Contact Information ─────────────────────── */}
-            <div className="cart_contact">
-              <h2 className="section-title">Contact Information</h2>
+          <div className="checkkout_mian">
+            <div className="cart_contact_main">
+              {/* ── Contact Information ─────────────────────── */}
+              <div className="cart_contact">
+                <h2 className="section-title">Contact Information</h2>
 
-              <div className="cart_contacts_inner">
-                <div className="form_group">
-                  <label>
-                    First Name <span className="text-danger">*</span>
-                  </label>
-                  <input
-                    className={`input-field ${errors.firstName ? "input-error" : ""}`}
-                    placeholder="First Name"
-                    value={firstName}
-                    onChange={(e) => {
-                      setFirstName(e.target.value);
-                      clearError("firstName");
-                    }}
-                  />
-                  <ErrorMsg field="firstName" />
-                </div>
-
-                <div className="form_group">
-                  <label>
-                    Last Name <span className="text-danger">*</span>
-                  </label>
-                  <input
-                    className={`input-field ${errors.lastName ? "input-error" : ""}`}
-                    placeholder="Last Name"
-                    value={lastName}
-                    onChange={(e) => {
-                      setLastName(e.target.value);
-                      clearError("lastName");
-                    }}
-                  />
-                  <ErrorMsg field="lastName" />
-                </div>
-
-                <div className="form_group">
-                  <label>
-                    Email <span className="text-danger">*</span>
-                  </label>
-                  <input
-                    className={`input-field ${errors.email ? "input-error" : ""}`}
-                    type="email"
-                    placeholder="example@email.com"
-                    value={email}
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                      clearError("email");
-                    }}
-                  />
-                  <ErrorMsg field="email" />
-                </div>
-
-                <div className="form_group">
-                  <label>
-                    Phone <span className="text-danger">*</span>
-                  </label>
-                  <input
-                    className={`input-field ${errors.phone ? "input-error" : ""}`}
-                    type="tel"
-                    placeholder="03001234567"
-                    value={phone}
-                    onChange={(e) => {
-                      setPhone(e.target.value);
-                      resetPhoneOtp();
-                      clearError("phone");
-                      clearError("deliveryCode");
-                    }}
-                  />
-                  <ErrorMsg field="phone" />
-                </div>
-              </div>
-
-              {/* OTP */}
-              <div className="opt_wrapper">
-                <label>
-                  Phone OTP <span className="text-danger">*</span>
-                </label>
-                <div className="otp_actions">
-                  <button
-                    type="button"
-                    className="otp_action_btn"
-                    onClick={handleSendOtp}
-                    disabled={otpLoading || !isValidPakistaniPhone(phone)}
-                  >
-                    {otpSent ? "Resend OTP" : "Send OTP"}
-                  </button>
-                  {otpVerified && <span className="otp_verified">Verified</span>}
-                </div>
-                <div className="opt_wrapper_inner">
-                  {deliveryCode.map((digit, i) => (
+                <div className="cart_contacts_inner">
+                  <div className="form_group">
+                    <label>
+                      First Name <span className="text-danger">*</span>
+                    </label>
                     <input
-                      key={i}
-                      id={`otp-${i}`}
-                      className={`input-field ${errors.deliveryCode ? "input-error" : ""}`}
-                      type="text"
-                      inputMode="numeric"
-                      maxLength={1}
-                      value={digit}
-                      disabled={!otpSent || otpVerified}
-                      onChange={(e) => handleCodeChange(e.target.value, i)}
-                      onKeyDown={(e) => handleCodeKeyDown(e, i)}
+                      className={`input-field ${errors.firstName ? "input-error" : ""}`}
+                      placeholder="First Name"
+                      value={firstName}
+                      onChange={(e) => {
+                        setFirstName(e.target.value);
+                        clearError("firstName");
+                      }}
                     />
-                  ))}
+                    <ErrorMsg field="firstName" />
+                  </div>
+
+                  <div className="form_group">
+                    <label>
+                      Last Name <span className="text-danger">*</span>
+                    </label>
+                    <input
+                      className={`input-field ${errors.lastName ? "input-error" : ""}`}
+                      placeholder="Last Name"
+                      value={lastName}
+                      onChange={(e) => {
+                        setLastName(e.target.value);
+                        clearError("lastName");
+                      }}
+                    />
+                    <ErrorMsg field="lastName" />
+                  </div>
+
+                  <div className="form_group">
+                    <label>
+                      Email <span className="text-danger">*</span>
+                    </label>
+                    <input
+                      className={`input-field ${errors.email ? "input-error" : ""}`}
+                      type="email"
+                      placeholder="example@email.com"
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                        clearError("email");
+                      }}
+                    />
+                    <ErrorMsg field="email" />
+                  </div>
+
+                  <div className="form_group">
+                    <label>
+                      Phone <span className="text-danger">*</span>
+                    </label>
+                    <input
+                      className={`input-field ${errors.phone ? "input-error" : ""}`}
+                      type="tel"
+                      placeholder="03001234567"
+                      value={phone}
+                      onChange={(e) => {
+                        setPhone(e.target.value);
+                        resetPhoneOtp();
+                        clearError("phone");
+                        clearError("deliveryCode");
+                      }}
+                    />
+                    <ErrorMsg field="phone" />
+                  </div>
                 </div>
-                {otpSent && !otpVerified && (
-                  <button
-                    type="button"
-                    className="otp_verify_btn"
-                    onClick={handleVerifyOtp}
-                    disabled={otpLoading || deliveryCode.some((digit) => !digit)}
-                  >
-                    {otpLoading ? "Checking..." : "Verify OTP"}
-                  </button>
-                )}
-                <ErrorMsg field="deliveryCode" />
-                {otpMessage && (
-                  <p className={otpVerified ? "otp_success_text" : "otp_hint_text"}>
-                    {otpMessage}
+
+                {/* OTP */}
+                <div className="opt_wrapper">
+                  <label>
+                    Phone OTP <span className="text-danger">*</span>
+                  </label>
+                  <div className="otp_actions">
+                    <button
+                      type="button"
+                      className="otp_action_btn"
+                      onClick={handleSendOtp}
+                      disabled={otpLoading || !isValidPakistaniPhone(phone)}
+                    >
+                      {otpSent ? "Resend OTP" : "Send OTP"}
+                    </button>
+                    {otpVerified && (
+                      <span className="otp_verified">Verified</span>
+                    )}
+                  </div>
+                  <div className="opt_wrapper_inner">
+                    {deliveryCode.map((digit, i) => (
+                      <input
+                        key={i}
+                        id={`otp-${i}`}
+                        className={`input-field ${errors.deliveryCode ? "input-error" : ""}`}
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={1}
+                        value={digit}
+                        disabled={!otpSent || otpVerified}
+                        onChange={(e) => handleCodeChange(e.target.value, i)}
+                        onKeyDown={(e) => handleCodeKeyDown(e, i)}
+                      />
+                    ))}
+                  </div>
+                  {otpSent && !otpVerified && (
+                    <button
+                      type="button"
+                      className="otp_verify_btn"
+                      onClick={handleVerifyOtp}
+                      disabled={
+                        otpLoading || deliveryCode.some((digit) => !digit)
+                      }
+                    >
+                      {otpLoading ? "Checking..." : "Verify OTP"}
+                    </button>
+                  )}
+                  <ErrorMsg field="deliveryCode" />
+                  {otpMessage && (
+                    <p
+                      className={
+                        otpVerified ? "otp_success_text" : "otp_hint_text"
+                      }
+                    >
+                      {otpMessage}
+                    </p>
+                  )}
+                  <p>
+                    Verify your Pakistani mobile number before placing the
+                    order.
                   </p>
-                )}
-                <p>Verify your Pakistani mobile number before placing the order.</p>
+                </div>
+
+                <label>Order Note</label>
+                <textarea
+                  className="input-field"
+                  placeholder="Special instructions for your order"
+                  value={orderNote}
+                  onChange={(e) => setOrderNote(e.target.value)}
+                />
               </div>
 
-              <label>Order Note</label>
-              <textarea
-                className="input-field"
-                placeholder="Special instructions for your order"
-                value={orderNote}
-                onChange={(e) => setOrderNote(e.target.value)}
-              />
-            </div>
+              {/* ── Delivery Information ────────────────────── */}
+              <div className="cart_contact">
+                <h2 className="section-title">Delivery Information</h2>
 
-            {/* ── Delivery Information ────────────────────── */}
-            <div className="cart_contact">
-              <h2 className="section-title">Delivery Information</h2>
-
-              {/* <button
+                {/* <button
                 type="button"
                 className="use-location-btn"
                 onClick={handleUseMyLocation}
@@ -596,307 +618,316 @@ const Checkout = () => {
                   ? "Detecting location..."
                   : "Use my current location"}
               </button> */}
-              {locationError && (
-                <span className="field-error">{locationError}</span>
-              )}
+                {locationError && (
+                  <span className="field-error">{locationError}</span>
+                )}
 
-              <div className="delv_info_wrapper">
-                {/* ...existing Address, House No, Area, City fields unchanged */}
-                <div className="input_group">
-                  <label>
-                    Address <span className="text-danger">*</span>
-                  </label>
-                  <input
-                    className={`input-field ${errors.address ? "input-error" : ""}`}
-                    type="text"
-                    value={address}
-                    onChange={(e) => {
-                      setAddress(e.target.value);
-                      clearError("address");
-                    }}
-                  />
-                  <ErrorMsg field="address" />
-                </div>
-
-                <div className="input_group">
-                  <label>House No, Apartment, Suite, etc.</label>
-                  <input
-                    className="input-field"
-                    type="text"
-                    value={houseNo}
-                    onChange={(e) => setHouseNo(e.target.value)}
-                  />
-                </div>
-
-                <div className="cart_contacts_inner">
-                  <div className="form_group">
+                <div className="delv_info_wrapper">
+                  {/* ...existing Address, House No, Area, City fields unchanged */}
+                  <div className="input_group">
                     <label>
-                      Area <span className="text-danger">*</span>
+                      Address <span className="text-danger">*</span>
                     </label>
                     <input
-                      className={`input-field ${errors.area ? "input-error" : ""}`}
+                      className={`input-field ${errors.address ? "input-error" : ""}`}
                       type="text"
-                      value={area}
+                      value={address}
                       onChange={(e) => {
-                        setArea(e.target.value);
-                        clearError("area");
+                        setAddress(e.target.value);
+                        clearError("address");
                       }}
                     />
-                    <ErrorMsg field="area" />
+                    <ErrorMsg field="address" />
                   </div>
-                  <div className="form_group">
-                    <label>
-                      City <span className="text-danger">*</span>
-                    </label>
+
+                  <div className="input_group">
+                    <label>House No, Apartment, Suite, etc.</label>
                     <input
-                      className={`input-field ${errors.city ? "input-error" : ""}`}
+                      className="input-field"
                       type="text"
-                      value={city}
-                      onChange={(e) => {
-                        setCity(e.target.value);
-                        clearError("city");
-                      }}
+                      value={houseNo}
+                      onChange={(e) => setHouseNo(e.target.value)}
                     />
-                    <ErrorMsg field="city" />
                   </div>
-                </div>
-                <div>
-                  <label>We will deliver here</label>
-                  <input
-                    className="input-field"
-                    type="text"
-                    value={deliverHere}
-                    onChange={(e) => setDeliverHere(e.target.value)}
-                  />
-                  {coords && (
-                    <>
-                      <div ref={mapContainerRef} className="checkout-map"></div>
-                      <p className="map-hint">
-                        Drag the pin to set your exact delivery location.
-                      </p>
-                    </>
-                  )}
+
+                  <div className="cart_contacts_inner">
+                    <div className="form_group">
+                      <label>
+                        Area <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        className={`input-field ${errors.area ? "input-error" : ""}`}
+                        type="text"
+                        value={area}
+                        onChange={(e) => {
+                          setArea(e.target.value);
+                          clearError("area");
+                        }}
+                      />
+                      <ErrorMsg field="area" />
+                    </div>
+                    <div className="form_group">
+                      <label>
+                        City <span className="text-danger">*</span>
+                      </label>
+                      <input
+                        className={`input-field ${errors.city ? "input-error" : ""}`}
+                        type="text"
+                        value={city}
+                        onChange={(e) => {
+                          setCity(e.target.value);
+                          clearError("city");
+                        }}
+                      />
+                      <ErrorMsg field="city" />
+                    </div>
+                  </div>
+                  <div>
+                    <label>We will deliver here</label>
+                    <input
+                      className="input-field"
+                      type="text"
+                      value={deliverHere}
+                      onChange={(e) => setDeliverHere(e.target.value)}
+                    />
+                    {coords && (
+                      <>
+                        <div
+                          ref={mapContainerRef}
+                          className="checkout-map"
+                        ></div>
+                        <p className="map-hint">
+                          Drag the pin to set your exact delivery location.
+                        </p>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* ── Delivery Slots ──────────────────────────── */}
-            <div className="cart_contact">
-              <div className="delv_slots_wrapper">
-                <h2 className="section-title">Delivery Timings</h2>
-                <div className="express_delivery">
-                  <h4>9:00 AM - 12:00 PM</h4>
-                  <p className="delv_time">
-                    We will deliver your order within 10-15 Minuts.
-                  </p>
-                  <div className="delivery_section">
-                    <div className="how_to_delvery">
-                      <h2 className="section-title">How to Order</h2>
-                      <div className="d-felx-delvery">
-                        <div className="count_div">1</div>
-                        <div>
-                          <h3>Call or whatsApp</h3>
-                          <p>
-                            Reach us at +92 3013827812 with your order details.
-                          </p>
+              {/* ── Delivery Slots ──────────────────────────── */}
+              <div className="cart_contact">
+                <div className="delv_slots_wrapper">
+                  <h2 className="section-title">Delivery Timings</h2>
+                  <div className="express_delivery">
+                    <h4>9:00 AM - 12:00 PM</h4>
+                    <p className="delv_time">
+                      We will deliver your order within 10-15 Minuts.
+                    </p>
+                    <div className="delivery_section">
+                      <div className="how_to_delvery">
+                        <h2 className="section-title">How to Order</h2>
+                        <div className="d-felx-delvery">
+                          <div className="count_div">1</div>
+                          <div>
+                            <h3>Call or whatsApp</h3>
+                            <p>
+                              Reach us at +92 3013827812 with your order
+                              details.
+                            </p>
+                          </div>
+                        </div>
+                        <div className="d-felx-delvery">
+                          <div className="count_div">2</div>
+                          <div>
+                            <h3>Confirm Your Order</h3>
+                            <p>
+                              Once we receive your order, we will confirm it via
+                              call or WhatsApp.
+                            </p>
+                          </div>
+                        </div>
+                        <div className="d-felx-delvery">
+                          <div className="count_div">3</div>
+                          <div>
+                            <h3>Fast Delivery</h3>
+                            <p>
+                              We will deliver your order within{" "}
+                              <b>10-15 Minuts.</b>
+                            </p>
+                          </div>
+                        </div>
+                        <div className="d-felx-delvery">
+                          <div className="count_div">4</div>
+                          <div>
+                            <h3>Receive at Your Door</h3>
+                            <p>
+                              Sit back and relax. Your order will be delivered
+                              promptly.
+                            </p>
+                          </div>
                         </div>
                       </div>
-                      <div className="d-felx-delvery">
-                        <div className="count_div">2</div>
-                        <div>
-                          <h3>Confirm Your Order</h3>
+                      <div className="delv_charge">
+                        <h2 className="section-title">Delivery Charges</h2>
+                        <div className="d-felx-delvery">
+                          <div className="count_div">✓</div>
                           <p>
-                            Once we receive your order, we will confirm it via
-                            call or WhatsApp.
+                            Express Delivery Charges only <b>Rs. 30</b>
                           </p>
                         </div>
-                      </div>
-                      <div className="d-felx-delvery">
-                        <div className="count_div">3</div>
-                        <div>
-                          <h3>Fast Delivery</h3>
+                        <div className="d-felx-delvery">
+                          <div className="count_div">✓</div>
                           <p>
-                            We will deliver your order within{" "}
-                            <b>10-15 Minuts.</b>
+                            <b>FREE</b> delivery on orders above{" "}
+                            <b>Rs. 1,000</b>
                           </p>
                         </div>
-                      </div>
-                      <div className="d-felx-delvery">
-                        <div className="count_div">4</div>
-                        <div>
-                          <h3>Receive at Your Door</h3>
+                        <div className="d-felx-delvery">
+                          <div className="count_div">✓</div>
                           <p>
-                            Sit back and relax. Your order will be delivered
-                            promptly.
+                            Minimum order: <b>Rs. 500</b>
                           </p>
                         </div>
                       </div>
                     </div>
-                    <div className="delv_charge">
-                      <h2 className="section-title">Delivery Charges</h2>
-                      <div className="d-felx-delvery">
-                        <div className="count_div">✓</div>
-                        <p>
-                          Express Delivery Charges only <b>Rs. 30</b>
-                        </p>
-                      </div>
-                      <div className="d-felx-delvery">
-                        <div className="count_div">✓</div>
-                        <p>
-                          <b>FREE</b> delivery on orders above <b>Rs. 1,000</b>
-                        </p>
-                      </div>
-                      <div className="d-felx-delvery">
-                        <div className="count_div">✓</div>
-                        <p>
-                          Minimum order: <b>Rs. 500</b>
-                        </p>
-                      </div>
-                    </div>
                   </div>
+                  <h2 className="slot-section-title">
+                    Select a Date and Time Slot
+                  </h2>
+                  <div className="delv_slots_list">
+                    <DeliverySlots
+                      onConfirm={(slot) => {
+                        setSelectedSlot(slot);
+                        selectedSlotRef.current = slot;
+                        clearError("selectedSlot");
+                      }}
+                    />
+                  </div>
+                  <ErrorMsg field="selectedSlot" />
                 </div>
-                <h2 className="slot-section-title">Select a Date and Time Slot</h2>
-                <div className="delv_slots_list">
-                  <DeliverySlots
-                    onConfirm={(slot) => {
-                      setSelectedSlot(slot);
-                      selectedSlotRef.current = slot;
-                      clearError("selectedSlot");
-                    }}
-                  />
-                </div>
-                <ErrorMsg field="selectedSlot" />
               </div>
             </div>
-          </div>
 
-          {/* ── Order Summary + Payment ──────────────────────── */}
-          <div className="place_order_area">
-            <div className="grand_total">
-              <p>Subtotal</p>
-              <p>Rs {subTotal.toFixed(2)}</p>
-            </div>
-            <div className="grand_total">
-              <p>Shipping Charges</p>
-              <p>Rs {shipCharges}</p>
-            </div>
-            <hr />
-            <div className="net_total">
-              <p>Net Total</p>
-              <p>Rs {totalPrice.toFixed(2)}</p>
-            </div>
+            {/* ── Order Summary + Payment ──────────────────────── */}
+            <div className="place_order_area">
+              <div className="grand_total">
+                <p>Subtotal</p>
+                <p>Rs {subTotal.toFixed(2)}</p>
+              </div>
+              <div className="grand_total">
+                <p>Shipping Charges</p>
+                <p>Rs {shipCharges}</p>
+              </div>
+              <hr />
+              <div className="net_total">
+                <p>Net Total</p>
+                <p>Rs {totalPrice.toFixed(2)}</p>
+              </div>
 
-            {/* Payment method */}
-            <div className="payment_methods">
-              <p className="payment_methods_title">Payment method</p>
+              {/* Payment method */}
+              <div className="payment_methods">
+                <p className="payment_methods_title">Payment method</p>
 
-              <div className="payment_grid">
-                {[
-                  {
-                    value: "cod",
-                    label: "Cash on delivery",
-                    sub: "Pay at door",
-                    logo: null,
-                    emoji: "💵",
-                  },
-                  {
-                    value: "jazzcash",
-                    label: "JazzCash",
-                    sub: "Mobile wallet",
-                    logo: "../images/jazzcash-logo.png",
-                    emoji: "📱",
-                  },
-                  {
-                    value: "easypaisa",
-                    label: "EasyPaisa",
-                    sub: "Mobile wallet",
-                    logo: "../images/easypaisa-logo.png",
-                    emoji: "📲",
-                  },
-                ].map(({ value, label, sub, logo, emoji }) => {
-                  const active = paymentMethod === value;
-                  return (
-                    <label
-                      key={value}
-                      className={`payment_card ${active ? "active" : ""}`}
-                      onClick={() => {
-                        setPaymentMethod(value);
+                <div className="payment_grid">
+                  {[
+                    {
+                      value: "cod",
+                      label: "Cash on delivery",
+                      sub: "Pay at door",
+                      logo: null,
+                      emoji: "💵",
+                    },
+                    {
+                      value: "jazzcash",
+                      label: "JazzCash",
+                      sub: "Mobile wallet",
+                      logo: "../images/jazzcash-logo.png",
+                      emoji: "📱",
+                    },
+                    {
+                      value: "easypaisa",
+                      label: "EasyPaisa",
+                      sub: "Mobile wallet",
+                      logo: "../images/easypaisa-logo.png",
+                      emoji: "📲",
+                    },
+                  ].map(({ value, label, sub, logo, emoji }) => {
+                    const active = paymentMethod === value;
+                    return (
+                      <label
+                        key={value}
+                        className={`payment_card ${active ? "active" : ""}`}
+                        onClick={() => {
+                          setPaymentMethod(value);
+                          clearError("mobileNumber");
+                        }}
+                      >
+                        <input
+                          type="radio"
+                          value={value}
+                          checked={active}
+                          onChange={() => {}}
+                        />
+
+                        {active && <div className="payment_checkmark">✓</div>}
+
+                        <div className={`payment_icon_wrap ${value}`}>
+                          {logo ? (
+                            <img
+                              src={logo}
+                              alt={label}
+                              onError={(e) => {
+                                e.target.style.display = "none";
+                                e.target.nextSibling.style.display = "block";
+                              }}
+                            />
+                          ) : (
+                            <span>{emoji}</span>
+                          )}
+                        </div>
+
+                        <span className="payment_card_label">{label}</span>
+                        <span className="payment_card_sub">{sub}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+
+                {/* Mobile number field for wallets */}
+                {paymentMethod !== "cod" && (
+                  <div className="payment_mobile_field">
+                    <label>
+                      Mobile number <span style={{ color: "#e53e3e" }}>*</span>
+                    </label>
+                    <input
+                      className={`input-field ${errors.mobileNumber ? "input-error" : ""}`}
+                      type="tel"
+                      placeholder="03001234567"
+                      value={mobileNumber}
+                      onChange={(e) => {
+                        setMobileNumber(e.target.value);
                         clearError("mobileNumber");
                       }}
-                    >
-                      <input
-                        type="radio"
-                        value={value}
-                        checked={active}
-                        onChange={() => {}}
-                      />
-
-                      {active && <div className="payment_checkmark">✓</div>}
-
-                      <div className={`payment_icon_wrap ${value}`}>
-                        {logo ? (
-                          <img
-                            src={logo}
-                            alt={label}
-                            onError={(e) => {
-                              e.target.style.display = "none";
-                              e.target.nextSibling.style.display = "block";
-                            }}
-                          />
-                        ) : (
-                          <span>{emoji}</span>
-                        )}
-                      </div>
-
-                      <span className="payment_card_label">{label}</span>
-                      <span className="payment_card_sub">{sub}</span>
-                    </label>
-                  );
-                })}
+                    />
+                    <p className="payment_mobile_hint">
+                      Enter the number linked to your wallet
+                    </p>
+                    <ErrorMsg field="mobileNumber" />
+                  </div>
+                )}
               </div>
 
-              {/* Mobile number field for wallets */}
-              {paymentMethod !== "cod" && (
-                <div className="payment_mobile_field">
-                  <label>
-                    Mobile number <span style={{ color: "#e53e3e" }}>*</span>
-                  </label>
-                  <input
-                    className={`input-field ${errors.mobileNumber ? "input-error" : ""}`}
-                    type="tel"
-                    placeholder="03001234567"
-                    value={mobileNumber}
-                    onChange={(e) => {
-                      setMobileNumber(e.target.value);
-                      clearError("mobileNumber");
-                    }}
-                  />
-                  <p className="payment_mobile_hint">
-                    Enter the number linked to your wallet
-                  </p>
-                  <ErrorMsg field="mobileNumber" />
-                </div>
+              {/* payment end  */}
+
+              {errors.general && (
+                <p style={{ color: "#e53e3e", fontSize: 13, marginTop: 8 }}>
+                  {errors.general}
+                </p>
               )}
+
+              <button
+                className="place_order_btn"
+                onClick={handleCheckout}
+                disabled={paymentLoading}
+              >
+                {paymentLoading ? "Processing..." : "Place Order"}
+              </button>
             </div>
-
-            {/* payment end  */}
-
-            {errors.general && (
-              <p style={{ color: "#e53e3e", fontSize: 13, marginTop: 8 }}>
-                {errors.general}
-              </p>
-            )}
-
-            <button
-              className="place_order_btn"
-              onClick={handleCheckout}
-              disabled={paymentLoading}
-            >
-              {paymentLoading ? "Processing..." : "Place Order"}
-            </button>
           </div>
         </div>
       </div>
+      <Footer/>
     </>
   );
 };

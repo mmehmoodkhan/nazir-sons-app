@@ -7,9 +7,9 @@
 .checkout_wrapper {
   width: 100%;
   display: inline-block;
-  padding: 50px;
+  padding: 3.125rem 1.5rem;
   background: var(--bg);
-  margin-top: 130px;
+  margin-top: 136px;
 }
 label {
   margin-bottom: 0.5rem;

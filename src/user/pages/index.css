@@ -1,6 +1,6 @@
 
 .main_page_wrapper {
-  margin-top: 60px;
+  padding: 3.125rem 0rem;
 }
 .main_page_wrapper .cat_section {
   margin: 0;
@@ -73,4 +73,9 @@
   border: none;
   font-size: 0.8rem;
   font-weight: 600;
+}
+@media (max-width:767px){
+.main_page_wrapper {
+  padding: 3rem 1.5rem;
+}
 }

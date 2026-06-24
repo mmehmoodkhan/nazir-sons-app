@@ -3,8 +3,8 @@
   padding-top: 250px;
 }
 .cart-page-main {
-  margin-top: 220px;
-  padding: 0px 3rem;
+  margin-top: 136px;
+  padding: 3.125rem 1.5rem;
 }
 .cart_inner_main {
   display: flex;
@@ -186,6 +186,9 @@
   .cart_sub_one,
   .cart_sub_two {
     width: 100%;
+  }
+  .cart-page-main {
+    padding: 2.5rem 1.5rem;
   }
 }
 @media (max-width: 576px) {
