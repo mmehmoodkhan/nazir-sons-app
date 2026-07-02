@@ -9,6 +9,8 @@ function Products() {
   const [activeCategory, setActiveCategory] = useState("All");
   const navigate = useNavigate();
 
+
+  
   useEffect(() => {
     fetch("/api/products")
       .then((res) => res.json())
