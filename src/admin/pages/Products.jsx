@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import "./Products.css";
+import "../../admin/pages/Products.css";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 
@@ -10,7 +10,7 @@ function Products() {
   const navigate = useNavigate();
 
 
-  
+
   useEffect(() => {
     fetch("/api/products")
       .then((res) => res.json())
