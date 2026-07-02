@@ -24,7 +24,7 @@ const SLIDES = [
   {
     id: 3,
     image: `${BASE}images/banner3.jpeg`,
-    title: "Special Offers",
+    title: "New Special Offers just a second",
     subtitle: "Up to 30% off on selected products",
     btn: "View Deals",
     link: "/",
