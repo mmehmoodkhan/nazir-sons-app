@@ -12,6 +12,20 @@
   font-size: 14px;
   transition: 0.5s ease-in-out;
 }
+.forgot-password-link {
+  display: inline-block;
+  margin: 10px 10px 10px 25px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: var(--link);
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 13px;
+}
+.forgot-password-link:hover {
+  opacity: 0.85;
+}
 .loged_btn:hover {
   background: var(--white);
   color: var(--link);
@@ -107,6 +121,11 @@
 }
 .not_login {
   margin: 1rem 0 0 0;
+}
+.admin_login .link_send {
+  font-size: 14px;
+  color: var(--link);
+  margin-bottom: 0.5rem;
 }
 
 @keyframes fadeIn {

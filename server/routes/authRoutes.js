@@ -1,12 +1,14 @@
 import express from "express";
-import { sendOTPEmail } from "../utils/mailer.js";
+import { sendOTPEmail, sendPasswordResetEmail } from "../utils/mailer.js";
 // import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 import User from "../models/User.js";
 import axios from "axios";
 const router = express.Router();
 const otpStore = new Map();
+const passwordResetStore = new Map();
 // google start 
 
 router.post("/google", async (req, res) => {
@@ -292,6 +294,74 @@ router.post("/verify-email", async (req, res) => {
   } catch (err) {
     console.error("Verify error:", err.message);
     return res.status(500).json({ message: "Server error." });       // ✅ return
+  }
+});
+
+const generateResetToken = () => crypto.randomBytes(24).toString("hex");
+
+router.post("/forgot-password", async (req, res) => {
+  const { email } = req.body;
+  if (!email)
+    return res.status(400).json({ message: "Email is required." });
+
+  const user = await User.findOne({ email });
+
+  // Always respond with a generic message to avoid email enumeration.
+  if (!user) {
+    return res.json({
+      message: "If that email exists, a reset link has been sent.",
+    });
+  }
+
+  const token = generateResetToken();
+  passwordResetStore.set(email, {
+    token,
+    expiresAt: Date.now() + 30 * 60 * 1000,
+  });
+
+  const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+  const resetLink = `${frontendUrl}/reset-password?email=${encodeURIComponent(
+    email,
+  )}&token=${token}`;
+
+  try {
+    await sendPasswordResetEmail(email, resetLink);
+    return res.json({ message: "Reset link sent to your email!" });
+  } catch (err) {
+    console.error("Password reset email error:", err.message);
+    return res.status(500).json({ message: "Unable to send reset email." });
+  }
+});
+
+router.post("/reset-password", async (req, res) => {
+  const { email, token, password } = req.body;
+
+  if (!email || !token || !password)
+    return res.status(400).json({ message: "Email, token and password are required." });
+
+  const record = passwordResetStore.get(email);
+  if (!record || record.token !== token)
+    return res.status(400).json({ message: "Invalid or expired reset token." });
+
+  if (Date.now() > record.expiresAt) {
+    passwordResetStore.delete(email);
+    return res.status(400).json({ message: "Reset token expired. Request a new link." });
+  }
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user)
+      return res.status(400).json({ message: "Invalid email address." });
+
+    const hashed = await bcrypt.hash(password, 10);
+    user.password = hashed;
+    await user.save();
+    passwordResetStore.delete(email);
+
+    return res.json({ message: "Password has been updated successfully." });
+  } catch (err) {
+    console.error("Reset password error:", err.message);
+    return res.status(500).json({ message: "Server error." });
   }
 });
 

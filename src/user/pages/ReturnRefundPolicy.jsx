@@ -20,8 +20,7 @@ const ReturnRefundPolicy = () => {
         <section className="refund_top_cards">
           <div className="refund_cards_inner">
             <article className="refund_card">
-              <h3>Contact Support</h3>
-              <p>Easy Support</p>
+              <h3>Easy Support</h3>
               <p>Contact our team quickly for damaged, wrong, or missing items.</p>
             </article>
 

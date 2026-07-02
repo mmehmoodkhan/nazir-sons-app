@@ -10,6 +10,7 @@ import Home from "./user/pages/index";
 import About from "./user/pages/About";
 import Contact from "./user/pages/Contact";
 import ReturnRefundPolicy from "./user/pages/ReturnRefundPolicy";
+import ResetPassword from "./user/pages/ResetPassword";
 import { CartProvider } from "./context/CartContext";
 import WhatsAppChat from "./user/components/WhatsAppChat";
 import Checkout from "./user/pages/Checkout";
@@ -46,6 +47,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/return-refund-policy" element={<ReturnRefundPolicy />} />
           <Route path="/admin/add-product" element={<AddProduct />} />
           <Route path="/admin/Categories" element={<Categories />} />

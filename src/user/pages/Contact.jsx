@@ -55,15 +55,14 @@ const Contact = () => {
           <div className="contact_inner">
             <div className="contact_grid">
               <div className="contact_card">
-                <div className="card_icon"><img src="/images/wapper.png" alt="WhatsApp" className="contact_card_icon"/></div>
-                <h3>Chat on WhatsApp</h3>
-                <p className="lead">Phone / WhatsApp</p>
+                <div className="card_icon"><img src="/images/chat-icon.png" alt="chat" className="contact_card_icon"/></div>
+                <h3>Phone / WhatsApp</h3>
                 <p className="highlight">+92 3013827812</p>
                 <p>Call or WhatsApp us for order support.</p>
               </div>
 
               <div className="contact_card">
-                <div className="card_icon"><img src="/images/logo_transparent.png" alt="Location" className="contact_card_icon"/></div>
+                <div className="card_icon"><img src="/images/location-icon.png" alt="Location" className="contact_card_icon"/></div>
                 <h3>Store Location</h3>
                 <p>Eden Palace Villas Raiwind Road Lahore, Pakistan.</p>
               </div>

@@ -13,8 +13,7 @@ const About = () => {
           <h1>About Nazir son's Cash & Carry</h1>
           <p>
             Nazir son's Cash & Carry Lahore is your trusted grocery and daily
-            essentials store near Raiwind Road, beside University of South
-            Asia. We provide fresh products, affordable prices, and fast
+            essentials store in eden palace villas Raiwind road lahore. We provide fresh products, affordable prices, and fast
             delivery in selected Lahore/eden palace areas.
           </p>
         </div>
@@ -52,7 +51,7 @@ const About = () => {
 
                 <div className="info_card">
                   <div className="card_icon">
-                    <img src="/images/wapper.png" alt="Fast Delivery" className="card_icon_img" />
+                    <img src="/images/fast-delivery.png" alt="Fast Delivery" className="card_icon_img" />
                   </div>
                   <h3>Fast Delivery</h3>
                   <p>Serving selected Lahore and eden palace nearby areas with quick delivery.</p>
@@ -66,25 +65,25 @@ const About = () => {
         <div className="features_inner">
           <div className="features_grid">
             <div className="feature_card">
-              <div className="feature_icon"><img src="/images/fresh-vegitable.jpg" alt="Best Quality" className="feature_icon_img"/></div>
+              <div className="feature_icon"><img src="/images/best-quality.png" alt="Best Quality" className="feature_icon_img"/></div>
               <h4>Best Quality</h4>
               <p>We focus on fresh, reliable, and daily-use products.</p>
             </div>
 
             <div className="feature_card">
-              <div className="feature_icon"><img src="/images/bonus.jpg" alt="Lowest Prices" className="feature_icon_img"/></div>
+              <div className="feature_icon"><img src="/images/low-price.png" alt="Lowest Prices" className="feature_icon_img"/></div>
               <h4>Lowest Prices</h4>
               <p>Competitive pricing for grocery and household essentials.</p>
             </div>
 
             <div className="feature_card">
-              <div className="feature_icon"><img src="/images/jazzcash-logo.png" alt="Safe Payment" className="feature_icon_img"/></div>
+              <div className="feature_icon"><img src="/images/safe-payment.png" alt="Safe Payment" className="feature_icon_img"/></div>
               <h4>Safe Payment</h4>
               <p>Secure checkout and trusted payment options.</p>
             </div>
 
             <div className="feature_card">
-              <div className="feature_icon"><img src="/images/profile-icon.png" alt="Customer Support" className="feature_icon_img"/></div>
+              <div className="feature_icon"><img src="/images/customer-support.png" alt="Customer Support" className="feature_icon_img"/></div>
               <h4>Customer Support</h4>
               <p>Friendly support to help with orders and inquiries.</p>
             </div>

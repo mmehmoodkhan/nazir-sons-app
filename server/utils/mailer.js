@@ -74,4 +74,29 @@ const sendContactEmail = async (payload) => {
   }
 };
 
-export { sendOTPEmail, sendContactEmail };
+const sendPasswordResetEmail = async (toEmail, resetLink) => {
+  try {
+    const info = await transporter.sendMail({
+      from: `"Nazir Sons" <${process.env.EMAIL_USER}>`,
+      to: toEmail,
+      subject: "Password reset instructions",
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 480px; margin: auto; padding: 32px; border: 1px solid #e5e7eb; border-radius: 12px;">
+          <h2 style="color: #111827;">Reset your password</h2>
+          <p style="color: #6b7280;">Click the button below to choose a new password for your account.</p>
+          <a href="${resetLink}" style="display: inline-block; margin: 18px 0; padding: 12px 24px; background: #25d366; color: white; text-decoration: none; border-radius: 8px;">Reset Password</a>
+          <p style="color: #6b7280;">If the button does not work, copy and paste this link into your browser:</p>
+          <p style="word-break: break-all; color: #334155;">${resetLink}</p>
+          <p style="color: #9ca3af; font-size: 12px;">If you did not request a password reset, you can safely ignore this email.</p>
+        </div>
+      `,
+    });
+    console.log("Password reset email sent:", info.messageId);
+    return info;
+  } catch (err) {
+    console.error("sendPasswordResetEmail failed:", err.message);
+    throw err;
+  }
+};
+
+export { sendOTPEmail, sendContactEmail, sendPasswordResetEmail };

@@ -15,8 +15,8 @@
 .contact_card h3{margin:0 0 8px;color:var(--text)}
 .contact_card .lead{font-weight:600}
 .contact_card .highlight{color:var(--link);font-weight:700}
-.card_icon{display:flex;align-items:center;margin-bottom:8px}
-.contact_card_icon{width:44px;height:44px;object-fit:cover;border-radius:8px;margin-right:12px}
+.card_icon{display:flex;align-items:center;margin:auto auto 8px;width:60px;height:60px;}
+.contact_card_icon{width:100%;height:100%;object-fit:contain;}
 
 .contact_bottom{display:grid;grid-template-columns:1fr 380px;gap:20px}
 .contact_form_card{background:var(--white);padding:20px;border-radius:10px;border:1px solid var(--border-color)}

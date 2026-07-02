@@ -13,9 +13,8 @@ export default function LoginModal({ onClose, onSuccess }) {
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
   const [showVerify, setShowVerify] = useState(false);
-
-  // Inside your modal JSX, replace the old button with:
 
   const handleSubmit = async () => {
     if (!email || !password) {
@@ -24,6 +23,7 @@ export default function LoginModal({ onClose, onSuccess }) {
     }
     setLoading(true);
     setError("");
+    setMessage("");
 
     try {
       const endpoint =
@@ -56,6 +56,38 @@ export default function LoginModal({ onClose, onSuccess }) {
 
     } catch (err) {
       console.error("Full error:", err);
+      setError("Server error. Try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      setError("Enter your email to receive a reset link.");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+    setMessage("");
+
+    try {
+      const res = await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.message || "Could not send reset email.");
+        return;
+      }
+
+      setMessage(data.message || "Password reset link sent.");
+    } catch (err) {
+      console.error("Forgot password error:", err);
       setError("Server error. Try again.");
     } finally {
       setLoading(false);
@@ -121,28 +153,60 @@ export default function LoginModal({ onClose, onSuccess }) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            <input
-              className="input-field"
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-            />
+            {mode !== "forgot" && (
+              <input
+                className="input-field"
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+              />
+            )}
 
+            {message && <p className="link_send">{message}</p>}
             {error && <p style={{ color: "red" }}>{error}</p>}
 
             <button
-              onClick={handleSubmit}
+              onClick={mode === "forgot" ? handleForgotPassword : handleSubmit}
               disabled={loading}
               className="loged_btn"
             >
               {loading
                 ? "Please wait..."
-                : mode === "login"
-                  ? "Login"
-                  : "Create Account"}
+                : mode === "forgot"
+                  ? "Send reset link"
+                  : mode === "login"
+                    ? "Login"
+                    : "Create Account"}
             </button>
+
+            {mode === "login" && (
+              <button
+                type="button"
+                className="forgot-password-link"
+                onClick={() => {
+                  setError("");
+                  setMessage("");
+                  setMode("forgot");
+                }}
+              >
+                Forgot password?
+              </button>
+            )}
+            {mode === "forgot" && (
+              <button
+                type="button"
+                className="forgot-password-link"
+                onClick={() => {
+                  setError("");
+                  setMessage("");
+                  setMode("login");
+                }}
+              >
+                Back to Login
+              </button>
+            )}
 
             {/*  Divider */}
             <div
