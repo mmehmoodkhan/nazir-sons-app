@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import "../../admin/pages/Products.css";
+// import "../../admin/pages/Products.css";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import "./Categories.css";

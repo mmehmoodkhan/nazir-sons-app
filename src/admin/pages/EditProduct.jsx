@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import "./Products.css";
+// import "./Products.css";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import { useParams } from "react-router-dom";
@@ -7,8 +7,8 @@ import { useParams } from "react-router-dom";
 export function EditProduct() {
   const [categories, setCategories] = useState([]);
   const [isNewCategory, setIsNewCategory] = useState(false);
-  const [errors, setErrors] = useState({}); // ✅ error state
-  const [submitting, setSubmitting] = useState(false); // ✅ prevent double submit
+  const [errors, setErrors] = useState({}); //  error state
+  const [submitting, setSubmitting] = useState(false); //  prevent double submit
   const { id } = useParams();
   const [form, setForm] = useState({
     name: "",
