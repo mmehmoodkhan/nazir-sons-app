@@ -163,7 +163,7 @@
 }
 
 .cat_tab.active .cat_tab_overlay {
-  background: rgba(76, 175, 80, 0.55); /* green tint when active, instead of plain black */
+  background: rgba(8, 77, 140, 0.55); /* green tint when active, instead of plain black */
 }
 
 .cat_tab:hover .cat_tab_overlay {
@@ -171,14 +171,14 @@
 }
 
 .cat_tab:hover {
-  border-color: #4CAF50;
-  color: #4CAF50;
+  border-color: var(--link);
+  color: var(--link);
   background: #fff;
 }
 
 .cat_tab.active {
-  background: #4CAF50;
-  border-color: #4CAF50;
+  /* background: var(--link); */
+  border-color: var(--link);
   color: white;
   font-weight: 700;
 }

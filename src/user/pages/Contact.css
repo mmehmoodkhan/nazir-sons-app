@@ -1,0 +1,49 @@
+.contact_hero{
+ background: linear-gradient(180deg, rgba(8, 77, 140, 0.88), rgba(8, 77, 140, 0.68)), url('/images/banner2.jpeg') center/cover no-repeat;
+  padding: 72px 16px;
+  color: var(--white);
+  margin-top: 136px;
+}
+.contact_hero_inner{max-width:1100px;margin:0 auto}
+.contact_hero h1{font-size:32px;margin-bottom:8px;color:var(--white)}
+.contact_hero p{color:rgba(255,255,255,0.95);max-width:900px;line-height: 30px;}
+
+.contact_info_section{padding:36px 16px}
+.contact_inner{max-width:1100px;margin:0 auto}
+.contact_grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px}
+.contact_card{background:var(--white);padding:18px;border-radius:10px;border:1px solid var(--border-color);box-shadow:0 6px 18px rgba(0,0,0,0.04);text-align: center;}
+.contact_card h3{margin:0 0 8px;color:var(--text)}
+.contact_card .lead{font-weight:600}
+.contact_card .highlight{color:var(--link);font-weight:700}
+.card_icon{display:flex;align-items:center;margin-bottom:8px}
+.contact_card_icon{width:44px;height:44px;object-fit:cover;border-radius:8px;margin-right:12px}
+
+.contact_bottom{display:grid;grid-template-columns:1fr 380px;gap:20px}
+.contact_form_card{background:var(--white);padding:20px;border-radius:10px;border:1px solid var(--border-color)}
+.contact_form label{display:block;margin-bottom:12px;color:var(--text)}
+.contact_form input,.contact_form textarea{width:100%;padding:10px;border:1px solid var(--border-color);border-radius:6px;margin-top:6px}
+.contact_form textarea{min-height:120px;resize:vertical}
+.form_actions{margin-top:10px}
+.form_success{color:green;margin-top:10px}
+.form_error{color:var(--danger);margin-top:10px}
+
+.map_card{background:var(--white);padding:20px;border-radius:10px;border:1px solid var(--border-color)}
+.map_placeholder{background:#eef2ff;height:220px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--muted);margin-bottom:12px}
+.contact_quick{list-style:none;padding:0;margin:0;color:var(--text)}
+.contact_quick li{margin-bottom:8px}
+
+/* Responsive */
+@media (max-width:1024px){
+  .contact_grid{grid-template-columns:repeat(2,1fr)}
+  .contact_bottom{grid-template-columns:1fr 320px}
+}
+@media (max-width:768px){
+  .contact_grid{grid-template-columns:1fr;}
+  .contact_bottom{grid-template-columns:1fr}
+  .contact_card{margin-bottom:12px}
+}
+@media (max-width:480px){
+  .contact_hero{padding:40px 12px}
+  .contact_hero h1{font-size:22px}
+  .contact_hero p{font-size:14px;line-height:20px}
+}

@@ -42,4 +42,36 @@ const sendOTPEmail = async (toEmail, otp) => {
   }
 };
 
-export { sendOTPEmail };
+const sendContactEmail = async (payload) => {
+  const { name, phone, email, message } = payload || {};
+  const to = process.env.CONTACT_RECEIVER || process.env.EMAIL_USER || "mehmoodkhan6060@gmail.com";
+
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 640px; margin: auto; padding: 24px;">
+      <h2>New contact form message</h2>
+      <p><strong>Name:</strong> ${name || "-"}</p>
+      <p><strong>Phone:</strong> ${phone || "-"}</p>
+      <p><strong>Email:</strong> ${email || "-"}</p>
+      <p><strong>Message:</strong></p>
+      <div style="border-left:4px solid #e5e7eb;padding:12px;margin-top:8px;color:#111;">${(message || "-").replace(/\n/g, "<br/>")}</div>
+      <hr/>
+      <p style="color:#6b7280;font-size:12px">This message was sent from the website contact form.</p>
+    </div>
+  `;
+
+  try {
+    const info = await transporter.sendMail({
+      from: `"Website Contact" <${process.env.EMAIL_USER}>`,
+      to,
+      subject: `Contact form: ${name || "New message"}`,
+      html,
+    });
+    console.log("Contact email sent:", info.messageId);
+    return info;
+  } catch (err) {
+    console.error("sendContactEmail failed:", err && err.message ? err.message : err);
+    throw err;
+  }
+};
+
+export { sendOTPEmail, sendContactEmail };

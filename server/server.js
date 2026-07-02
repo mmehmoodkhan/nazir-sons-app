@@ -12,6 +12,7 @@ import paymentRoutes from "./routes/payment.js";
 import statsRoute from "./routes/statsRoute.js";
 import deliverySlotRoutes from "./routes/deliverySlots.js";
 import phoneOtpRoutes from "./routes/phoneOtp.js";
+import contactRoutes from "./routes/contact.js";
 import deliverySettingRoutes from "./routes/deliverySettings.js";
 
 const app = express();
@@ -51,6 +52,7 @@ app.use("/api/payment", paymentRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/delivery-slots", deliverySlotRoutes);
 app.use("/api/phone-otp", phoneOtpRoutes);
+app.use("/api/contact", contactRoutes);
 app.use("/api/delivery-settings", deliverySettingRoutes);
 app.use("/api", statsRoute);
 app.listen(5000, () => {

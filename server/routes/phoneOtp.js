@@ -26,12 +26,6 @@ function createToken() {
   return crypto.randomBytes(24).toString("hex");
 }
 
-async function sendSmsOtp(phone, otp) {
-  // Add your SMS gateway here, for example Twilio, Jazz, Telenor, or local SMS API.
-  // Until credentials are configured, the OTP is logged for local development.
-  console.log(`Checkout OTP for ${phone}: ${otp}`);
-}
-
 router.post("/send", async (req, res) => {
   try {
     const phone = normalizePakistaniPhone(req.body.phone);

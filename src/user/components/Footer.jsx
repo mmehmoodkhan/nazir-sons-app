@@ -1,14 +1,10 @@
 import "./Footer.css";
 import { Link, useNavigate } from "react-router-dom";
 const sitemapLinks = [
-  { label: "About Us", href: "#", target: "_blank" },
-  { label: "Our Potential", href: "#", target: "_blank" },
-  { label: "Blogs", href: "#", target: "_blank" },
-  { label: "Loyalty Program", href: "#", target: "_blank" },
-  { label: "Gift Card", href: "#", target: "_blank" },
-  { label: "Our Brands", href: "#", target: "_blank" },
-  { label: "Careers", href: "#", target: "_blank" },
-  { label: "Return Policies", href: "#" },
+  { label: "Home", href: "/" },
+  { label: "About Us", href: "/about" },
+  { label: "Contact", href: "/contact" },
+  { label: "Return & Refund Policies", href: "/return-refund-policy" },
 ];
 
 export const Footer = () => {

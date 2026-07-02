@@ -256,13 +256,34 @@ const Checkout = () => {
       },
       (err) => {
         setLocationLoading(false);
-        if (err.code === err.PERMISSION_DENIED) {
+        const PERMISSION_DENIED = 1;
+        const POSITION_UNAVAILABLE = 2;
+        const TIMEOUT = 3;
+
+        if (err.code === PERMISSION_DENIED) {
           setLocationError(
             "Location permission denied. Please enter address manually.",
           );
-        } else {
-          setLocationError("Unable to retrieve your location.");
+          return;
         }
+
+        if (err.code === POSITION_UNAVAILABLE) {
+          setLocationError(
+            "Location unavailable. Please try again or enter your address manually.",
+          );
+          return;
+        }
+
+        if (err.code === TIMEOUT) {
+          setLocationError(
+            "Location request timed out. Please try again or enter your address manually.",
+          );
+          return;
+        }
+
+        setLocationError(
+          err.message || "Unable to retrieve your location.",
+        );
       },
       { enableHighAccuracy: true, timeout: 10000 },
     );
@@ -607,7 +628,7 @@ const Checkout = () => {
               <div className="cart_contact">
                 <h2 className="section-title">Delivery Information</h2>
 
-                {/* <button
+                 <button
                 type="button"
                 className="use-location-btn"
                 onClick={handleUseMyLocation}
@@ -617,7 +638,7 @@ const Checkout = () => {
                 {locationLoading
                   ? "Detecting location..."
                   : "Use my current location"}
-              </button> */}
+              </button> 
                 {locationError && (
                   <span className="field-error">{locationError}</span>
                 )}
