@@ -89,7 +89,7 @@ export default function CartPage({ onCheckout }) {
             </span>
           </h2>
           <div className="cart_inner_main">
-            <div className="cart_sub_one">
+            <div className="cart_sub_one2">
               {cart.map((item) => {
                 const isSoldOut = item.stock === 0; // or item.soldOut === true
 
