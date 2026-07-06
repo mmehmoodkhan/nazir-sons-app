@@ -57,4 +57,6 @@ app.use("/api/delivery-settings", deliverySettingRoutes);
 app.use("/api", statsRoute);
 app.listen(5000, () => {
   console.log("Server running on port 5000");
+  console.log(process.env.PORT);
+console.log(process.env.MONGO_URI);
 });
