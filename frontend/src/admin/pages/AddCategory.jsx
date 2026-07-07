@@ -17,7 +17,7 @@ function AddCategory() {
   useEffect(() => {
     const loadCategories = async () => {
       try {
-        const res = await fetch("/api/products");
+        const res = await fetch("http://149.104.79.29:5000/api/products");
         const data = await res.json();
         const fromProducts = [
           ...new Set(data.map((p) => p.category).filter(Boolean)),

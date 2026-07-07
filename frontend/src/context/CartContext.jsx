@@ -21,7 +21,7 @@ export function CartProvider({ children }) {
   //  NEW — fetch fresh products from backend
   const refreshProducts = async () => {
     try {
-      const res = await fetch("/api/products");
+      const res = await fetch("http://149.104.79.29:5000/api/products");
       const data = await res.json();
       setProducts(data);
     } catch (err) {

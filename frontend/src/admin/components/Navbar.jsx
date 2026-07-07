@@ -122,7 +122,7 @@ export default function Navbar({ title }) {
     try {
       const token = localStorage.getItem("adminToken");
       const [productsRes, ordersRes, usersRes] = await Promise.all([
-        fetch("/api/products"),
+       fetch("http://149.104.79.29:5000/api/products"),
         fetch(`/api/order/all?ts=${Date.now()}`, { cache: "no-store" }),
         fetch("/api/auth/users", {
           headers: { Authorization: `Bearer ${token}` },

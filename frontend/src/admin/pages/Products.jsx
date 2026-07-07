@@ -12,7 +12,7 @@ function Products() {
 
 
   useEffect(() => {
-    fetch("/api/products")
+    fetch("http://149.104.79.29:5000/api/products")
       .then((res) => res.json())
       .then((data) => refreshProducts(data));
   }, []);
