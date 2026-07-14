@@ -238,56 +238,56 @@ const Checkout = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleUseMyLocation = () => {
-    if (!navigator.geolocation) {
-      setLocationError("Geolocation is not supported by your browser.");
-      return;
-    }
+  // const handleUseMyLocation = () => {
+  //   if (!navigator.geolocation) {
+  //     setLocationError("Geolocation is not supported by your browser.");
+  //     return;
+  //   }
 
-    setLocationLoading(true);
-    setLocationError("");
+  //   setLocationLoading(true);
+  //   setLocationError("");
 
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const { latitude, longitude } = position.coords;
-        setCoords({ lat: latitude, lng: longitude });
-        await reverseGeocode(latitude, longitude);
-        setLocationLoading(false);
-      },
-      (err) => {
-        setLocationLoading(false);
-        const PERMISSION_DENIED = 1;
-        const POSITION_UNAVAILABLE = 2;
-        const TIMEOUT = 3;
+  //   navigator.geolocation.getCurrentPosition(
+  //     async (position) => {
+  //       const { latitude, longitude } = position.coords;
+  //       setCoords({ lat: latitude, lng: longitude });
+  //       await reverseGeocode(latitude, longitude);
+  //       setLocationLoading(false);
+  //     },
+  //     (err) => {
+  //       setLocationLoading(false);
+  //       const PERMISSION_DENIED = 1;
+  //       const POSITION_UNAVAILABLE = 2;
+  //       const TIMEOUT = 3;
 
-        if (err.code === PERMISSION_DENIED) {
-          setLocationError(
-            "Location permission denied. Please enter address manually.",
-          );
-          return;
-        }
+  //       if (err.code === PERMISSION_DENIED) {
+  //         setLocationError(
+  //           "Location permission denied. Please enter address manually.",
+  //         );
+  //         return;
+  //       }
 
-        if (err.code === POSITION_UNAVAILABLE) {
-          setLocationError(
-            "Location unavailable. Please try again or enter your address manually.",
-          );
-          return;
-        }
+  //       if (err.code === POSITION_UNAVAILABLE) {
+  //         setLocationError(
+  //           "Location unavailable. Please try again or enter your address manually.",
+  //         );
+  //         return;
+  //       }
 
-        if (err.code === TIMEOUT) {
-          setLocationError(
-            "Location request timed out. Please try again or enter your address manually.",
-          );
-          return;
-        }
+  //       if (err.code === TIMEOUT) {
+  //         setLocationError(
+  //           "Location request timed out. Please try again or enter your address manually.",
+  //         );
+  //         return;
+  //       }
 
-        setLocationError(
-          err.message || "Unable to retrieve your location.",
-        );
-      },
-      { enableHighAccuracy: true, timeout: 10000 },
-    );
-  };
+  //       setLocationError(
+  //         err.message || "Unable to retrieve your location.",
+  //       );
+  //     },
+  //     { enableHighAccuracy: true, timeout: 10000 },
+  //   );
+  // };
 
   useEffect(() => {
     let ignore = false;
@@ -628,7 +628,7 @@ const Checkout = () => {
               <div className="cart_contact">
                 <h2 className="section-title">Delivery Information</h2>
 
-                 <button
+                 {/* <button
                 type="button"
                 className="use-location-btn"
                 onClick={handleUseMyLocation}
@@ -638,7 +638,7 @@ const Checkout = () => {
                 {locationLoading
                   ? "Detecting location..."
                   : "Use my current location"}
-              </button> 
+              </button>  */}
                 {locationError && (
                   <span className="field-error">{locationError}</span>
                 )}

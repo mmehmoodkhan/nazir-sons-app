@@ -37,7 +37,7 @@ export function EditProduct() {
   }, [id]);
 
   useEffect(() => {
-   fetch("http://149.104.79.29:5000/api/products")
+    fetch("/api/products")
       .then((res) => res.json())
       .then((data) => {
         const unique = [
@@ -54,10 +54,11 @@ export function EditProduct() {
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
+    if (!file) return;
     const reader = new FileReader();
     reader.onloadend = () => {
-      setForm({ ...form, image: reader.result });
-      setErrors({ ...errors, image: "" }); // ✅ clear image error
+      setForm((prev) => ({ ...prev, image: reader.result }));
+      setErrors((prev) => ({ ...prev, image: "" }));
     };
     reader.readAsDataURL(file);
   };
@@ -179,9 +180,9 @@ export function EditProduct() {
             style={{ borderColor: errors.category ? "red" : "" }}
           >
             <option value="">-- Select Category --</option>
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
+            {categories.map((category) => (
+              <option key={category} value={category}>
+                {category}
               </option>
             ))}
             <option value="__new__">+ Add New Category</option>

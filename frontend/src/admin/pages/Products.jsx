@@ -12,7 +12,7 @@ function Products() {
 
 
   useEffect(() => {
-    fetch("http://149.104.79.29:5000/api/products")
+    fetch("/api/products")
       .then((res) => res.json())
       .then((data) => refreshProducts(data));
   }, []);
@@ -57,21 +57,21 @@ function Products() {
               margin: "20px 0",
             }}
           >
-            {categories.map((cat) => (
+            {categories.map((category) => (
               <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
+                key={category}
+                onClick={() => setActiveCategory(category)}
                 style={{
                   padding: "8px 16px",
                   borderRadius: "20px",
                   border: "none",
                   cursor: "pointer",
-                  background: activeCategory === cat ? "#4CAF50" : "#eee",
-                  color: activeCategory === cat ? "white" : "black",
-                  fontWeight: activeCategory === cat ? "bold" : "normal",
+                  background: activeCategory === category ? "#4CAF50" : "#eee",
+                  color: activeCategory === category ? "white" : "black",
+                  fontWeight: activeCategory === category ? "bold" : "normal",
                 }}
               >
-                {cat}
+                {category}
               </button>
             ))}
           </div>

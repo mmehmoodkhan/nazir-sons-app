@@ -43,14 +43,14 @@ function App() {
       <CartProvider>
         <Routes>
           <Route path="/admin/products/edit/:id" element={<EditProduct />} />
-          <Route path="/admin/products" element={<Products />}></Route>
+          {/* <Route path="/admin/products" element={<Products />}></Route> */}
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/return-refund-policy" element={<ReturnRefundPolicy />} />
           <Route path="/admin/add-product" element={<AddProduct />} />
-          <Route path="/admin/Categories" element={<Categories />} />
+          {/* <Route path="/admin/Categories" element={<Categories />} /> */}
           <Route path="/admin/Add-category" element={<AddCategory />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<Checkout />} />
@@ -90,6 +90,23 @@ function App() {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/products"
+            element={
+              <ProtectedRoute>
+                <Products />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin/Categories"
+            element={
+              <ProtectedRoute>
+                <Categories />
               </ProtectedRoute>
             }
           />

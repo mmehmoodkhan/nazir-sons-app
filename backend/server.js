@@ -14,9 +14,13 @@ import deliverySlotRoutes from "./routes/deliverySlots.js";
 import phoneOtpRoutes from "./routes/phoneOtp.js";
 import contactRoutes from "./routes/contact.js";
 import deliverySettingRoutes from "./routes/deliverySettings.js";
-
+import categoryRoutes from "./routes/categoryRoutes.js";
 const app = express();
+import path from "path";
+import { fileURLToPath } from "url";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -30,6 +34,10 @@ app.use(
   }),
 );
 app.use(express.json());
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "uploads"))
+);
 
 // Connect MongoDB
 mongoose;
@@ -43,11 +51,13 @@ app.get("/api/test", (req, res) => {
   res.json({ message: "Backend is working" });
 });
 
+
 // Use routes
 // server.js or app.js
 // const orderRoutes = require("./routes/order");
 app.use("/api/order", orderRoutes); //  this + "/checkout" = /api/order/checkout
 app.use("/api/products", productRoutes);
+app.use("/api/categories", categoryRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/delivery-slots", deliverySlotRoutes);
@@ -55,7 +65,7 @@ app.use("/api/phone-otp", phoneOtpRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/delivery-settings", deliverySettingRoutes);
 app.use("/api", statsRoute);
+
 app.listen(5000, () => {
   console.log("Server running on port 5000");
-  
 });

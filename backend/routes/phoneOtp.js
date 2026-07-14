@@ -1,6 +1,6 @@
 import crypto from "crypto";
 import express from "express";
-
+import { sendSmsOtp } from "../services/smsService.js";
 /* global process */
 
 const router = express.Router();

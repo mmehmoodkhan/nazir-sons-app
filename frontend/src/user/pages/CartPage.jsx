@@ -183,7 +183,7 @@ export default function CartPage({ onCheckout }) {
               onClose={() => setShowLogin(false)}
               onSuccess={(loggedInUser) => {
                 // ← receive user here
-                setUser(loggedInUser); // ← save user in state
+                setUser(loggedInUser);
                 setShowLogin(false);
                 navigate("/checkout"); // ← then navigate
               }}

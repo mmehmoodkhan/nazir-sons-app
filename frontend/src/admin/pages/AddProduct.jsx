@@ -5,7 +5,7 @@ import Navbar from "../components/Navbar";
 
 function AddProduct() {
   const [categories, setCategories] = useState([]);
-  const [errors, setErrors] = useState({}); 
+  const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false); //  prevent double submit
   const [form, setForm] = useState({
     name: "",
@@ -19,20 +19,20 @@ function AddProduct() {
 
   useEffect(() => {
     const loadCategories = async () => {
-      try {
-        const res = await fetch("http://149.104.79.29:5000/api/products");
-        const data = await res.json();
-        const fromProducts = [
-          ...new Set(data.map((p) => p.category).filter(Boolean)),
-        ];
-        const stored = Object.keys(JSON.parse(localStorage.getItem("categoryImages") || "{}"));
-        const combined = [...new Set([...fromProducts, ...stored])];
-        setCategories(combined);
-      } catch (err) {
-        const stored = Object.keys(JSON.parse(localStorage.getItem("categoryImages") || "{}"));
-        setCategories(stored);
-      }
-    };
+  try {
+    const res = await fetch("/api/categories");
+    const data = await res.json();
+
+    const categoryNames = data
+      .filter((cat) => cat.status === "active")
+      .map((cat) => cat.name);
+
+    setCategories(categoryNames);
+
+  } catch (error) {
+    console.log("Category load error:", error);
+  }
+};
 
     loadCategories();
 
@@ -48,10 +48,11 @@ function AddProduct() {
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
+    if (!file) return;
     const reader = new FileReader();
     reader.onloadend = () => {
-      setForm({ ...form, image: reader.result });
-      setErrors({ ...errors, image: "" }); // ✅ clear image error
+      setForm((prev) => ({ ...prev, image: reader.result }));
+      setErrors((prev) => ({ ...prev, image: "" }));
     };
     reader.readAsDataURL(file);
   };
@@ -175,9 +176,9 @@ function AddProduct() {
             style={{ borderColor: errors.category ? "red" : "" }}
           >
             <option value="">-- Select Category --</option>
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
+            {categories.map((category) => (
+              <option key={category} value={category}>
+                {category}
               </option>
             ))}
           </select>

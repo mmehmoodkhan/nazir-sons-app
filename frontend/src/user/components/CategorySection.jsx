@@ -2,9 +2,23 @@ import { useState, useEffect, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import "./CategorySection.css";
-
+import { getImageUrl } from "../../utils/imageUrl";
 export const CategorySection = ({ products }) => {
   const [searchParams] = useSearchParams();
+  const [categoriesData, setCategoriesData] = useState([]);
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const res = await fetch("/api/categories");
+        const data = await res.json();
+        setCategoriesData(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    loadCategories();
+  }, []);
   const [activeCategory, setActiveCategory] = useState(
     searchParams.get("category") || "All",
   );
@@ -13,68 +27,15 @@ export const CategorySection = ({ products }) => {
   );
   const { cart, addToCart, removeFromCart } = useCart();
   const navigate = useNavigate();
-
-  // Load category -> image map saved by admin (`AddCategory` stores this in localStorage)
-  const [categoryImagesMap, setCategoryImagesMap] = useState(() => {
-    try {
-      return JSON.parse(localStorage.getItem("categoryImages") || "{}");
-    } catch {
-      return {};
-    }
-  });
-
   const categories = [
-    "All",
-    ...new Set([
-      ...products.map((p) => p.category).filter(Boolean),
-      ...Object.keys(categoryImagesMap).filter(Boolean),
-    ]),
+    {
+      _id: "all",
+      name: "All",
+      image: "images/cart-icon.png"
+    },
+    ...categoriesData
   ];
-
-  const categoryKeys = Object.keys(categoryImagesMap || {});
-
-  useEffect(() => {
-    console.log("categoryImagesMap keys:", categoryKeys);
-  }, [categoryKeys]);
-
   const BASE = import.meta.env.BASE_URL || "/";
-
-  const resolveImg = (src) => {
-    if (!src) return `${BASE}images/cart-icon.png`;
-    if (src.startsWith("data:")) return src; // data URLs (admin uploads)
-    if (/^https?:\/\//.test(src)) return src; // absolute URLs
-    // remove leading ./, ../ or / then prefix with BASE
-    const trimmed = String(src).replace(/^(?:\.\/|\.\.\/|\/+)+/, "");
-    return `${BASE}${trimmed}`;
-  };
-
-  useEffect(() => {
-    const onStorage = (e) => {
-      if (e.key === "categoryImages") {
-        try {
-          setCategoryImagesMap(JSON.parse(e.newValue || "{}"));
-        } catch {
-          setCategoryImagesMap({});
-        }
-      }
-    };
-
-    const onCategoriesUpdated = () => {
-      try {
-        setCategoryImagesMap(JSON.parse(localStorage.getItem("categoryImages") || "{}"));
-      } catch {
-        setCategoryImagesMap({});
-      }
-    };
-
-    window.addEventListener("storage", onStorage);
-    window.addEventListener("categories:updated", onCategoriesUpdated);
-    return () => {
-      window.removeEventListener("storage", onStorage);
-      window.removeEventListener("categories:updated", onCategoriesUpdated);
-    };
-  }, []);
-
   const tabsTrackRef = useRef(null);
   const tabRefs = useRef({});
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -141,7 +102,9 @@ export const CategorySection = ({ products }) => {
   };
 
   const AUTOPLAY_INTERVAL_MS = 3000;
-  const categoriesKey = categories.join("|");
+  const categoriesKey = categories
+    .map((c) => c.name)
+    .join("|");
 
   useEffect(() => {
     if (isAutoplayPaused || categories.length <= 1) return;
@@ -233,29 +196,33 @@ export const CategorySection = ({ products }) => {
           onTouchMove={handlePointerMove}
           onTouchEnd={endDrag}
         >
-          {categories.map((cat) => (
+          {categories.map((category) => (
             <button
-              key={cat}
-              ref={(el) => (tabRefs.current[cat] = el)}
+              key={category._id || category.name}
+              ref={(el) => (tabRefs.current[category.name] = el)}
               onClick={() => {
-                if (dragState.current.moved) return;
-                setActiveCategory(cat);
-                setSelectedCategory(cat);
+                setActiveCategory(category.name);
+                setSelectedCategory(category.name);
               }}
-              className={`cat_tab ${activeCategory === cat ? "active" : ""}`}
+              className={`cat_tab ${activeCategory === category.name ? "active" : ""
+                }`}
             >
               <img
-                src={resolveImg(
-                  categoryImagesMap[cat] ||
-                    categoryImages[cat] ||
-                    "images/cart-icon.png",
-                )}
-                alt={cat}
+                src={
+                  category.image
+                    ? `/${category.image}`
+                    : "/images/cart-icon.png"
+                }
+                alt={category.name}
                 className="cat_tab_img"
                 draggable={false}
               />
               <span className="cat_tab_overlay"></span>
-              <span className="cat_tab_label">{cat}</span>
+
+              <span className="cat_tab_label">
+                {category.name}
+              </span>
+
             </button>
           ))}
         </div>
@@ -284,8 +251,10 @@ export const CategorySection = ({ products }) => {
                 style={{ cursor: "pointer" }}
               >
                 <span className="product-img">
-                  {/* <img src={product.image} alt={product.name} /> */}
-                  <img src={resolveImg(product.image)} alt={product.name} />
+                  <img
+                    src={getImageUrl(product.image)}
+                    alt={product.name}
+                  />
                 </span>
                 <div className="product-detail">
                   <h3 className="product-name">{product.name}</h3>

@@ -10,15 +10,15 @@ export default function Home() {
   const [products, setProducts] = useState([]);
   const { cart, addToCart, removeFromCart } = useCart();
 
-  useEffect(() => {
-    fetch("http://149.104.79.29:5000/api/products")
-      .then((res) => {
-        if (!res.ok) throw new Error(`Failed: ${res.status}`);
-        return res.json();
-      })
-      .then((data) => setProducts(data))
-      .catch((err) => console.error("Failed to load products:", err));
-  }, []);
+ useEffect(() => {
+  fetch("/api/products")
+    .then((res) => {
+      if (!res.ok) throw new Error(`Failed: ${res.status}`);
+      return res.json();
+    })
+    .then((data) => setProducts(data))
+    .catch((err) => console.error("Failed to load products:", err));
+}, []);
 
   // get quantity of a product already in cart
   const getQty = (productId) => {
