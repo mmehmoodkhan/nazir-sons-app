@@ -120,7 +120,18 @@ const Contact = () => {
 
               <div className="map_card">
                 <h3 className="heddings">Our Location</h3>
-                <div className="map_placeholder">Map placeholder</div>
+                <div className="map_placeholder">
+                  <iframe
+                    title="Nazir Sons Cash & Carry Location"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3404.111146222863!2d74.23678237442132!3d31.438606951179217!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391901003d12f4fb%3A0xed33484ad714598!2sMehmood%20Cash%20and%20Carry!5e0!3m2!1sen!2s!4v1784203760047!5m2!1sen!2s"
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="strict-origin-when-cross-origin"
+                  />
+                </div>
                 <ul className="contact_quick">
                   <li><strong>Phone / WhatsApp:</strong> +92 3013827812</li>
                   <li><strong>Location:</strong> Eden Palace Villas Raiwind Road Lahore, Pakistan</li>
