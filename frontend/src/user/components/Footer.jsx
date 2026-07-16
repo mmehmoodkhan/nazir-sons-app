@@ -64,7 +64,7 @@ export const Footer = () => {
           <ul className="footer_links_list">
             {sitemapLinks.map((link) => (
               <li key={link.label}>
-                <Link to={link.href}>
+                <Link to={link.href} onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
                   {link.label}
                 </Link>
               </li>
