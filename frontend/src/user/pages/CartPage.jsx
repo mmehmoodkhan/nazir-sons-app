@@ -1,9 +1,3 @@
-// // ─── Inline Styles & Fonts ───────────────────────────────────────────────────
-// const fontLink = document.createElement("link");
-// fontLink.rel = "stylesheet";
-// fontLink.href =
-//   "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap";
-// document.head.appendChild(fontLink);
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -27,15 +21,6 @@ export default function CartPage({ onCheckout }) {
     }
   };
 
-  // const handleLoginSuccess = async (loggedInUser) => {
-  //   setUser(loggedInUser);
-  //   setShowLogin(false);
-  //   // Merge local cart with server (mirrors mergeCart.jsx)
-  //   await mergeCartWithServer(loggedInUser.userId, cart);
-  //   setCart([]);
-  //   setPage("success");
-  // };
-  // ✅ Always removes the full item regardless of quantity
   const deleteItem = (id) => {
     const next = cart.filter((item) => item._id !== id);
     setCart(next);
@@ -79,6 +64,7 @@ export default function CartPage({ onCheckout }) {
 
   return (
     <div>
+
       <Header />
       <div className="cart-page-main">
         <div className="mian_container">
@@ -131,7 +117,6 @@ export default function CartPage({ onCheckout }) {
                           +
                         </button>
                       </div>
-
                       <div className="cart_price">
                         Rs {(item.price * item.quantity).toFixed(2)}
                       </div>

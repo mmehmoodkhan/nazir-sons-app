@@ -74,7 +74,7 @@ export const Footer = () => {
       </div>
 
       <div className="footer_bottom">
-        <p>© {new Date().getFullYear()} Nazir Sons. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} Nazir Sons. 2026 All rights reserved.</p>
       </div>
     </footer>
   );

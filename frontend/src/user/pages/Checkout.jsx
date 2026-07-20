@@ -379,7 +379,7 @@ const Checkout = () => {
       userId: user?._id || user?.userId || "guest",
       customer: { firstName, lastName, email, phone },
       delivery: { address, houseNo, area, city, deliverHere },
-      deliverySlot: selectedSlotRef.current, // ✅ use ref not state
+      deliverySlot: selectedSlotRef.current, //  use ref not state
       deliveryCode: deliveryCode.join(""),
       orderNote,
       items: cart,
