@@ -55,26 +55,26 @@ const Contact = () => {
           <div className="contact_inner">
             <div className="contact_grid">
               <div className="contact_card">
-                <div className="card_icon"><img src="/images/chat-icon.png" alt="chat" className="contact_card_icon"/></div>
+                <div className="card_icon"><img src="/images/chat-icon.png" alt="chat" className="contact_card_icon" /></div>
                 <h3>Phone / WhatsApp</h3>
                 <p className="highlight">+92 3013827812</p>
                 <p>Call or WhatsApp us for order support.</p>
               </div>
 
               <div className="contact_card">
-                <div className="card_icon"><img src="/images/location-icon.png" alt="Location" className="contact_card_icon"/></div>
+                <div className="card_icon"><img src="/images/location-icon.png" alt="Location" className="contact_card_icon" /></div>
                 <h3>Store Location</h3>
                 <p>Eden Palace Villas Raiwind Road Lahore, Pakistan.</p>
               </div>
 
               <div className="contact_card">
-                <div className="card_icon"><img src="/images/cart-icon.png" alt="Delivery" className="contact_card_icon"/></div>
+                <div className="card_icon"><img src="/images/cart-icon.png" alt="Delivery" className="contact_card_icon" /></div>
                 <h3>Delivery Support</h3>
                 <p>Fast grocery delivery in nearby areas.</p>
               </div>
 
               <div className="contact_card">
-                <div className="card_icon"><img src="/images/profile-icon.png" alt="Hours" className="contact_card_icon"/></div>
+                <div className="card_icon"><img src="/images/profile-icon.png" alt="Hours" className="contact_card_icon" /></div>
                 <h3>Business Hours</h3>
                 <p>Every Day: 9:00 AM – 12:00 PM</p>
                 <p>Order Support: Phone / WhatsApp</p>
@@ -120,7 +120,18 @@ const Contact = () => {
 
               <div className="map_card">
                 <h3 className="heddings">Our Location</h3>
-                <div className="map_placeholder">Map placeholder</div>
+                <div className="map_placeholder">
+                  <iframe
+                    title="Nazir Sons Cash & Carry Location"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3404.111146222863!2d74.23678237442132!3d31.438606951179217!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391901003d12f4fb%3A0xed33484ad714598!2sMehmood%20Cash%20and%20Carry!5e0!3m2!1sen!2s!4v1784203760047!5m2!1sen!2s"
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="strict-origin-when-cross-origin"
+                  />
+                </div>
                 <ul className="contact_quick">
                   <li><strong>Phone / WhatsApp:</strong> +92 3013827812</li>
                   <li><strong>Location:</strong> Eden Palace Villas Raiwind Road Lahore, Pakistan</li>
