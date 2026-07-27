@@ -208,11 +208,7 @@ export const CategorySection = ({ products }) => {
                 }`}
             >
               <img
-                src={
-                  category.image
-                    ? `/${category.image}`
-                    : "/images/cart-icon.png"
-                }
+                src={getImageUrl(category.image)}
                 alt={category.name}
                 className="cat_tab_img"
                 draggable={false}

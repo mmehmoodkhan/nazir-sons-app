@@ -19,6 +19,7 @@ export const getImageUrl = (image) => {
     return image;
   }
 
-  // Backend uploaded image
-  return `http://149.104.79.29/${image}`;
+  // Backend uploaded image. Vite proxies this path in development, while a
+  // production reverse proxy can serve it from the same origin.
+  return `/${image.replace(/^\/+/, "")}`;
 };

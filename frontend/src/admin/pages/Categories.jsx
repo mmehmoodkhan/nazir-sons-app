@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import "./Categories.css";
+import { getImageUrl } from "../../utils/imageUrl";
 
 const UNCATEGORIZED_LABEL = "(Uncategorized)";
 
@@ -74,7 +75,7 @@ function Categories() {
     }
 
 
-    return `/${category.image}`;
+    return getImageUrl(category.image);
 
   };
 

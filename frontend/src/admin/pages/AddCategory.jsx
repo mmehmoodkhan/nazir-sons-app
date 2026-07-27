@@ -22,7 +22,7 @@ function AddCategory() {
     const loadCategories = async () => {
       try {
         const res = await axios.get(
-          "http://149.104.79.29/api/categories"
+          "/api/categories"
         );
 
         setCategories(res.data);
@@ -109,7 +109,7 @@ function AddCategory() {
 
 
       const res = await axios.post(
-        "http://149.104.79.29/api/categories",
+        "/api/categories",
         formData,
         {
           headers:{
