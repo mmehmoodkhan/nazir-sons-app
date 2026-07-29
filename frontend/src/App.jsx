@@ -42,20 +42,48 @@ function App() {
 
       <CartProvider>
         <Routes>
-          <Route path="/admin/products/edit/:id" element={<EditProduct />} />
+          <Route
+            path="/admin/products/edit/:id"
+            element={
+              <ProtectedRoute>
+                <EditProduct />
+              </ProtectedRoute>
+            }
+          />
           {/* <Route path="/admin/products" element={<Products />}></Route> */}
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/return-refund-policy" element={<ReturnRefundPolicy />} />
-          <Route path="/admin/add-product" element={<AddProduct />} />
+          <Route
+            path="/admin/add-product"
+            element={
+              <ProtectedRoute>
+                <AddProduct />
+              </ProtectedRoute>
+            }
+          />
           {/* <Route path="/admin/Categories" element={<Categories />} /> */}
-          <Route path="/admin/Add-category" element={<AddCategory />} />
+          <Route
+            path="/admin/Add-category"
+            element={
+              <ProtectedRoute>
+                <AddCategory />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/order-success" element={<OrderSuccess />} />
-          <Route path="/admin/orders" element={<AdminOrders />} />
+          <Route
+            path="/admin/orders"
+            element={
+              <ProtectedRoute>
+                <AdminOrders />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/admin/delivery-slots"
             element={

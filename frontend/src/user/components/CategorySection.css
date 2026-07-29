@@ -183,15 +183,11 @@
   font-weight: 700;
 }
 
-
-
-
-
-.All-pro-main {
+ .All-pro-main {
     padding: 2.5rem 3.125rem;
-    width: calc(100% - 220px);
-    margin: 0 auto;
-}
+    /* width: calc(100% - 220px); */
+    /* margin: 0 auto; */
+} 
 .all-pro-wrapper {
     display: flex;
     background: #f9f9f9;
