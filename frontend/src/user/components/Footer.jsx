@@ -31,7 +31,6 @@ export const Footer = () => {
             security cameras for its customers.
           </p>
         </div>
-
         <div className="footer_col">
           <h3 className="footer_heading">Get in touch</h3>
           <address className="footer_contact">
@@ -44,21 +43,13 @@ export const Footer = () => {
                 <Link to="tel:03013827812"> 0301-38-27-812 (Nazir-Son's)</Link>
               </li>
               <li>
-                <Link to="mailto:khan@gmail.com">khan@gmail.com</Link>
+                <Link to="mailto:mehmoodkhan6060@gmail.com">mehmoodkhan6060@gmail.com</Link>
               </li>
-              <li>
-                <Link
-                  to="#"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Global Supplier Form
-                </Link>
-              </li>
+              
             </ul>
           </address>
-        </div>
 
+        </div>
         <div className="footer_col">
           <h3 className="footer_heading">Sitemap</h3>
           <ul className="footer_links_list">

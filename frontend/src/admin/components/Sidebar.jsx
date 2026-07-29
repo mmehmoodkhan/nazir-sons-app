@@ -13,6 +13,8 @@ const readSeenOrderIds = () => {
   }
 };
 
+const hasSeenOrders = () => localStorage.getItem(SEEN_ORDERS_KEY) !== null;
+
 export default function Sidebar() {
    const navigate = useNavigate();
    const location = useLocation();
@@ -39,6 +41,12 @@ export default function Sidebar() {
           return;
         }
 
+        if (!hasSeenOrders()) {
+          localStorage.setItem(SEEN_ORDERS_KEY, JSON.stringify(orderIds));
+          setUnseenOrderCount(0);
+          return;
+        }
+
         const seenOrderIds = new Set(readSeenOrderIds());
         setUnseenOrderCount(
           orderIds.filter((orderId) => !seenOrderIds.has(orderId)).length,
@@ -49,8 +57,11 @@ export default function Sidebar() {
     }
 
     loadOrders();
+    const refreshInterval = setInterval(loadOrders, 15000);
+
     return () => {
       ignore = true;
+      clearInterval(refreshInterval);
     };
   }, [location.pathname]);
   return (

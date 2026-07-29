@@ -126,7 +126,8 @@ export default function CartPage({ onCheckout }) {
                         <button
                           className="qty-btn"
                           onClick={() => !isSoldOut && updateQty(item._id, +1)}
-                          disabled={isSoldOut}
+                          // disabled={isSoldOut}
+                          disabled={item.quantity >= item.stock}
                         >
                           +
                         </button>

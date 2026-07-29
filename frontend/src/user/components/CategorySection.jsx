@@ -156,7 +156,11 @@ export const CategorySection = ({ products }) => {
   const filteredProducts =
     selectedCategory === "All"
       ? products
-      : products.filter((p) => p.category === selectedCategory);
+      : products.filter(
+          (product) =>
+            String(product.category || "").trim().toLowerCase() ===
+            String(selectedCategory).trim().toLowerCase(),
+        );
 
   // fallback static names (kept for backwards compatibility)
   const categoryImages = {

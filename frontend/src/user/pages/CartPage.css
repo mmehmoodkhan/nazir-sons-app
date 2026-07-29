@@ -105,6 +105,13 @@
   font-weight: 500;
   color: #fff;
 }
+.qty-btn:disabled {
+  background: #c7d2fe;
+  cursor: not-allowed;
+  border-radius: 5px;
+  opacity: 0.8;
+
+}
 
 .proceed-btn,
 .continue-shop-btn {

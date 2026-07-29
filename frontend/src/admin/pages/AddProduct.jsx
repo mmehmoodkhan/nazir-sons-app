@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./AddProduct.css";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
@@ -7,6 +7,7 @@ function AddProduct() {
   const [categories, setCategories] = useState([]);
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false); //  prevent double submit
+  const imageInputRef = useRef(null);
   const [form, setForm] = useState({
     name: "",
     price: "",
@@ -88,28 +89,42 @@ function AddProduct() {
     }
 
     setSubmitting(true);
-    const payload = {
-      ...form,
-      originalPrice:
-        form.originalPrice !== "" ? Number(form.originalPrice) : null,
-    };
-    await fetch("/api/products/add", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload), //  sends null or a number
-    });
 
-    alert("Product Added ");
-    setErrors({});
-    setForm({
-      name: "",
-      price: "",
-      originalPrice: "",
-      category: "",
-      stock: "",
-      image: "",
-      description: "",
-    });
+    try {
+      const payload = {
+        ...form,
+        originalPrice:
+          form.originalPrice !== "" ? Number(form.originalPrice) : null,
+      };
+      const response = await fetch("/api/products/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.message || "Failed to add product");
+      }
+
+      setErrors({});
+      setForm({
+        name: "",
+        price: "",
+        originalPrice: "",
+        category: "",
+        stock: "",
+        image: "",
+        description: "",
+      });
+      if (imageInputRef.current) imageInputRef.current.value = "";
+      alert("Product added successfully");
+    } catch (error) {
+      console.error("Failed to add product:", error);
+      alert(error.message || "Failed to add product");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   // Reusable error message style
@@ -210,6 +225,7 @@ function AddProduct() {
 
           <label className="pro-label">Product Image</label>
           <input
+            ref={imageInputRef}
             type="file"
             accept="image/*"
             onChange={handleImageUpload}
